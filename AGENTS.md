@@ -15,3 +15,8 @@ also apply all these principles when writing code comments, or content for plans
 
 when working in a repo, leave a detailed conventional commit message (include scope) for the operator to copy.
 <!-- END:11ai-pragmatic skill -->
+
+# Repository workflows
+
+- For requests to archive, publish, deploy, or share a report through 11reports,
+  read and follow `v0/skills/11archive-publish-report/SKILL.md`.

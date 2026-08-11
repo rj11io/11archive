@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish 11archive Report"
+  short_description: "Package and publish reports through 11reports"
+  default_prompt: "Use $11archive-publish-report to package and publish this archived report through 11reports."
