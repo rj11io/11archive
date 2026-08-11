@@ -18,5 +18,8 @@ when working in a repo, leave a detailed conventional commit message (include sc
 
 # Repository workflows
 
+- For requests to create, update, extend, rerender, or verify a report in
+  11archive, read and follow `v0/skills/11archive-create-report/SKILL.md`.
+
 - For requests to archive, publish, deploy, or share a report through 11reports,
   read and follow `v0/skills/11archive-publish-report/SKILL.md`.

@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "agent": "codex",
+    "workflow": "11agi-core-reports-manager",
+    "report": "datavis-best-pracc"
+  },
+  "generatedAt": "2026-08-11T19:22:02Z",
+  "title": "Interactive Data Visualization Best Practices and Artificial Analysis Audit",
+  "scope": {
+    "researchDate": "2026-08-11",
+    "timezone": "Europe/Lisbon",
+    "artificialAnalysisAccess": "public desktop pages",
+    "excluded": [
+      "premium-only surfaces",
+      "authenticated private state",
+      "mobile and tablet systematic testing",
+      "internal source code and APIs"
+    ]
+  },
+  "chartFamilies": [
+    {"id": "lookup", "label": "Exact lookup", "defaults": ["data table", "KPI card", "bullet chart"]},
+    {"id": "ranking", "label": "Comparison and ranking", "defaults": ["sorted horizontal bar", "dot plot", "lollipop chart"]},
+    {"id": "change", "label": "Time and change", "defaults": ["line chart", "step chart", "small multiples", "slopegraph"]},
+    {"id": "distribution", "label": "Distribution", "defaults": ["histogram", "ECDF", "boxplot", "strip plot"]},
+    {"id": "relationship", "label": "Relationship", "defaults": ["scatterplot", "hexbin plot", "2D density", "SPLOM"]},
+    {"id": "composition", "label": "Composition", "defaults": ["stacked bar", "100% stacked bar", "treemap", "waterfall"]},
+    {"id": "flow", "label": "Flow and network", "defaults": ["Sankey", "alluvial", "node-link graph", "adjacency matrix"]},
+    {"id": "hierarchy", "label": "Hierarchy", "defaults": ["tree", "treemap", "icicle", "dendrogram"]},
+    {"id": "geography", "label": "Geography", "defaults": ["choropleth for rates", "proportional symbols for totals", "dot density", "flow map"]},
+    {"id": "process", "label": "Process and architecture", "defaults": ["flowchart", "swimlane", "sequence diagram", "state diagram"]},
+    {"id": "uncertainty", "label": "Uncertainty", "defaults": ["error bar", "error band", "boxplot", "fan chart", "quantile dotplot"]}
+  ],
+  "recommendationRules": [
+    {"task": "lookup", "data": "categorical+multiple measures", "recommend": "table", "warning": "Use semantic headers and preserve exact values."},
+    {"task": "rank", "data": "categorical+quantitative", "recommend": "sorted horizontal bar or dot", "warning": "Bars normally require a zero baseline."},
+    {"task": "change", "data": "two ordered states", "recommend": "slopegraph or dumbbell", "warning": "Label both endpoints and direction."},
+    {"task": "change", "data": "time series", "recommend": "line or small multiples", "warning": "Break lines at missing intervals."},
+    {"task": "distribution", "data": "one quantitative field", "recommend": "histogram plus ECDF or boxplot", "warning": "Disclose bin or bandwidth choices."},
+    {"task": "relationship", "data": "two quantitative fields", "recommend": "scatterplot", "warning": "Use hexbin or density for overplotting."},
+    {"task": "tradeoff", "data": "two objectives", "recommend": "scatterplot with desired region and Pareto frontier", "warning": "State direction and assumptions for both axes."},
+    {"task": "composition", "data": "parts of one whole", "recommend": "stacked or 100% stacked bar", "warning": "Verify parts are additive and non-overlapping."},
+    {"task": "flow", "data": "staged weighted links", "recommend": "Sankey or alluvial", "warning": "Show direction, conservation, and totals."},
+    {"task": "geography", "data": "regional rate", "recommend": "choropleth", "warning": "Do not map raw totals by region fill."},
+    {"task": "uncertainty", "data": "estimate+interval", "recommend": "error bar/band or forest plot", "warning": "Name interval type and confidence/probability."}
+  ],
+  "controlFamilies": [
+    {"id": "entities", "label": "Entity selection", "examples": ["search", "multi-select", "selected of eligible", "clear", "select all", "reset to default"]},
+    {"id": "scope", "label": "Semantic filters", "examples": ["license", "size", "reasoning", "modality", "status", "date or numeric range"]},
+    {"id": "view", "label": "View changes", "examples": ["tabs", "metric selector", "color by", "stack/normalize", "linear/log"]},
+    {"id": "analysis", "label": "Analytical overlays", "examples": ["target line", "baseline", "desired region", "Pareto frontier", "confidence interval"]},
+    {"id": "navigation", "label": "Direct manipulation", "examples": ["tooltip", "point selection", "brush", "cross-filter", "zoom", "pan", "drill"]},
+    {"id": "presentation", "label": "Display settings", "examples": ["label size", "ticks", "labels", "gridlines", "density"]},
+    {"id": "output", "label": "Share and export", "examples": ["deep link", "image", "data", "table", "preset"]}
+  ],
+  "artificialAnalysisSurfaces": [
+    {"surface": "Home analytics", "url": "https://artificialanalysis.ai/", "observed": {"filterPanel": true, "displayPanel": true, "entityPicker": true}, "state": "observed"},
+    {"surface": "AI Trends", "url": "https://artificialanalysis.ai/trends", "observed": {"sections": 6, "entitySelectors": 18}, "state": "observed"},
+    {"surface": "LLM leaderboard", "url": "https://artificialanalysis.ai/leaderboards/models", "observed": {"tableRows": 252, "filterGroups": 5}, "state": "observed"},
+    {"surface": "Model detail", "url": "https://artificialanalysis.ai/models/claude-opus-5", "observed": {"majorSections": 10, "viewTabs": 50}, "state": "observed"},
+    {"surface": "Coding agents", "url": "https://artificialanalysis.ai/agents/coding-agents", "observed": {"majorSections": 8, "colorBy": ["Model", "Agent"]}, "state": "observed"},
+    {"surface": "Image leaderboard", "url": "https://artificialanalysis.ai/image/leaderboard/text-to-image", "observed": {"tableRows": 144}, "state": "observed"},
+    {"surface": "Video comparison", "url": "https://artificialanalysis.ai/video/models", "observed": {"majorSections": 4, "boxplot": true, "timeSeries": true}, "state": "observed"},
+    {"surface": "Text-to-speech leaderboard", "url": "https://artificialanalysis.ai/text-to-speech/leaderboard", "observed": {"tableRows": 92}, "state": "observed"},
+    {"surface": "Speech-to-speech", "url": "https://artificialanalysis.ai/speech-to-speech/", "observed": {"majorSections": 7, "viewTabs": 30, "tableRows": 36}, "state": "observed"},
+    {"surface": "Provider detail", "url": "https://artificialanalysis.ai/providers/coreweave", "observed": {"tableRows": 23, "promptOptions": true, "priceBlendPresets": 5}, "state": "observed"},
+    {"surface": "Image arena", "url": "https://artificialanalysis.ai/embed/text-to-image-leaderboard/arena", "observed": {"promptSubmission": true, "blindVoting": true}, "state": "observed"},
+    {"surface": "Video arena", "url": "https://artificialanalysis.ai/embed/text-to-video-leaderboard/arena", "observed": {"promptSubmission": true, "blindVoting": true, "keyboardShortcuts": true}, "state": "observed"}
+  ],
+  "artificialAnalysisControls": {
+    "commonToolbar": ["Copy link to this section", "Download chart as image", "Download data", "entity selector", "Open filters", "Open chart display settings", "Add model from specific provider"],
+    "displaySettings": [
+      {"name": "Label size", "type": "slider", "min": 9, "max": 13, "observed": 11, "unit": "px"},
+      {"name": "Bar ticks", "type": "switch", "observed": true},
+      {"name": "Scatter labels", "type": "switch", "observed": true},
+      {"name": "Pareto line", "type": "switch", "observed": true}
+    ],
+    "homeFilters": {
+      "Open Weights": ["Open Source", "Proprietary"],
+      "Size Class": ["Tiny", "Small", "Medium", "Large"],
+      "Reasoning": ["Reasoning", "Non Reasoning"],
+      "Input Modality": ["Image", "Speech", "Video"]
+    },
+    "llmLeaderboardFilters": {
+      "Weights": ["Open", "Proprietary"],
+      "Size": ["Tiny (<4B params)", "Small (4B-40B params)", "Medium (40B-150B params)", "Large (>150B params)", "Unknown"],
+      "Price": ["Low (<$0.15/1M tokens)", "Medium ($0.15-$1/1M tokens)", "High (>$1/1M tokens)"],
+      "Reasoning": ["Reasoning", "Non-Reasoning"],
+      "Status": ["Current"]
+    },
+    "promptOptions": {
+      "Parallel Queries": ["Single", "Multiple (1k tokens only)"],
+      "Prompt Length": ["1k tokens", "10k tokens", "100k"]
+    },
+    "priceBlendPresets": [
+      {"ratio": "7:2:1", "label": "General agentic (recommended)"},
+      {"ratio": "3:1", "label": "General chat"},
+      {"ratio": "0:1:1", "label": "General translation"},
+      {"ratio": "100:1:1", "label": "Long-context Q&A"},
+      {"ratio": "0:100:1", "label": "Long-context summarization"}
+    ]
+  },
+  "limitations": [
+    "Artificial Analysis changes frequently; counts and labels are point-in-time observations.",
+    "Representative pages were audited, not every entity and provider route.",
+    "DOM inspection does not establish full accessibility or mobile quality.",
+    "The proposed visualization-state schema is inferred from visible behavior, not internal implementation evidence.",
+    "The chart catalog is broad but cannot be a mathematically closed list of every named chart variation."
+  ]
+}
