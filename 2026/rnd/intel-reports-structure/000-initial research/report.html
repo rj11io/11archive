@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A standalone research report on intelligence reporting, analytic assessments, and briefings.">
+  <title>Intelligence Reporting: Structure, Assessment, and Briefing</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b10;
+      --panel: #0f141c;
+      --panel-2: #141b25;
+      --text: #ecf2f8;
+      --muted: #9aa8b7;
+      --line: #263140;
+      --accent: #39d4a0;
+      --accent-soft: rgba(57, 212, 160, 0.13);
+      --cyan: #59c8ff;
+      --amber: #f5bf62;
+      --red: #ff7b86;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+      --radius: 14px;
+      --content: 1120px;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f7f9;
+      --panel: #ffffff;
+      --panel-2: #edf2f5;
+      --text: #14202b;
+      --muted: #5b6975;
+      --line: #d5dee5;
+      --accent: #087a5a;
+      --accent-soft: rgba(8, 122, 90, 0.1);
+      --cyan: #076a9a;
+      --amber: #9a6500;
+      --red: #b83545;
+      --shadow: 0 16px 42px rgba(26, 45, 62, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 80% -10%, rgba(57, 212, 160, 0.1), transparent 32rem),
+        var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    a { color: var(--cyan); text-underline-offset: 0.18em; }
+    a:hover { color: var(--accent); }
+    button, input { font: inherit; }
+    code, pre, .eyebrow, .metric strong, .tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-height: 58px;
+      padding: 0.65rem max(1rem, calc((100vw - var(--content)) / 2));
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 760;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #06100c;
+      font: 800 0.8rem ui-monospace, monospace;
+    }
+
+    .actions { display: flex; gap: 0.5rem; }
+    .button {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 0.45rem 0.75rem;
+      color: var(--text);
+      background: var(--panel);
+      cursor: pointer;
+    }
+    .button:hover { border-color: var(--accent); }
+
+    .hero {
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 5rem 1rem 3rem;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 760;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.18; letter-spacing: -0.025em; }
+    h1 {
+      max-width: 900px;
+      margin: 0.7rem 0 1rem;
+      font-size: clamp(2.35rem, 6vw, 5.4rem);
+      letter-spacing: -0.065em;
+    }
+    h2 { margin: 0 0 1.2rem; font-size: clamp(1.8rem, 3.4vw, 2.8rem); }
+    h3 { margin: 2rem 0 0.75rem; font-size: 1.32rem; }
+    h4 { margin: 1.4rem 0 0.5rem; font-size: 1.02rem; }
+
+    .lede {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1.06rem, 2vw, 1.32rem);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 2rem;
+    }
+    .metric {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .metric strong { display: block; color: var(--accent); font-size: 1.3rem; }
+    .metric span { color: var(--muted); font-size: 0.85rem; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 3rem;
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 1rem 1rem 6rem;
+    }
+
+    .toc {
+      position: sticky;
+      top: 82px;
+      align-self: start;
+      max-height: calc(100vh - 100px);
+      overflow: auto;
+      padding-right: 0.5rem;
+    }
+    .toc h2 {
+      margin: 0 0 0.8rem;
+      color: var(--muted);
+      font: 700 0.72rem ui-monospace, monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .toc a {
+      display: block;
+      padding: 0.35rem 0.6rem;
+      border-left: 2px solid var(--line);
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-decoration: none;
+    }
+    .toc a:hover, .toc a.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-soft);
+    }
+
+    main { min-width: 0; }
+    section {
+      scroll-margin-top: 80px;
+      margin-bottom: 5rem;
+    }
+
+    .panel, .callout, .definition, .flow, .example {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .panel { padding: clamp(1rem, 2.5vw, 1.6rem); }
+    .definition {
+      padding: 1.3rem 1.4rem;
+      border-left: 4px solid var(--accent);
+      font-size: 1.08rem;
+    }
+    .definition strong { color: var(--accent); }
+    .callout { padding: 1rem 1.2rem; box-shadow: none; }
+    .callout.warning { border-left: 4px solid var(--amber); }
+    .callout.danger { border-left: 4px solid var(--red); }
+    .callout.info { border-left: 4px solid var(--cyan); }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+    .card h3, .card h4 { margin-top: 0; }
+    .card p:last-child { margin-bottom: 0; }
+    .tag {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-size: 0.72rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.91rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--panel-2); color: var(--text); }
+    td { color: var(--muted); }
+    td strong { color: var(--text); }
+    .table-wrap { overflow-x: auto; }
+
+    ul, ol { padding-left: 1.25rem; }
+    li + li { margin-top: 0.35rem; }
+    p { margin: 0.5rem 0 1rem; }
+    .muted { color: var(--muted); }
+
+    pre {
+      overflow-x: auto;
+      padding: 1.2rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      background: #070a0e;
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+    html[data-theme="light"] pre { background: #eef2f4; }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0.5rem;
+      padding: 1rem;
+      box-shadow: none;
+    }
+    .flow-step {
+      flex: 1 1 115px;
+      position: relative;
+      padding: 0.8rem;
+      border-radius: 10px;
+      background: var(--panel-2);
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -0.55rem;
+      color: var(--accent);
+    }
+
+    .example { margin: 1rem 0; padding: 1.2rem; box-shadow: none; }
+    .example blockquote {
+      margin: 0.7rem 0 0;
+      padding-left: 1rem;
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+    }
+
+    .anatomy {
+      counter-reset: layer;
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+    .anatomy-layer {
+      counter-increment: layer;
+      display: grid;
+      grid-template-columns: 52px 170px 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+    .anatomy-layer::before {
+      content: "0" counter(layer);
+      color: var(--accent);
+      font: 800 1.1rem ui-monospace, monospace;
+    }
+    .anatomy-layer strong { color: var(--text); }
+    .anatomy-layer p { margin: 0; color: var(--muted); }
+
+    .glossary-tools { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+    .glossary-tools input {
+      width: min(100%, 480px);
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      background: var(--panel);
+    }
+    .glossary-tools input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .term {
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+    .term dt { color: var(--accent); font-weight: 760; }
+    .term dd { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .term[hidden] { display: none; }
+
+    .sources li { margin-bottom: 0.75rem; }
+    footer {
+      padding: 2rem 1rem 3rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc { display: none; }
+      .metrics, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .anatomy-layer { grid-template-columns: 42px 1fr; }
+      .anatomy-layer p { grid-column: 2; }
+    }
+
+    @media (max-width: 580px) {
+      .hero { padding-top: 3.5rem; }
+      .metrics, .grid-2, .grid-3, .glossary-grid { grid-template-columns: 1fr; }
+      .topbar .brand span:last-child { display: none; }
+      .button .label { display: none; }
+      th, td { padding: 0.58rem; }
+    }
+
+    @media print {
+      :root, html[data-theme="light"], html[data-theme="dark"] {
+        color-scheme: light;
+        --bg: #fff;
+        --panel: #fff;
+        --panel-2: #f2f2f2;
+        --text: #111;
+        --muted: #444;
+        --line: #bbb;
+        --accent: #006747;
+        --cyan: #005e83;
+        --shadow: none;
+      }
+      body { background: #fff; font-size: 10pt; }
+      .topbar, .toc, .actions, .glossary-tools { display: none !important; }
+      .hero, .layout { max-width: none; padding-left: 0; padding-right: 0; }
+      .layout { display: block; }
+      section { break-before: page; margin-bottom: 2rem; }
+      section:first-child { break-before: auto; }
+      .panel, .card, .definition, .term, .example { box-shadow: none; break-inside: avoid; }
+      a { color: #111; text-decoration: none; }
+      a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 7pt; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark">IR</span>
+      <span>Intelligence Reporting Research</span>
+    </a>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button" aria-label="Toggle color theme">◐ <span class="label">Theme</span></button>
+      <button class="button" type="button" onclick="window.print()" aria-label="Print report">↧ <span class="label">Print</span></button>
+    </div>
+  </header>
+
+  <div class="hero" id="top">
+    <div class="eyebrow">Initial research report · 11 August 2026</div>
+    <h1>Intelligence reporting, explained.</h1>
+    <p class="lede">Definitions, product distinctions, report anatomy, analytic standards, briefing structure, workflow, quality controls, and a practical glossary.</p>
+    <div class="metrics" aria-label="Report summary">
+      <div class="metric"><strong>3</strong><span>core product concepts</span></div>
+      <div class="metric"><strong>5</strong><span>report layers</span></div>
+      <div class="metric"><strong>10</strong><span>workflow stages</span></div>
+      <div class="metric"><strong>40+</strong><span>core glossary terms</span></div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <a href="#overview">01 · Overview</a>
+      <a href="#foundations">02 · Foundations</a>
+      <a href="#products">03 · Product map</a>
+      <a href="#comparison">04 · Core comparison</a>
+      <a href="#anatomy">05 · Report anatomy</a>
+      <a href="#raw">06 · Raw reporting</a>
+      <a href="#assessment">07 · Analytic assessment</a>
+      <a href="#briefing">08 · Briefing</a>
+      <a href="#workflow">09 · Workflow</a>
+      <a href="#quality">10 · Quality controls</a>
+      <a href="#glossary">11 · Glossary</a>
+      <a href="#sources">12 · Sources</a>
+    </aside>
+
+    <main>
+      <section id="overview">
+        <div class="eyebrow">01 · Overview</div>
+        <h2>The model in one minute</h2>
+        <div class="definition">
+          <strong>Intelligence</strong> is information collected, evaluated, integrated, and interpreted to reduce uncertainty and support a decision.
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <span class="tag">INPUT</span>
+            <h3>Raw reporting</h3>
+            <p>Records what a source, sensor, document, or collector observed or claimed.</p>
+          </article>
+          <article class="card">
+            <span class="tag">JUDGMENT</span>
+            <h3>Analytic assessment</h3>
+            <p>Explains what the available information probably means and why.</p>
+          </article>
+          <article class="card">
+            <span class="tag">DELIVERY</span>
+            <h3>Briefing</h3>
+            <p>Presents selected information or intelligence to a specific audience.</p>
+          </article>
+        </div>
+        <div class="callout info">
+          <strong>Essential distinction:</strong> intelligence is the substance, a report is a durable product, and a briefing is a tailored delivery method.
+        </div>
+      </section>
+
+      <section id="foundations">
+        <div class="eyebrow">02 · Foundations</div>
+        <h2>What intelligence means</h2>
+        <p>The term has three related meanings:</p>
+        <div class="grid-3">
+          <article class="card"><h3>Product</h3><p>Knowledge, reporting, analysis, warning, assessment, or estimate.</p></article>
+          <article class="card"><h3>Process</h3><p>Direction, collection, processing, analysis, production, dissemination, and feedback.</p></article>
+          <article class="card"><h3>Function</h3><p>The people and organizations performing intelligence activities.</p></article>
+        </div>
+
+        <h3>Information hierarchy</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Data</strong></td><td>Unprocessed observations, measurements, records, signals, images, or statements.</td></tr>
+              <tr><td><strong>Information</strong></td><td>Data given enough context to convey meaning.</td></tr>
+              <tr><td><strong>Intelligence information</strong></td><td>Collected information relevant to an intelligence requirement, but not necessarily fully evaluated or analyzed.</td></tr>
+              <tr><td><strong>Raw intelligence</strong></td><td>Collected intelligence information not yet fully vetted, validated, integrated, or analyzed.</td></tr>
+              <tr><td><strong>Finished intelligence</strong></td><td>A product resulting from collection, processing, integration, evaluation, analysis, and interpretation.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Intelligence cycle</h3>
+        <div class="flow" aria-label="Intelligence cycle">
+          <div class="flow-step">Requirement</div>
+          <div class="flow-step">Collection</div>
+          <div class="flow-step">Processing</div>
+          <div class="flow-step">Evaluation</div>
+          <div class="flow-step">Analysis</div>
+          <div class="flow-step">Dissemination</div>
+          <div class="flow-step">Feedback</div>
+        </div>
+        <p class="muted">The cycle is a management model. Real practice is iterative, with continuous exchange among customers, collectors, and analysts.</p>
+
+        <h3>What good intelligence communicates</h3>
+        <ul>
+          <li>What is known.</li>
+          <li>What is reported but unconfirmed.</li>
+          <li>What is assumed.</li>
+          <li>What is analytically judged.</li>
+          <li>How likely the judgment is.</li>
+          <li>How strong the evidentiary basis is.</li>
+          <li>What remains unknown.</li>
+          <li>What would change the judgment.</li>
+        </ul>
+      </section>
+
+      <section id="products">
+        <div class="eyebrow">03 · Product map</div>
+        <h2>Common intelligence products</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Product</th><th>Primary purpose</th><th>Typical emphasis</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Information report</strong></td><td>Transmit collected information.</td><td>Provenance, source access, timing, narrative.</td></tr>
+              <tr><td><strong>Situation report</strong></td><td>Provide a timely update.</td><td>Current conditions, changes, immediate implications.</td></tr>
+              <tr><td><strong>Bulletin</strong></td><td>Communicate a short, focused development.</td><td>Speed and relevance.</td></tr>
+              <tr><td><strong>Assessment</strong></td><td>Explain meaning and significance.</td><td>Evidence, reasoning, judgment, uncertainty.</td></tr>
+              <tr><td><strong>Estimate</strong></td><td>Assess future developments.</td><td>Likelihood, drivers, scenarios, indicators.</td></tr>
+              <tr><td><strong>Warning</strong></td><td>Identify consequential change.</td><td>Urgency, indicators, potential impact.</td></tr>
+              <tr><td><strong>Profile</strong></td><td>Describe an actor, system, capability, or location.</td><td>Characteristics, relationships, vulnerabilities.</td></tr>
+              <tr><td><strong>Briefing</strong></td><td>Present selected intelligence directly.</td><td>Audience need, bottom line, interaction.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warning">
+          <strong>No universal template:</strong> format depends on mission, audience, urgency, security, and whether the product reports information or makes analytic judgments.
+        </div>
+      </section>
+
+      <section id="comparison">
+        <div class="eyebrow">04 · Core comparison</div>
+        <h2>Raw report, assessment, briefing</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dimension</th><th>Raw reporting</th><th>Analytic assessment</th><th>Intelligence briefing</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Core question</strong></td><td>What was observed or claimed?</td><td>What does the information mean?</td><td>What must this audience understand now?</td></tr>
+              <tr><td><strong>Purpose</strong></td><td>Preserve and transmit collection.</td><td>Reduce uncertainty through judgment.</td><td>Deliver selected content efficiently.</td></tr>
+              <tr><td><strong>Source base</strong></td><td>Often one source or event.</td><td>Usually multiple relevant sources.</td><td>Selected raw or finished intelligence.</td></tr>
+              <tr><td><strong>Interpretation</strong></td><td>Limited and separated.</td><td>Central purpose.</td><td>Explained and defended interactively.</td></tr>
+              <tr><td><strong>Conclusion</strong></td><td>Normally none.</td><td>Explicit judgments.</td><td>Bottom line and prioritized judgments.</td></tr>
+              <tr><td><strong>Uncertainty</strong></td><td>Reliability and credibility.</td><td>Likelihood, confidence, assumptions, alternatives, gaps.</td><td>Compressed but materially preserved.</td></tr>
+              <tr><td><strong>Producer</strong></td><td>Collector or reporting officer.</td><td>Analyst or analytic team.</td><td>Analyst, briefer, or subject expert.</td></tr>
+              <tr><td><strong>Form</strong></td><td>Durable record.</td><td>Durable finished product.</td><td>Presentation event with supporting material.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="example">
+          <span class="tag">RAW</span>
+          <blockquote>A source reports six vehicles leaving Base X at 03:00. The source could not identify the models because of poor visibility.</blockquote>
+        </div>
+        <div class="example">
+          <span class="tag">ASSESSMENT</span>
+          <blockquote>We assess the movement is probably part of a readiness exercise. Similar movements preceded earlier exercises, and no supporting fuel or medical units have deployed. The basis for this judgment is moderately strong.</blockquote>
+        </div>
+        <div class="example">
+          <span class="tag">BRIEFING</span>
+          <blockquote>Bottom line: the movement probably reflects an exercise. We would reassess if fuel units or field hospitals deploy toward the border.</blockquote>
+        </div>
+      </section>
+
+      <section id="anatomy">
+        <div class="eyebrow">05 · Report anatomy</div>
+        <h2>Five layers of a finished report</h2>
+        <p>A canonical strategic assessment often follows the sequence Scope Note, Key Judgments, Discussion, and Annexes. A full product can be understood as five functional layers.</p>
+        <div class="anatomy">
+          <div class="anatomy-layer"><strong>Administration</strong><p>Classification, controls, report ID, title, product type, producer, publication date, information cutoff, version, audience, distribution, and contact.</p></div>
+          <div class="anatomy-layer"><strong>Executive</strong><p>Scope note, intelligence question, bottom line or executive summary, and key judgments.</p></div>
+          <div class="anatomy-layer"><strong>Analysis</strong><p>Background, current situation, discussion, outlook, scenarios, implications, indicators, warning, and intelligence gaps.</p></div>
+          <div class="anatomy-layer"><strong>Assurance</strong><p>Evidence, citations, source descriptors, source summary, assumptions, likelihood, confidence, alternatives, dissent, and methodology.</p></div>
+          <div class="anatomy-layer"><strong>Support</strong><p>Maps, charts, timelines, profiles, capability tables, glossary, probability yardstick, detailed sourcing, collection requirements, tearlines, and coordination record.</p></div>
+        </div>
+
+        <h3>Executive sections</h3>
+        <div class="grid-2">
+          <article class="card"><h4>Scope note</h4><p>Defines subject, timeframe, geography, questions, assumptions, constraints, exclusions, and information cutoff.</p></article>
+          <article class="card"><h4>Intelligence question</h4><p>The precise actor, issue, timeframe, and decision-relevant question the product must answer.</p></article>
+          <article class="card"><h4>Executive summary</h4><p>A standalone account of the principal judgment, strongest reason, expected consequence, and main uncertainty.</p></article>
+          <article class="card"><h4>Key judgments</h4><p>The most important analytic conclusions. They answer the question, carry appropriate uncertainty, and are supported by the body.</p></article>
+        </div>
+
+        <h3>Main body</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Section</th><th>Function</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Context and background</strong></td><td>Provide only the history and baseline needed to understand the assessment.</td></tr>
+              <tr><td><strong>Current situation</strong></td><td>Describe present conditions, recent changes, capabilities, relationships, and trends.</td></tr>
+              <tr><td><strong>Analysis or discussion</strong></td><td>Connect evidence to interpretation, judgment, and implication.</td></tr>
+              <tr><td><strong>Outlook</strong></td><td>Assess expected developments during a defined timeframe.</td></tr>
+              <tr><td><strong>Scenarios</strong></td><td>Describe distinct, plausible, decision-relevant futures.</td></tr>
+              <tr><td><strong>Implications</strong></td><td>Explain why the judgment matters to the customer.</td></tr>
+              <tr><td><strong>Indicators and warning</strong></td><td>Identify observations that would support, weaken, or change the assessment.</td></tr>
+              <tr><td><strong>Intelligence gaps</strong></td><td>Identify consequential unknowns and whether collection could resolve them.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Minimum viable report</h3>
+        <pre>TITLE
+DATE AND INFORMATION CUTOFF
+INTELLIGENCE QUESTION
+
+BOTTOM LINE
+One direct answer and why it matters.
+
+KEY JUDGMENTS
+1. Judgment with likelihood.
+2. Judgment with likelihood.
+3. Judgment with likelihood.
+
+ANALYSIS
+Evidence and reasoning supporting each judgment.
+
+UNCERTAINTY
+Confidence, assumptions, gaps, and plausible alternatives.
+
+OUTLOOK AND INDICATORS
+Expected development and what would change the assessment.
+
+SOURCES
+Source summary and retrievable references.</pre>
+      </section>
+
+      <section id="raw">
+        <div class="eyebrow">06 · Raw reporting</div>
+        <h2>Preserve source meaning and provenance</h2>
+        <div class="definition"><strong>Raw reporting</strong> documents and transmits what was observed or claimed before full integration and analysis.</div>
+
+        <h3>Typical fields</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Report number</strong></td><td>Unique retrieval, cross-reference, and evaluation identifier.</td></tr>
+              <tr><td><strong>Country, area, subject</strong></td><td>Geographic and topical scope.</td></tr>
+              <tr><td><strong>Date of information</strong></td><td>When the event or observation occurred.</td></tr>
+              <tr><td><strong>Date of acquisition</strong></td><td>When the collector obtained the information.</td></tr>
+              <tr><td><strong>Date of report</strong></td><td>When reporting was submitted or published.</td></tr>
+              <tr><td><strong>Source descriptor</strong></td><td>Protected description of relevant access and limitations.</td></tr>
+              <tr><td><strong>Source reliability</strong></td><td>Assessment of historical source dependability.</td></tr>
+              <tr><td><strong>Information credibility</strong></td><td>Assessment of this specific claim's plausibility and corroboration.</td></tr>
+              <tr><td><strong>Summary and narrative</strong></td><td>Salient reporting followed by detailed source content.</td></tr>
+              <tr><td><strong>Collector comments</strong></td><td>Clearly separated context, clarification, or preliminary evaluation.</td></tr>
+              <tr><td><strong>Attachments</strong></td><td>Documents, maps, imagery, recordings, sketches, or technical data.</td></tr>
+              <tr><td><strong>Controls and distribution</strong></td><td>Protection and authorized recipients.</td></tr>
+              <tr><td><strong>Collection requirement</strong></td><td>The question to which the reporting responds.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Four categories that must remain separate</h3>
+        <ol>
+          <li><strong>Direct observation:</strong> what the collector personally observed.</li>
+          <li><strong>Source statement:</strong> what another person claimed or described.</li>
+          <li><strong>Document or sensor output:</strong> what the collected artifact contains.</li>
+          <li><strong>Collector comment:</strong> interpretation or context added by the reporting officer.</li>
+        </ol>
+
+        <div class="callout warning">
+          <strong>Important:</strong> source reliability and information credibility are separate. A reliable source can be wrong. An untested source can be right.
+        </div>
+
+        <h3>Common limitations</h3>
+        <ul>
+          <li>Accurate but incomplete or outdated reporting.</li>
+          <li>Authentic information that the source misunderstood.</li>
+          <li>Deliberate deception or source incentives.</li>
+          <li>Indirect access, memory error, translation loss, or processing distortion.</li>
+          <li>Circular reporting that creates false corroboration.</li>
+          <li>Technically precise collection that lacks relevant context.</li>
+        </ul>
+      </section>
+
+      <section id="assessment">
+        <div class="eyebrow">07 · Analytic assessment</div>
+        <h2>Convert evidence into defensible judgment</h2>
+        <div class="definition"><strong>An analytic assessment</strong> answers a defined intelligence question through integrated evidence, explicit reasoning, supported judgments, and transparent uncertainty.</div>
+
+        <h3>Analytic chain</h3>
+        <div class="flow">
+          <div class="flow-step">Question</div>
+          <div class="flow-step">Evidence</div>
+          <div class="flow-step">Evaluation</div>
+          <div class="flow-step">Assumptions</div>
+          <div class="flow-step">Alternatives</div>
+          <div class="flow-step">Judgment</div>
+          <div class="flow-step">Implications</div>
+        </div>
+
+        <h3>Keep categories explicit</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Category</th><th>Meaning</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Fact</strong></td><td>Sufficiently verified for the product's purpose.</td><td>Imagery shows twelve vehicles at Base X.</td></tr>
+              <tr><td><strong>Attributed reporting</strong></td><td>A claim preserved with source qualification.</td><td>A source with direct access reports new orders.</td></tr>
+              <tr><td><strong>Assumption</strong></td><td>A supposition required to frame or bridge analysis.</td><td>We assume the exercise schedule remains valid.</td></tr>
+              <tr><td><strong>Judgment</strong></td><td>A conclusion derived from evidence and reasoning.</td><td>We assess the movement is probably an exercise.</td></tr>
+              <tr><td><strong>Implication</strong></td><td>The judgment's consequence for the customer.</td><td>The movement temporarily increases escalation risk.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Likelihood is not confidence</h3>
+        <div class="grid-2">
+          <article class="card"><span class="tag">PROBABILITY</span><h4>Likelihood</h4><p>How probable the proposition or event is assessed to be.</p><p><strong>Example:</strong> An attack is likely.</p></article>
+          <article class="card"><span class="tag">BASIS</span><h4>Analytic confidence</h4><p>How strong and stable the evidence and reasoning supporting the judgment are.</p><p><strong>Example:</strong> The basis for this judgment is weak.</p></article>
+        </div>
+        <p>Confidence depends on source access, evidence quality, corroboration, contradiction, methodology, assumptions, expertise, and gaps. Probability terms should be defined through a published yardstick.</p>
+
+        <h3>Source transparency</h3>
+        <ul>
+          <li><strong>Source reference citation:</strong> retrievable link to underlying reporting.</li>
+          <li><strong>Appended citation:</strong> supporting reference collected outside the main text.</li>
+          <li><strong>Source descriptor:</strong> protected description of access and limitations.</li>
+          <li><strong>Source summary statement:</strong> holistic explanation of strengths, weaknesses, breadth, corroboration, currency, bias, and gaps.</li>
+        </ul>
+
+        <h3>Alternative analysis</h3>
+        <p>A serious alternative states the competing explanation, supporting and contradicting evidence, why it is not the principal judgment, and the indicators that would make it more likely.</p>
+
+        <div class="callout danger">
+          <strong>An assessment is not:</strong> a source report rewritten without attribution, a list of facts without a conclusion, a prediction presented as certainty, or an argument chosen to support preferred policy.
+        </div>
+      </section>
+
+      <section id="briefing">
+        <div class="eyebrow">08 · Intelligence briefing</div>
+        <h2>Tailor delivery without changing the judgment</h2>
+        <div class="definition"><strong>An intelligence briefing</strong> is a concise, audience-specific presentation intended to create understanding, support a decision, or prompt appropriate action.</div>
+
+        <h3>Standard structure</h3>
+        <ol>
+          <li><strong>Purpose:</strong> why the briefing is occurring and which decision or question it supports.</li>
+          <li><strong>Bottom line:</strong> the most important answer first.</li>
+          <li><strong>Key judgments:</strong> principal conclusions in priority order.</li>
+          <li><strong>Supporting evidence:</strong> only what is necessary to explain and defend the judgments.</li>
+          <li><strong>Uncertainty:</strong> likelihood, confidence, assumptions, gaps, and source limitations.</li>
+          <li><strong>Alternative explanation:</strong> the principal plausible competitor.</li>
+          <li><strong>Implications:</strong> why the assessment matters to this audience.</li>
+          <li><strong>Outlook and indicators:</strong> expected development and what would change it.</li>
+          <li><strong>Questions and answers:</strong> clarification and challenge.</li>
+          <li><strong>Follow-up:</strong> unanswered questions, corrections, and new requirements.</li>
+        </ol>
+
+        <h3>Report versus briefing</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dimension</th><th>Report</th><th>Briefing</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Format</strong></td><td>Written or electronic.</td><td>Usually oral and visual.</td></tr>
+              <tr><td><strong>Interaction</strong></td><td>Usually asynchronous.</td><td>Usually interactive.</td></tr>
+              <tr><td><strong>Detail</strong></td><td>Can preserve extensive evidence.</td><td>Selects and compresses.</td></tr>
+              <tr><td><strong>Adaptation</strong></td><td>Fixed after publication.</td><td>Can adapt during delivery.</td></tr>
+              <tr><td><strong>Record</strong></td><td>Durable and citable.</td><td>Ephemeral unless recorded.</td></tr>
+              <tr><td><strong>Strength</strong></td><td>Precision and traceability.</td><td>Speed, emphasis, and feedback.</td></tr>
+              <tr><td><strong>Risk</strong></td><td>May remain unread.</td><td>May oversimplify caveats.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Briefing urgent raw reporting</h3>
+        <p>Raw reporting may be briefed before full evaluation when urgency requires it. Status and limitations must be explicit:</p>
+        <div class="example"><blockquote>This is a single-source report received 30 minutes ago. It has not been independently corroborated or fully evaluated.</blockquote></div>
+
+        <h3>Audience adaptation</h3>
+        <p>Adapt selection, depth, sequence, terminology, and presentation. Never change facts, judgments, probability, or confidence to please the audience.</p>
+      </section>
+
+      <section id="workflow">
+        <div class="eyebrow">09 · Workflow</div>
+        <h2>From requirement to feedback</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stage</th><th>Activity</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td><strong>1. Requirement</strong></td><td>Define question, decision need, priority, and timeframe.</td><td>Intelligence requirement.</td></tr>
+              <tr><td><strong>2. Collection planning</strong></td><td>Review existing knowledge and task appropriate sources.</td><td>Collection plan.</td></tr>
+              <tr><td><strong>3. Collection</strong></td><td>Acquire human, technical, documentary, geospatial, and open-source material.</td><td>Collected data.</td></tr>
+              <tr><td><strong>4. Processing</strong></td><td>Translate, decrypt, transcribe, geolocate, normalize, or interpret.</td><td>Exploitable information.</td></tr>
+              <tr><td><strong>5. Raw reporting</strong></td><td>Document provenance, timing, context, evaluation, and controls.</td><td>Information report.</td></tr>
+              <tr><td><strong>6. Integration</strong></td><td>Assess reliability, credibility, relevance, duplication, contradiction, and gaps.</td><td>Organized evidence.</td></tr>
+              <tr><td><strong>7. Analysis</strong></td><td>Test explanations and assumptions, form judgments, assess uncertainty.</td><td>Analytic argument.</td></tr>
+              <tr><td><strong>8. Production</strong></td><td>Create and review the assessment, estimate, warning, or bulletin.</td><td>Finished intelligence.</td></tr>
+              <tr><td><strong>9. Dissemination</strong></td><td>Deliver report, briefing, map, graphic, video, or electronic product.</td><td>Customer access.</td></tr>
+              <tr><td><strong>10. Feedback</strong></td><td>Capture decisions, corrections, questions, and changing priorities.</td><td>Refined requirements.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="quality">
+        <div class="eyebrow">10 · Quality controls</div>
+        <h2>What to test</h2>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Report test</h3>
+            <ol>
+              <li>What question was asked?</li>
+              <li>What is the answer?</li>
+              <li>Why does the analyst believe it?</li>
+              <li>What is fact, reporting, assumption, or judgment?</li>
+              <li>How uncertain is the judgment?</li>
+              <li>What could change it?</li>
+              <li>Why does it matter?</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>Briefing test</h3>
+            <ul>
+              <li>Purpose explicit.</li>
+              <li>Bottom line first.</li>
+              <li>Judgments clear and prioritized.</li>
+              <li>Material caveats preserved.</li>
+              <li>Visuals necessary and sourced.</li>
+              <li>Questions anticipated.</li>
+              <li>Follow-up recorded.</li>
+            </ul>
+          </article>
+        </div>
+
+        <h3>Failure modes and corrections</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Failure</th><th>Consequence</th><th>Correction</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Source claim presented as fact</strong></td><td>Inflated certainty.</td><td>Attribute and qualify the claim.</td></tr>
+              <tr><td><strong>Collector comment merged with source statement</strong></td><td>Lost provenance.</td><td>Label the categories separately.</td></tr>
+              <tr><td><strong>Summary substituted for analysis</strong></td><td>No analytic value.</td><td>Explain reasoning and form judgments.</td></tr>
+              <tr><td><strong>Likelihood confused with confidence</strong></td><td>Miscommunicated uncertainty.</td><td>State probability and evidentiary strength separately.</td></tr>
+              <tr><td><strong>Alternative mentioned but not tested</strong></td><td>Token challenge only.</td><td>Compare supporting and contradicting evidence.</td></tr>
+              <tr><td><strong>Briefing removes caveats</strong></td><td>False certainty.</td><td>Preserve material uncertainty in the bottom line.</td></tr>
+              <tr><td><strong>Excessive background</strong></td><td>Judgment obscured.</td><td>Retain only context needed for the answer.</td></tr>
+              <tr><td><strong>Recommendation drives judgment</strong></td><td>Politicized analysis.</td><td>Separate analytic conclusions from policy preferences.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="glossary">
+        <div class="eyebrow">11 · Glossary</div>
+        <h2>Core terminology</h2>
+        <p>Search the key terms below. The <a href="GLOSSARY.md">complete Markdown glossary</a> contains the extended vocabulary.</p>
+        <div class="glossary-tools">
+          <input id="glossary-search" type="search" placeholder="Filter terms or definitions" aria-label="Filter glossary">
+        </div>
+        <dl class="glossary-grid" id="glossary-list">
+          <div class="term" data-term><dt>All-source intelligence</dt><dd>Intelligence integrating all relevant available collection disciplines.</dd></div>
+          <div class="term" data-term><dt>Alternative analysis</dt><dd>Examination of a plausible explanation or outcome differing from the principal assessment.</dd></div>
+          <div class="term" data-term><dt>Analytic assessment</dt><dd>A finished product answering a question through supported judgments and explicit uncertainty.</dd></div>
+          <div class="term" data-term><dt>Analytic confidence</dt><dd>The strength and stability of the basis for a judgment.</dd></div>
+          <div class="term" data-term><dt>Analytic judgment</dt><dd>A conclusion based on information, reasoning, and assumptions.</dd></div>
+          <div class="term" data-term><dt>Assumption</dt><dd>A supposition used to frame or bridge analysis where direct information is missing.</dd></div>
+          <div class="term" data-term><dt>Attribution</dt><dd>Identification or description of the origin of information or a claim.</dd></div>
+          <div class="term" data-term><dt>Bottom line</dt><dd>The concise principal answer placed at the beginning of a report or briefing.</dd></div>
+          <div class="term" data-term><dt>Briefing</dt><dd>An audience-specific presentation supporting understanding, decisions, or action.</dd></div>
+          <div class="term" data-term><dt>Caveat</dt><dd>A qualification or limitation affecting interpretation, confidence, use, or dissemination.</dd></div>
+          <div class="term" data-term><dt>Circular reporting</dt><dd>False corroboration caused when several reports derive from the same original source.</dd></div>
+          <div class="term" data-term><dt>Collection</dt><dd>Acquisition of data and information to satisfy intelligence requirements.</dd></div>
+          <div class="term" data-term><dt>Collector comment</dt><dd>Context or evaluation added by a collector and separated from source reporting.</dd></div>
+          <div class="term" data-term><dt>Corroboration</dt><dd>Independent evidence supporting an item of information or proposition.</dd></div>
+          <div class="term" data-term><dt>Data</dt><dd>Unprocessed observations, measurements, records, signals, images, or statements.</dd></div>
+          <div class="term" data-term><dt>Dissemination</dt><dd>Timely delivery of intelligence to authorized customers in a suitable form.</dd></div>
+          <div class="term" data-term><dt>Dissent</dt><dd>A documented material disagreement with a principal judgment or its reasoning.</dd></div>
+          <div class="term" data-term><dt>Estimate</dt><dd>A forward-looking assessment of the likelihood or consequences of future developments.</dd></div>
+          <div class="term" data-term><dt>Estimative language</dt><dd>Standard words communicating probability, such as unlikely or likely.</dd></div>
+          <div class="term" data-term><dt>Evidence</dt><dd>Observations, reporting, data, or measurements supporting or challenging a proposition.</dd></div>
+          <div class="term" data-term><dt>Finished intelligence</dt><dd>A product resulting from collection, processing, integration, evaluation, analysis, and interpretation.</dd></div>
+          <div class="term" data-term><dt>Indicator</dt><dd>An observable development that supports, weakens, or changes an assessment.</dd></div>
+          <div class="term" data-term><dt>Information</dt><dd>Data given enough context to convey meaning.</dd></div>
+          <div class="term" data-term><dt>Information credibility</dt><dd>The assessed plausibility and corroboration of a specific information item.</dd></div>
+          <div class="term" data-term><dt>Information cutoff</dt><dd>The latest date through which information was considered in a product.</dd></div>
+          <div class="term" data-term><dt>Intelligence</dt><dd>Information evaluated and interpreted to reduce uncertainty and support decisions.</dd></div>
+          <div class="term" data-term><dt>Intelligence gap</dt><dd>An important unknown limiting understanding or confidence.</dd></div>
+          <div class="term" data-term><dt>Intelligence requirement</dt><dd>A defined knowledge need guiding collection or analysis.</dd></div>
+          <div class="term" data-term><dt>Key judgment</dt><dd>One of a product's most important decision-relevant analytic conclusions.</dd></div>
+          <div class="term" data-term><dt>Likelihood</dt><dd>The assessed probability that a proposition is true or an event will occur.</dd></div>
+          <div class="term" data-term><dt>Methodology</dt><dd>The methods, definitions, models, and analytic techniques used in an assessment.</dd></div>
+          <div class="term" data-term><dt>Objectivity</dt><dd>The obligation to base analysis on evidence and remain independent of desired outcomes.</dd></div>
+          <div class="term" data-term><dt>Outlook</dt><dd>The expected direction of developments during a specified period.</dd></div>
+          <div class="term" data-term><dt>Probability yardstick</dt><dd>A mapping between qualitative probability terms and approximate numerical ranges.</dd></div>
+          <div class="term" data-term><dt>Provenance</dt><dd>The origin, chain of custody, processing history, and context of information.</dd></div>
+          <div class="term" data-term><dt>Raw intelligence</dt><dd>Collected information not yet fully vetted, validated, integrated, or analyzed.</dd></div>
+          <div class="term" data-term><dt>Raw reporting</dt><dd>Documentation of what was observed or claimed before full analysis.</dd></div>
+          <div class="term" data-term><dt>Reliability</dt><dd>The assessed historical dependability and accuracy of a source.</dd></div>
+          <div class="term" data-term><dt>Scenario</dt><dd>A coherent description of a plausible future pathway.</dd></div>
+          <div class="term" data-term><dt>Scope note</dt><dd>The product's subject, questions, timeframe, assumptions, constraints, and exclusions.</dd></div>
+          <div class="term" data-term><dt>Source descriptor</dt><dd>A protected description of source access, expertise, motivation, or limitations.</dd></div>
+          <div class="term" data-term><dt>Source summary statement</dt><dd>A holistic account of the source base's strengths, weaknesses, and gaps.</dd></div>
+          <div class="term" data-term><dt>Tearline</dt><dd>A separable or sanitized product section designed for wider authorized distribution.</dd></div>
+          <div class="term" data-term><dt>Uncertainty</dt><dd>Remaining doubt caused by incomplete evidence, ambiguity, assumptions, or unpredictability.</dd></div>
+          <div class="term" data-term><dt>Warning indicator</dt><dd>An observable condition associated with movement toward a defined warning scenario.</dd></div>
+        </dl>
+      </section>
+
+      <section id="sources">
+        <div class="eyebrow">12 · Sources</div>
+        <h2>Official research basis</h2>
+        <p>This report synthesizes official public doctrine and declassified examples. See the <a href="SOURCES.md">annotated Markdown bibliography</a> for detailed notes.</p>
+        <ul class="sources">
+          <li><a href="https://www.odni.gov/index.php/what-we-do/what-is-intelligence">ODNI: What Is Intelligence?</a></li>
+          <li><a href="https://www.odni.gov/nctc/jcat/jcat_ctguide/intel_guide.html">ODNI/NCTC Intelligence Guide</a></li>
+          <li><a href="https://www.odni.gov/files/documents/ICD/ICD-203.pdf">ODNI ICD 203: Analytic Standards</a></li>
+          <li><a href="https://www.odni.gov/files/documents/ICD/ICD-206.pdf">ODNI ICD 206: Sourcing Requirements</a></li>
+          <li><a href="https://www.odni.gov/files/documents/ICD/ICD-208-Maximizing-the-Utility-of-Analytic-Products-2017-01-09.pdf">ODNI ICD 208: Maximizing Utility</a></li>
+          <li><a href="https://assets.publishing.service.gov.uk/media/653a4b0780884d0013f71bb0/JDP_2_00_Ed_4_web.pdf">UK Joint Doctrine Publication 2-00</a></li>
+          <li><a href="https://www.gov.uk/government/publications/explaining-uncertainty-in-uk-intelligence-assessment/explaining-uncertainty-in-uk-intelligence-assessment">UK: Explaining Uncertainty in Intelligence Assessment</a></li>
+          <li><a href="https://www.cia.gov/readingroom/docs/DOC_0001507657.pdf">CIA: Declassified National Intelligence Estimate</a></li>
+          <li><a href="https://www.cia.gov/readingroom/docs/1983_06_10_BACKGROUND_INFORMATION.pdf">CIA: Declassified Intelligence Information Report</a></li>
+          <li><a href="https://www.cia.gov/stories/story/a-day-in-the-life-of-a-pdb-briefer/">CIA: A Day in the Life of a PDB Briefer</a></li>
+        </ul>
+
+        <div class="callout info">
+          <strong>Interpretation note:</strong> doctrine provides common principles, not one global template. Probability vocabularies, source-grading systems, classification rules, and product names differ across organizations.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Initial research · Intelligence reports structure · Standalone offline HTML
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeButton = document.getElementById('theme-toggle');
+      let storedTheme = null;
+      try { storedTheme = localStorage.getItem('intel-report-theme'); } catch (_) {}
+      if (storedTheme === 'light' || storedTheme === 'dark') root.dataset.theme = storedTheme;
+
+      themeButton.addEventListener('click', () => {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('intel-report-theme', next); } catch (_) {}
+      });
+
+      const search = document.getElementById('glossary-search');
+      const terms = [...document.querySelectorAll('[data-term]')];
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLowerCase();
+        terms.forEach((term) => {
+          term.hidden = query.length > 0 && !term.textContent.toLowerCase().includes(query);
+        });
+      });
+
+      const sections = [...document.querySelectorAll('main section[id]')];
+      const links = [...document.querySelectorAll('.toc a')];
+      const byId = new Map(links.map((link) => [link.getAttribute('href').slice(1), link]));
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        links.forEach((link) => link.classList.remove('active'));
+        byId.get(visible.target.id)?.classList.add('active');
+      }, { rootMargin: '-15% 0px -72% 0px', threshold: [0, 0.2, 0.5] });
+      sections.forEach((section) => observer.observe(section));
+    })();
+  </script>
+</body>
+</html>
