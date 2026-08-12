@@ -1,0 +1,1809 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A standalone research report on market intelligence: the cycle, sources, analysis, products, operating model, law, and what changed by 2026.">
+  <title>Market Intelligence: A Working Handbook</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b10;
+      --panel: #0f141c;
+      --panel-2: #141b25;
+      --text: #ecf2f8;
+      --muted: #9aa8b7;
+      --line: #263140;
+      --accent: #39d4a0;
+      --accent-soft: rgba(57, 212, 160, 0.13);
+      --cyan: #59c8ff;
+      --amber: #f5bf62;
+      --red: #ff7b86;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+      --radius: 14px;
+      --content: 1120px;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f7f9;
+      --panel: #ffffff;
+      --panel-2: #edf2f5;
+      --text: #14202b;
+      --muted: #5b6975;
+      --line: #d5dee5;
+      --accent: #087a5a;
+      --accent-soft: rgba(8, 122, 90, 0.1);
+      --cyan: #076a9a;
+      --amber: #9a6500;
+      --red: #b83545;
+      --shadow: 0 16px 42px rgba(26, 45, 62, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 80% -10%, rgba(57, 212, 160, 0.1), transparent 32rem),
+        var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    a { color: var(--cyan); text-underline-offset: 0.18em; }
+    a:hover { color: var(--accent); }
+    button, input { font: inherit; }
+    code, pre, .eyebrow, .metric strong, .tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-height: 58px;
+      padding: 0.65rem max(1rem, calc((100vw - var(--content)) / 2));
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 760;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #06100c;
+      font: 800 0.8rem ui-monospace, monospace;
+    }
+
+    .actions { display: flex; gap: 0.5rem; }
+    .button {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 0.45rem 0.75rem;
+      color: var(--text);
+      background: var(--panel);
+      cursor: pointer;
+    }
+    .button:hover { border-color: var(--accent); }
+
+    .hero {
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 4.5rem 1rem 2.5rem;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 760;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.18; letter-spacing: -0.025em; }
+    h1 {
+      max-width: 940px;
+      margin: 0.7rem 0 1rem;
+      font-size: clamp(2.35rem, 6vw, 5rem);
+      letter-spacing: -0.065em;
+    }
+    h2 { margin: 0 0 1.2rem; font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
+    h3 { margin: 2.2rem 0 0.75rem; font-size: 1.28rem; }
+    h4 { margin: 1.5rem 0 0.5rem; font-size: 1rem; color: var(--accent); }
+
+    .lede {
+      max-width: 800px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1.06rem, 2vw, 1.3rem);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 2.4rem;
+    }
+    .metric {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .metric strong { display: block; font-size: 1.45rem; letter-spacing: -0.03em; }
+    .metric span { display: block; margin-top: 0.3rem; color: var(--muted); font-size: 0.82rem; }
+
+    .layout {
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 2rem 1rem 6rem;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+      gap: 2.6rem;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 82px;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      font-size: 0.88rem;
+    }
+    .toc p { margin: 0 0 0.6rem; color: var(--muted); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .toc ol { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
+    .toc a { color: var(--muted); text-decoration: none; }
+    .toc a:hover, .toc a.active { color: var(--accent); }
+
+    main section { scroll-margin-top: 80px; padding-bottom: 3.5rem; }
+    main section + section { border-top: 1px solid var(--line); padding-top: 3rem; }
+    p { max-width: 78ch; }
+    ul, ol { max-width: 78ch; }
+
+    .tag {
+      display: inline-block;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .callout {
+      margin: 1.4rem 0;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+    .callout.warn { border-left-color: var(--amber); }
+    .callout.stop { border-left-color: var(--red); }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout p:first-child { margin-top: 0; }
+
+    .table-wrap { overflow-x: auto; margin: 1.3rem 0; border: 1px solid var(--line); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 560px; }
+    th, td { padding: 0.62rem 0.8rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    thead th { background: var(--panel-2); font-size: 0.76rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--accent-soft); }
+
+    pre {
+      margin: 1.2rem 0;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+    code { font-size: 0.9em; }
+    p code, li code, td code { padding: 0.08rem 0.32rem; border-radius: 5px; background: var(--panel-2); }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; margin: 1.4rem 0; }
+    .card { padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+    .card h4 { margin: 0 0 0.4rem; }
+    .card p { margin: 0; font-size: 0.88rem; color: var(--muted); }
+
+    .flow { display: grid; gap: 0.5rem; margin: 1.4rem 0; }
+    .flow-step {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 0.85rem;
+      align-items: start;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+    .flow-step b { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); font: 700 0.85rem ui-monospace, monospace; }
+    .flow-step span { font-size: 0.9rem; }
+    .flow-step span em { display: block; color: var(--muted); font-style: normal; font-size: 0.84rem; }
+
+    .glossary-tools { display: flex; gap: 0.6rem; margin: 1.2rem 0; flex-wrap: wrap; }
+    .glossary-tools input { flex: 1; min-width: 220px; padding: 0.55rem 0.8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); }
+    .glossary-tools input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .terms { display: grid; gap: 0.6rem; }
+    .term { padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+    .term b { color: var(--accent); }
+    .term p { margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--muted); }
+    .no-results { color: var(--muted); font-size: 0.9rem; }
+
+    .srclist { display: grid; gap: 0.7rem; margin: 1.2rem 0; }
+    .src { padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); font-size: 0.9rem; }
+    .src p { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    .badge { display: inline-block; padding: 0.05rem 0.45rem; border-radius: 999px; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--line); margin-right: 0.4rem; }
+    .badge.primary { color: var(--accent); }
+    .badge.vendor { color: var(--amber); }
+    .badge.legal { color: var(--cyan); }
+    .badge.trade, .badge.academic, .badge.tertiary { color: var(--muted); }
+
+    footer { border-top: 1px solid var(--line); padding: 2rem max(1rem, calc((100vw - var(--content)) / 2)); color: var(--muted); font-size: 0.86rem; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .toc { position: static; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media print {
+      .topbar, .toc, .actions { display: none; }
+      .layout { grid-template-columns: 1fr; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark">MI</span>
+      <span>Market Intelligence</span>
+    </a>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+
+  <div class="hero" id="top">
+    <p class="eyebrow">Research report &middot; 11 August 2026</p>
+    <h1>Market Intelligence: A Working Handbook</h1>
+    <p class="lede">
+      Market intelligence is the work of answering a business question about the
+      world outside your company, using evidence you collected on purpose. This
+      report covers the whole discipline: what it is, how the work runs, where the
+      evidence comes from, how to analyse it, what to publish, how to staff it,
+      what the law allows, and what changed once research agents arrived.
+    </p>
+    <div class="metrics">
+      <div class="metric">
+        <strong>US$153bn</strong>
+        <span>Global insights industry turnover, 2024 (ESOMAR via Research World)</span>
+      </div>
+      <div class="metric">
+        <strong>US$2.8bn</strong>
+        <span>Buy-side spend on alternative data, 2025, up 17% (Neudata)</span>
+      </div>
+      <div class="metric">
+        <strong>31%</strong>
+        <span>Raw survey responses containing some form of fraud (Research Defender, cited)</span>
+      </div>
+      <div class="metric">
+        <strong>4% to 19%</strong>
+        <span>Frontier model hallucination range across test suites, 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#foundations">Foundations and scope</a></li>
+        <li><a href="#cycle">The cycle</a></li>
+        <li><a href="#sources">Sources and collection</a></li>
+        <li><a href="#analysis">Analysis and judgment</a></li>
+        <li><a href="#products">Products and cadence</a></li>
+        <li><a href="#operating">Operating model</a></li>
+        <li><a href="#law">Law and ethics</a></li>
+        <li><a href="#changed">What changed by 2026</a></li>
+        <li><a href="#build">Build guide</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#sources-list">Sources</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="foundations">
+        <p class="eyebrow">Chapter 1</p>
+        <h2>Foundations and scope</h2>
+
+        <p>
+          <strong>Market intelligence is the collection and analysis of information
+          about the world outside a company, done to answer a defined question and
+          support a decision.</strong>
+        </p>
+
+        <p>
+          A concrete example. A pricing team asks: can we raise list price 8% in
+          January without losing enterprise renewals? Market intelligence is
+          everything that answers it. What competitors charge today. What buyers
+          said in the last twenty lost deals. What input costs did. What a regulator
+          allows. The answer arrives as a judgment with a confidence level attached,
+          not as a folder of links.
+        </p>
+
+        <h3>Four tests</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Part</th><th>Test</th></tr></thead>
+            <tbody>
+              <tr><td><b>Outside the company</b></td><td>The subject is a market, buyer, rival, supplier, regulator, or technology. Not your own funnel.</td></tr>
+              <tr><td><b>Collected on purpose</b></td><td>Someone wrote down what needed answering before collection started.</td></tr>
+              <tr><td><b>Analysed</b></td><td>A person or model integrated the pieces and reached a judgment. A link list is not analysis.</td></tr>
+              <tr><td><b>Tied to a decision</b></td><td>A named person will act differently depending on the answer, by a known date.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          If a piece of work fails the fourth test, it is monitoring. Monitoring is
+          useful, and it is cheaper than intelligence. Call it what it is.
+        </p>
+
+        <h3>The neighbouring disciplines</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Discipline</th><th>Looks at</th><th>Typical question</th></tr></thead>
+            <tbody>
+              <tr><td><b>Market intelligence</b></td><td>The whole external environment: demand, buyers, rivals, channels, suppliers, regulation, technology</td><td>Is this market worth entering in 2027?</td></tr>
+              <tr><td><b>Competitive intelligence</b></td><td>Named rivals: capabilities, intentions, weak points</td><td>Will rival X move down-market?</td></tr>
+              <tr><td><b>Business intelligence</b></td><td>Your own operations and history</td><td>Which segment churned last quarter and why?</td></tr>
+              <tr><td><b>Market research</b></td><td>Buyer attitudes and behaviour, measured with primary methods</td><td>Would buyers pay 8% more for feature Y?</td></tr>
+              <tr><td><b>Strategic foresight</b></td><td>Plausible futures over long horizons</td><td>What breaks our model by 2032?</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Two distinctions do most of the work. <b>Direction:</b> business intelligence points inward, everything else points outward. <b>Width:</b> competitive intelligence narrows to named rivals, market intelligence covers the whole board, including rivals who do not exist yet.</p>
+
+        <h3>What it is not</h3>
+        <div class="cards">
+          <div class="card"><h4>Not a feed</h4><p>A stream of competitor news with no judgment attached transfers the analytic burden to the reader, who has less time and less context than you.</p></div>
+          <div class="card"><h4>Not a dashboard</h4><p>Dashboards answer what is happening for metrics you already chose. Intelligence answers what it means, including for things nobody instrumented.</p></div>
+          <div class="card"><h4>Not research alone</h4><p>Surveys are one collection method among many. A function that only runs surveys is a research function.</p></div>
+          <div class="card"><h4>Not a library</h4><p>Collection without analysis turns the analyst into a librarian. This is the most documented failure pattern in the field.</p></div>
+        </div>
+
+        <h3>Short history</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Year</th><th>Event</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>1980</td><td>Porter publishes <i>Competitive Strategy</i></td><td>Gives industry analysis a shared vocabulary</td></tr>
+              <tr><td>1982</td><td>Motorola creates the first corporate CI function, founded by Jan Herring, a former US intelligence officer</td><td>Moves government tradecraft into a corporation, including requirements-first habits</td></tr>
+              <tr><td>1986</td><td>SCIP founded in Washington DC</td><td>Creates a profession with training and a code of ethics</td></tr>
+              <tr><td>1994 to 2009</td><td>Gilad publishes <i>Business Blindspots</i>, <i>Early Warning</i>, <i>Business War Games</i></td><td>Shifts attention from collection to management's failure to act on what is already known</td></tr>
+              <tr><td>2006</td><td>HP pretexting scandal</td><td>Sets the hard ethical line in public, and produces new US law</td></tr>
+              <tr><td>2016</td><td>US Defend Trade Secrets Act and EU Directive 2016/943</td><td>Harmonises lawful acquisition on both sides of the Atlantic</td></tr>
+              <tr><td>2019 to 2024</td><td>hiQ v LinkedIn, then Meta v Bright Data</td><td>Public, logged-out scraping becomes broadly defensible in the US</td></tr>
+              <tr><td>2025 to 2026</td><td>Research agents ship at scale; EDPB publishes scraping guidelines; DOJ settles RealPage</td><td>Speed becomes cheap, and the legal perimeter around data gets drawn more sharply</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>How big the surrounding industry is</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measure</th><th>Value</th><th>Period</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td>Global insights industry turnover</td><td>US$153bn</td><td>2024</td><td>ESOMAR via Research World</td></tr>
+              <tr><td>Market research sector</td><td>US$56bn, growing 4.8%</td><td>2024</td><td>ESOMAR via Research World</td></tr>
+              <tr><td>Research software sector</td><td>US$62bn, growing 11.5%</td><td>2024</td><td>ESOMAR via Research World</td></tr>
+              <tr><td>Reporting sector</td><td>US$35bn, growing 8%</td><td>2024</td><td>ESOMAR via Research World</td></tr>
+              <tr><td>Buy-side spend on alternative data</td><td>US$2.8bn, up 17%</td><td>2025</td><td>Neudata</td></tr>
+              <tr><td>Alternative datasets tracked</td><td>2,805, up from 2,215</td><td>2025 vs 2024</td><td>Neudata</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <b>Read the growth split, not the totals.</b> Software and reporting grew
+            roughly two to three times faster than classic research services. Money is
+            moving from bespoke studies toward continuous, machine-readable evidence.
+            That is the single most useful fact in the table.
+          </p>
+        </div>
+
+        <div class="callout warn">
+          <p>
+            <b>A warning on market-size estimates.</b> Published estimates of the
+            alternative data market for 2025 range from US$4.6bn to US$19.4bn
+            depending on the firm, because each draws the category boundary
+            differently. When estimates differ by four times, treat all of them as
+            unusable for planning and use actual buy-side spend instead.
+          </p>
+        </div>
+
+        <h3>Choosing scope before you start</h3>
+        <ol>
+          <li><b>Subject.</b> Name it precisely. "Fintech" is not a subject. "Embedded payment processing for European B2B marketplaces" is.</li>
+          <li><b>Angle.</b> Entry, defence, pricing, acquisition, partnership, risk, hiring. The angle decides which evidence counts.</li>
+          <li><b>Decision.</b> Who decides, what they decide, and when. Write the date.</li>
+          <li><b>Budget.</b> Time, money, and curiosity. A two-day answer and a six-week answer are different products, not the same product at different quality.</li>
+        </ol>
+        <p>Skipping step three is the most common and most expensive mistake in the discipline.</p>
+      </section>
+
+      <section id="cycle">
+        <p class="eyebrow">Chapter 2</p>
+        <h2>The cycle: from question to decision</h2>
+
+        <div class="flow">
+          <div class="flow-step"><b>1</b><span>Direction<em>Which decision needs help, by when, and what would change it</em></span></div>
+          <div class="flow-step"><b>2</b><span>Planning<em>Which questions to answer, from which sources, at what cost</em></span></div>
+          <div class="flow-step"><b>3</b><span>Collection<em>Get the material</em></span></div>
+          <div class="flow-step"><b>4</b><span>Evaluation<em>Grade the source and grade the content, separately</em></span></div>
+          <div class="flow-step"><b>5</b><span>Analysis<em>Integrate, test explanations, reach a judgment</em></span></div>
+          <div class="flow-step"><b>6</b><span>Production<em>Write the product for the decider, not for the analyst</em></span></div>
+          <div class="flow-step"><b>7</b><span>Delivery<em>Put it in front of the decider before the decision date</em></span></div>
+          <div class="flow-step"><b>8</b><span>Feedback<em>Record what was decided and what actually happened</em></span></div>
+        </div>
+
+        <div class="callout">
+          <p><b>Stage 1 owns the whole cycle.</b> The quality ceiling is set at direction. No amount of collection rescues a badly framed question.</p>
+          <p><b>Stage 8 is not optional.</b> If you never record outcomes, you never learn whether your judgments are any good. Most corporate programs skip it.</p>
+        </div>
+
+        <h3>Key intelligence topics and questions</h3>
+        <p>
+          A <b>Key Intelligence Topic (KIT)</b> is a broad area leadership needs
+          covered, tied to a decision or a risk. A <b>Key Intelligence Question
+          (KIQ)</b> is one specific, answerable question underneath it. Jan Herring's
+          original framing sorts KITs into three kinds, and the sort matters because
+          each needs different collection.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>KIT type</th><th>Purpose</th><th>Example</th><th>Collection style</th></tr></thead>
+            <tbody>
+              <tr><td><b>Strategic decisions</b></td><td>Support a specific pending decision</td><td>Should we enter Brazil in 2027?</td><td>Project. Deep, time-boxed, ends</td></tr>
+              <tr><td><b>Early warning</b></td><td>Detect a threat before it lands</td><td>Will rival X cut price in mid-market?</td><td>Continuous. Tripwires and indicators</td></tr>
+              <tr><td><b>Key players</b></td><td>Understand a rival, buyer, supplier, or regulator in the round</td><td>How does rival X actually decide on pricing?</td><td>Continuous. Profile maintained over time</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Writing a good question</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Bad</th><th>Why it fails</th><th>Better</th></tr></thead>
+            <tbody>
+              <tr><td>What is our competitor up to?</td><td>Not answerable, no boundary</td><td>Has rival X hired mid-market sales staff in DACH since January 2026?</td></tr>
+              <tr><td>Is the market growing?</td><td>No definition of market or period</td><td>Did EU seats for category Y grow more than 12% in the year to Q2 2026?</td></tr>
+              <tr><td>Will AI disrupt us?</td><td>No decision attached</td><td>Which of our top five deal-losses in H1 2026 named an AI-native alternative?</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The decision header</h3>
+        <p>Put this at the top of every request, before any work starts.</p>
+<pre><code>Decision:      Raise enterprise list price 8% effective 1 January 2027
+Decider:       VP Pricing, with CFO sign-off
+Decision date: 15 October 2026
+Delivery date: 26 September 2026
+Would change the decision:
+  - Two or more of the top four rivals hold price flat through Q4
+  - Renewal cohort survey shows above 20% churn intent at +8%
+  - Input cost index falls more than 5% by September</code></pre>
+        <p>
+          The last block is the most valuable. It defines, in advance, what evidence
+          would flip the answer. It stops the analyst chasing everything, and it
+          stops the decider dismissing the finding after the fact.
+        </p>
+
+        <h3>Evaluation: grade source and content separately</h3>
+        <p>
+          A reliable source can pass on a false claim. An unreliable source can be
+          right. Grade the two independently, using the Admiralty-style scale: a
+          letter A to F for source reliability, a number 1 to 6 for how credible the
+          specific claim is. A rival's published price list is A1. A reseller's claim
+          about that rival's unpublished discounting is C3 until an unrelated source
+          supports it.
+        </p>
+
+        <h3>Where the cycle breaks</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Break</th><th>Symptom</th><th>Fix</th></tr></thead>
+            <tbody>
+              <tr><td>No decision named</td><td>Reports read as newsletters. Nobody asks follow-ups</td><td>Refuse requests without a decision header</td></tr>
+              <tr><td>Collection without analysis</td><td>Volume rises, judgments stay absent</td><td>Cap collection at 50% of project hours</td></tr>
+              <tr><td>Analysis without delivery</td><td>Good work sits in a drive</td><td>Push, do not publish. Named recipient, dated</td></tr>
+              <tr><td>No feedback</td><td>The same wrong assumptions recur</td><td>Quarterly review of judgments against outcomes</td></tr>
+              <tr><td>Unclear stakeholders</td><td>Products serve nobody in particular</td><td>One named consumer per recurring product</td></tr>
+              <tr><td>Paralysis by analysis</td><td>Detailed reports, no recommendation</td><td>Force a judgment and a confidence level in every product</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sources">
+        <p class="eyebrow">Chapter 3</p>
+        <h2>Sources and collection</h2>
+
+        <p>
+          Rank sources by cost, delay, reliability, and legal risk. Work down the
+          ladder, not up. Most teams reach for expensive primary research before
+          they have read the free filings.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tier</th><th>Source class</th><th>Examples</th><th>Cost</th><th>Reliability</th><th>Legal risk</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Official statistics</td><td>Eurostat, US Census, BLS, OECD, World Bank, UN Comtrade</td><td>Free</td><td>High for aggregates, poor for niches</td><td>None</td></tr>
+              <tr><td>2</td><td>Mandatory filings</td><td>SEC EDGAR, Companies House, patents, court dockets, tenders, customs</td><td>Free to low</td><td>High, legally attestable</td><td>None</td></tr>
+              <tr><td>3</td><td>Company-published</td><td>Pricing pages, docs, changelogs, job ads, earnings calls</td><td>Free</td><td>High for facts, biased for framing</td><td>Low if public and logged out</td></tr>
+              <tr><td>4</td><td>Trade press and news</td><td>Sector titles, local press, conference coverage</td><td>Low</td><td>Mixed. Often recycles company claims</td><td>None</td></tr>
+              <tr><td>5</td><td>Syndicated and panel</td><td>Nielsen, Circana, Similarweb, Sensor Tower, Semrush</td><td>Medium to high</td><td>Good for direction, weak on levels</td><td>Low</td></tr>
+              <tr><td>6</td><td>Alternative data</td><td>Card transactions, geolocation, satellite, scraped web, job postings</td><td>High</td><td>Varies wildly by dataset</td><td>Medium. Consent chain and MNPI</td></tr>
+              <tr><td>7</td><td>Primary research</td><td>Surveys, interviews, expert networks, win/loss, mystery shopping</td><td>High</td><td>Highest if designed well</td><td>Medium. Disclosure and MNPI</td></tr>
+              <tr><td>8</td><td>Internal</td><td>CRM, sales notes, support tickets, churn reasons</td><td>Near zero</td><td>Underused, often the best evidence you own</td><td>None</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <b>Tier 8 first.</b> Most companies own a large, current, unexploited
+            record of what buyers said, sitting in the CRM and support systems. It
+            costs nothing, it is specific to your market, and nobody else has it.
+            Mine it before buying anything.
+          </p>
+        </div>
+
+        <h3>Signals: what leading indicators actually tell you</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Signal</th><th>What it indicates</th><th>Evidence and limits</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>Job postings</b></td>
+                <td>Hiring intent, and ahead of that, growth</td>
+                <td>Changes in postings are positively associated with growth in headcount, SG&amp;A, and one-year-ahead sales and earnings (LinkUp). Coverage is deep: Revelio's COSMOS set holds over 5 billion postings from over 1 million company sites. Limits: reposting, agency duplication, ghost ads</td>
+              </tr>
+              <tr>
+                <td><b>Pricing page changes</b></td>
+                <td>Packaging and segment strategy, often weeks before the announcement</td>
+                <td>Cheap and high signal. A/B tests and regional variants produce false positives. Diff daily, require two consecutive weeks before acting</td>
+              </tr>
+              <tr>
+                <td><b>Web traffic estimates</b></td>
+                <td>Direction of demand and channel mix</td>
+                <td>A SparkToro comparison rated Similarweb closest to Google Analytics among major tools. An Omniconvert study of 1,787 ecommerce sites found Similarweb overreported sessions by roughly 94%. Never use levels. Use direction, and only for large sites</td>
+              </tr>
+              <tr><td><b>App downloads and ranks</b></td><td>Consumer traction</td><td>Good for consumer apps. Useless for B2B and enterprise agreements</td></tr>
+              <tr><td><b>Patent filings</b></td><td>R&amp;D direction, 18 months late</td><td>Applications publish roughly 18 months after filing. Capability mapping, not early warning</td></tr>
+              <tr><td><b>Customs and shipping records</b></td><td>Physical supply chains and supplier relationships</td><td>Strong for goods, blind for services and software</td></tr>
+              <tr><td><b>Review sites and support forums</b></td><td>Product weak points, switching triggers</td><td>Excellent for battlecards. Skewed to extremes and vulnerable to seeded reviews</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The triangulation rule</h3>
+        <div class="callout">
+          <p><b>Two sources that share one origin are one source.</b></p>
+        </div>
+        <p>Claim: rival X is entering the mid-market.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Evidence</th><th>Origin</th><th>Independent?</th></tr></thead>
+            <tbody>
+              <tr><td>Their blog post announcing "solutions for growing teams"</td><td>Rival X</td><td>Origin 1</td></tr>
+              <tr><td>Trade article about the blog post</td><td>Rival X</td><td>Same origin. Not independent</td></tr>
+              <tr><td>Analyst note quoting the announcement</td><td>Rival X</td><td>Same origin. Not independent</td></tr>
+              <tr><td>14 new job ads for SMB Account Executive in DACH</td><td>Rival X hiring behaviour</td><td>Origin 2. Independent</td></tr>
+              <tr><td>Two resellers report being asked to carry a cheaper tier</td><td>Channel</td><td>Origin 3. Independent</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Three origins, not five sources. That claim is now well supported.</p>
+
+        <h3>The 2026 primary research problem</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Finding</th><th>Figure</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td>Raw survey responses containing some form of fraud</td><td>31%</td><td>Research Defender, cited by iMotions</td></tr>
+              <tr><td>Average share of collected data discarded for quality and panel fraud</td><td>38%, up to 70% for some</td><td>Kantar, cited by iMotions</td></tr>
+              <tr><td>AI agents passing as human respondents</td><td>An agent evaded every detection method then in use</td><td>Westwood, PNAS, late 2025, cited</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Defences, in order of effect:</p>
+        <ol>
+          <li><b>Use identity-verified panels</b> when the answer matters. Cost per complete rises. Usable data per euro rises more.</li>
+          <li><b>Instrument the survey.</b> Attention checks, completion-time floors, duplicate and geolocation checks, bot scoring.</li>
+          <li><b>Treat open-ended answers as suspect.</b> Machine-written open ends are fluent, generic, and increasingly common. Read a sample by hand, always.</li>
+          <li><b>Prefer interviews for high-stakes questions.</b> Twenty structured interviews beat a compromised sample of 800.</li>
+          <li><b>Report your exclusion rate.</b> If you discarded 38% of responses, say so. It changes how the reader should weigh the result.</li>
+        </ol>
+
+        <h3>Buying alternative data: the checklist</h3>
+        <p>
+          The category reached roughly US$2.8bn in buy-side spend in 2025, across
+          2,805 tracked datasets. Average clients per dataset fell from 25 to 20,
+          which means supply is growing faster than demand and buyers have leverage
+          on price. Get written answers before you buy.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Question</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>Where does the raw data originate, and who consented?</td><td>Determines GDPR and privacy exposure</td></tr>
+              <tr><td>Is any of it non-public information about a specific issuer?</td><td>Determines MNPI exposure</td></tr>
+              <tr><td>What is the panel, and how is it scaled to the universe?</td><td>Determines whether levels or only direction are usable</td></tr>
+              <tr><td>What is the history, and has the methodology changed?</td><td>Backfills recomputed under a new method are not a real history</td></tr>
+              <tr><td>What is the reporting lag and revision policy?</td><td>Decides whether it can support early warning at all</td></tr>
+              <tr><td>Coverage by geography, segment, and company size?</td><td>Most datasets are strong in the US and thin elsewhere</td></tr>
+              <tr><td>Exclusivity and redistribution terms?</td><td>Decides whether the edge survives contact with competitors</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Ask the vendor for a period where their data was wrong, and what they changed. A vendor with no answer has not looked.</p>
+
+        <h3>Collection hygiene</h3>
+        <ul>
+          <li><b>Date everything.</b> A figure without a period is not evidence.</li>
+          <li><b>Keep the raw artefact.</b> Screenshot the pricing page, save the filing, archive the job ad.</li>
+          <li><b>Record the retrieval date</b> alongside the publication date.</li>
+          <li><b>Never launder a source.</b> If the number came from a vendor blog quoting a survey, cite the blog, not the survey you have not read.</li>
+          <li><b>Log what you looked for and did not find.</b> Absence of evidence is evidence and it belongs in the record.</li>
+        </ul>
+      </section>
+
+      <section id="analysis">
+        <p class="eyebrow">Chapter 4</p>
+        <h2>Analysis and judgment</h2>
+
+        <p>
+          Analysis is the step where observations become a claim about what is true
+          or what will happen, with the uncertainty stated. Everything before it is
+          housekeeping.
+        </p>
+
+        <h3>Frameworks: what each is for, and blind to</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Framework</th><th>Answers</th><th>Blind to</th></tr></thead>
+            <tbody>
+              <tr><td><b>Porter's Five Forces</b></td><td>Why this industry is or is not structurally profitable</td><td>Change over time. It is a snapshot. Also weak on platforms and network effects, where a rival is often also a complement provider</td></tr>
+              <tr><td><b>PESTEL</b></td><td>Which macro forces touch this market</td><td>Relative weight. It generates a list, not a ranking</td></tr>
+              <tr><td><b>TAM, SAM, SOM</b></td><td>How big the opportunity is at three widths</td><td>Timing and competitive response. A large TAM says nothing about reaching any of it</td></tr>
+              <tr><td><b>Segmentation and jobs-to-be-done</b></td><td>Who buys, and what they are hiring the product to do</td><td>Supply-side economics. Says nothing about whether serving that segment is profitable</td></tr>
+              <tr><td><b>Value chain and cost curve</b></td><td>Where margin sits and who captures it</td><td>Demand shifts. A perfect cost position in a dying category is worthless</td></tr>
+              <tr><td><b>Scenario planning</b></td><td>What plausible futures look like, and which strategies survive several</td><td>Probability. Scenarios are deliberately not forecasts</td></tr>
+              <tr><td><b>Business war gaming</b></td><td>How rivals will actually respond to your move</td><td>Anything outside the modelled players</td></tr>
+              <tr><td><b>Competitive early warning</b></td><td>Whether reality has drifted away from your strategy</td><td>Structural change nobody set a tripwire for</td></tr>
+              <tr><td><b>Blind spot analysis</b></td><td>What your leadership believes that is no longer true</td><td>Your own blind spots, unless run by someone external</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Market sizing without lying to yourself</h3>
+        <p>Two methods. Use both and reconcile. Lead with bottom-up.</p>
+<pre><code>SOM = (reachable accounts) x (win rate) x (annual contract value) x (ramp)
+
+Reachable accounts:  European B2B marketplaces with over 50 staff   = 3,400
+Qualify (payments not yet embedded)                        x 0.45   = 1,530
+Realistic 3-year penetration                               x 0.08   =   122
+Annual contract value                                      x 42,000 = EUR 5.1m</code></pre>
+        <p>
+          Now stress the assumptions. If penetration is 4% instead of 8%, the answer
+          halves. Publish that range. A single number with three decimal places is a
+          claim you cannot support.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Sizing error</th><th>What it looks like</th></tr></thead>
+            <tbody>
+              <tr><td><b>Vanity TAM</b></td><td>Quoting the biggest adjacent category. The US$4tn logistics market for a freight-invoicing tool</td></tr>
+              <tr><td><b>Percent-of-TAM reasoning</b></td><td>"We only need 1% of a huge market." Not a plan, a wish</td></tr>
+              <tr><td><b>GMV mistaken for revenue</b></td><td>Counting value flowing through a platform as the platform's income</td></tr>
+              <tr><td><b>Ignoring substitutes</b></td><td>Sizing a category while buyers solve the job with spreadsheets for free</td></tr>
+              <tr><td><b>Confirmation-driven build</b></td><td>Choosing assumptions backwards from the number you wanted</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Analysis of competing hypotheses</h3>
+        <p>
+          Start with the full set of plausible explanations, not the favourite one.
+          Build a matrix with hypotheses across the top and evidence down the side.
+          Then try to <b>disprove</b>, not prove. Worked example: rival X drops price
+          20%.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Evidence</th><th>H1: Winning share</th><th>H2: Clearing inventory</th><th>H3: Cash pressure</th><th>H4: Blocking our launch</th></tr></thead>
+            <tbody>
+              <tr><td>Cut applies only to last-gen SKU</td><td>Inconsistent</td><td>Consistent</td><td>Neutral</td><td>Inconsistent</td></tr>
+              <tr><td>Sales headcount flat</td><td>Inconsistent</td><td>Consistent</td><td>Consistent</td><td>Inconsistent</td></tr>
+              <tr><td>Supplier extended payment terms</td><td>Neutral</td><td>Neutral</td><td>Consistent</td><td>Neutral</td></tr>
+              <tr><td>Cut began 3 weeks before our launch</td><td>Consistent</td><td>Neutral</td><td>Neutral</td><td>Consistent</td></tr>
+              <tr><td>No marketing spend increase</td><td>Inconsistent</td><td>Consistent</td><td>Consistent</td><td>Inconsistent</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          H1 and H4 carry three inconsistencies each. H2 and H3 carry none. The
+          interesting output is not the answer but the discovery that the popular
+          internal story, that they are attacking us, is the worst-supported one.
+        </p>
+
+        <h3>Saying how sure you are</h3>
+        <p>Two separate things, constantly conflated.</p>
+        <div class="cards">
+          <div class="card">
+            <h4>Likelihood</h4>
+            <p>How probable the event is. Almost certainly 95 to 99%. Very likely 80 to 95%. Likely 55 to 80%. Roughly even 45 to 55%. Unlikely 20 to 45%. Very unlikely 5 to 20%. Almost certainly not 1 to 5%.</p>
+          </div>
+          <div class="card">
+            <h4>Confidence</h4>
+            <p>How much you trust the basis. High: multiple independent origins, few assumptions. Moderate: credible sourcing, some gaps. Low: fragmentary or single-origin evidence, heavy assumption load.</p>
+          </div>
+        </div>
+        <div class="callout">
+          <p>
+            Written correctly: "We judge it <b>likely</b> (60% to 70%) that rival X
+            launches a mid-market tier before Q2 2027. <b>Moderate confidence</b>,
+            based on hiring and channel signals from two independent origins, with no
+            direct evidence of pricing."
+          </p>
+        </div>
+
+        <h3>Calibration</h3>
+        <p>
+          Forecast quality is measurable. The Good Judgment Project scored forecasters
+          with the Brier score, where lower is better. Its findings transfer directly:
+          start from the base rate then adjust; update often in small steps; teams beat
+          individuals; be decisive as well as calibrated, because always saying
+          "roughly even chance" is safe and useless.
+        </p>
+        <p>
+          The corporate version: write a numeric probability for every material
+          judgment, with a resolution date. Score them quarterly. Within a year you
+          will know which analysts and which source classes to trust.
+        </p>
+
+        <h3>Failure modes</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Bias</th><th>How it shows up</th><th>Counter</th></tr></thead>
+            <tbody>
+              <tr><td><b>Confirmation bias</b></td><td>Collecting until the preferred story is supported</td><td>ACH. Assign someone to build the strongest opposite case</td></tr>
+              <tr><td><b>Mirror imaging</b></td><td>Assuming a rival will act as you would, with your incentives</td><td>Model their constraints, comp plan, and board pressure explicitly</td></tr>
+              <tr><td><b>Single-origin dependence</b></td><td>Three articles, one press release</td><td>Count origins, not sources</td></tr>
+              <tr><td><b>Precision theatre</b></td><td>"EUR 5,148,300 TAM"</td><td>Publish ranges. Show the assumptions that drive them</td></tr>
+              <tr><td><b>Anchoring on the vendor's number</b></td><td>The market-size slide comes from a firm selling into the market</td><td>Rebuild bottom-up before quoting anyone</td></tr>
+              <tr><td><b>Availability</b></td><td>Rivals you already track look more threatening than ones you do not</td><td>Periodically ask who is not on the list and why</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <b>The one-line test.</b> Before publishing, answer in a sentence: what
+            should the reader do differently, and how sure are we? If you cannot, the
+            analysis is not finished.
+          </p>
+        </div>
+      </section>
+
+      <section id="products">
+        <p class="eyebrow">Chapter 5</p>
+        <h2>Products and cadence</h2>
+
+        <p>
+          Publish a small, fixed set of products. Fixed formats let readers learn
+          where to look, and let analysts stop redesigning the wheel every time.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Product</th><th>Question it answers</th><th>Length</th><th>Cadence</th></tr></thead>
+            <tbody>
+              <tr><td><b>Early warning alert</b></td><td>Something crossed a tripwire we set</td><td>Under 200 words</td><td>Event-driven, same day</td></tr>
+              <tr><td><b>Weekly signal digest</b></td><td>What changed in the market this week that matters</td><td>1 page</td><td>Weekly</td></tr>
+              <tr><td><b>Competitor profile</b></td><td>Who are they, what can they do, what will they do</td><td>3 to 6 pages</td><td>Quarterly refresh</td></tr>
+              <tr><td><b>Battlecard</b></td><td>What do I say when I meet them in a deal</td><td>1 screen</td><td>Monthly, or on any material change</td></tr>
+              <tr><td><b>Win/loss report</b></td><td>Why are we actually winning and losing</td><td>5 to 10 pages</td><td>Quarterly, rolling interviews</td></tr>
+              <tr><td><b>Market map</b></td><td>Who exists in this space and how do they cluster</td><td>Visual plus table</td><td>Refreshed twice a year</td></tr>
+              <tr><td><b>Market sizing</b></td><td>How big is this and how fast is it moving</td><td>2 to 4 pages</td><td>On demand</td></tr>
+              <tr><td><b>Deep dive or thesis</b></td><td>Should we do this</td><td>10 to 20 pages</td><td>Project</td></tr>
+              <tr><td><b>Commercial due diligence pack</b></td><td>Is this target's commercial story true</td><td>20 to 60 pages</td><td>Per deal</td></tr>
+              <tr><td><b>Quarterly market review</b></td><td>How did our read perform, and what changed</td><td>6 to 10 pages</td><td>Quarterly</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Anatomy of a good product</h3>
+<pre><code>1. Bottom line up front   The judgment, in one or two sentences, with
+                          likelihood and confidence
+2. So what                What the reader should do differently
+3. Key judgments          Three to five, each with likelihood and confidence
+4. Evidence               What we saw, dated, with origin count per judgment
+5. Alternatives           The next most plausible reading, and why we rejected it
+6. What would change      The specific observations that would flip the judgment
+   our mind
+7. Sourcing               Source list with grades, and named gaps</code></pre>
+        <p>
+          Parts 5 and 6 are what separate intelligence from opinion. They are also
+          the first two sections cut under deadline pressure. Do not cut them.
+        </p>
+
+        <h4>Bottom line up front, done properly</h4>
+        <div class="callout stop">
+          <p><b>Weak.</b> "This report examines rival X's recent pricing activity and its potential implications for our enterprise segment."</p>
+        </div>
+        <div class="callout">
+          <p><b>Strong.</b> "Rival X will likely (60% to 70%) launch a mid-market tier before Q2 2027, moderate confidence. If it lands at our current entry price, expect pressure on roughly 18% of our renewal base. Recommend we decide on a defensive tier by 15 October."</p>
+        </div>
+
+        <h3>Battlecard rules</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rule</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr><td>One screen, no scrolling</td><td>A seller reads it during a live call</td></tr>
+              <tr><td>Structure: their pitch, our answer, proof, trap questions</td><td>This is the sequence the conversation actually follows</td></tr>
+              <tr><td>Every claim must survive being repeated to the customer</td><td>A seller will read it aloud. Assume the rival will see it</td></tr>
+              <tr><td>No claim without a date</td><td>Rival pricing from 14 months ago is a liability</td></tr>
+              <tr><td>Built from win/loss, not from leadership's beliefs</td><td>Cards built from interviews address objections buyers actually raised</td></tr>
+              <tr><td>Retire content aggressively</td><td>A card with 40 items is not used. A card with 6 is</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Win/loss programs</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Interviews</th><th>What you can say</th></tr></thead>
+            <tbody>
+              <tr><td>20 to 30</td><td>Directional patterns for one segment or matchup</td></tr>
+              <tr><td>50 or more</td><td>Segment by deal size, persona, and vertical</td></tr>
+              <tr><td>100 or more</td><td>Primary loss themes stabilise</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Reported outcomes, all self-reported by vendors and practitioners:
+          structured programs are associated with win-rate improvements of
+          15% to 25% over two years against rep self-reporting alone, and 63% of
+          companies running structured programs report win-rate improvement, rising
+          to 84% for programs running longer than a year. Treat these as a reason to
+          run the program, not a forecast of your result. Nobody publishes the
+          failures.
+        </p>
+        <ol>
+          <li><b>Interview buyers, not your reps.</b> The rep's account is systematically biased toward price and away from anything the rep controls.</li>
+          <li><b>Interview wins too.</b> Losses tell you what went wrong. Wins tell you what to repeat, and they are cheaper to obtain.</li>
+          <li><b>Use a neutral interviewer.</b> Buyers soften their answers when the vendor is in the room.</li>
+        </ol>
+
+        <h3>Market maps</h3>
+        <p>
+          A market map is a claim about how a space is organised, disguised as a
+          picture. Publish the <b>inclusion criteria</b> and, more importantly, the
+          <b>exclusion list</b>: the companies you considered and left out, with the
+          reason. That is the part everyone skips and the part that makes the map
+          trustworthy.
+        </p>
+
+        <h3>Cadence and delivery</h3>
+        <p>
+          The strongest public evidence: 56% of teams share intelligence with sales
+          weekly or faster, and reported revenue impact splits 79% versus 41%
+          between weekly and monthly-or-slower cadences. Vendor survey,
+          self-reported, correlational, and still the best number in the field.
+        </p>
+        <ul>
+          <li><b>Push to the person, not to the portal.</b> The portal is the archive, not the channel.</li>
+          <li><b>Meet the reader where they work.</b> Sellers live in the CRM and in chat, not in your wiki.</li>
+          <li><b>Tag by decision, not by source.</b> People search for the question they have.</li>
+          <li><b>Make the archive findable.</b> A widely quoted Forrester figure holds that over 90% of customer intelligence becomes unfindable within 90 days of collection, not deleted but lost. Whether or not the exact number holds, every practitioner recognises the failure.</li>
+        </ul>
+
+        <h3>Quality bar checklist</h3>
+        <ul>
+          <li>The judgment appears in the first three sentences</li>
+          <li>Likelihood and confidence are both stated, using the fixed scales</li>
+          <li>Every number carries a period and a source</li>
+          <li>Every key judgment names its origin count</li>
+          <li>The most plausible alternative reading is stated and addressed</li>
+          <li>"What would change our mind" is specific and observable</li>
+          <li>The recommended action names an owner and a date</li>
+          <li>Known gaps are declared, not hidden</li>
+          <li>Nothing in it would embarrass the company if the rival read it</li>
+        </ul>
+      </section>
+
+      <section id="operating">
+        <p class="eyebrow">Chapter 6</p>
+        <h2>Operating model</h2>
+
+        <h3>Where the function sits</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Home</th><th>Serves best</th><th>Fails at</th></tr></thead>
+            <tbody>
+              <tr><td>Strategy or corporate development</td><td>Entry, acquisition, long-horizon threats</td><td>Sales speed. Sellers will not wait for a quarterly cycle</td></tr>
+              <tr><td>Product marketing</td><td>Battlecards, win/loss, positioning, launches</td><td>Structural and macro questions</td></tr>
+              <tr><td>Revenue operations</td><td>Deal-level competitive support, pipeline signals</td><td>Anything not measurable in the CRM</td></tr>
+              <tr><td>Procurement</td><td>Supplier markets, category strategy, cost and risk</td><td>Demand-side and buyer questions</td></tr>
+              <tr><td>Investment team</td><td>Thesis development, sourcing, commercial diligence</td><td>Nothing, if resourced. The natural home in an investment firm</td></tr>
+              <tr><td>Standalone under the CEO</td><td>Cross-cutting questions and genuine early warning</td><td>Getting used, unless the CEO actually consumes it</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Put it where the decisions are, then give it a standing line to one other function so it does not become captive to a single reader.</p>
+
+        <h3>Roles</h3>
+        <p>
+          Five jobs: <b>head of intelligence</b> (requirements, the KIT list, the
+          relationship with deciders, the quality bar), <b>analyst</b> (analysis,
+          judgment, products), <b>collection and tooling</b> (sources, feeds, vendor
+          contracts, the archive), <b>field network</b> (structured access to
+          sellers, support, partners, customers), and a part-time <b>compliance
+          sponsor</b>. The most common staffing error is hiring collectors and
+          calling them analysts. Collection is increasingly automatable. Judgment is
+          not.
+        </p>
+
+        <h3>Benchmarks</h3>
+        <div class="callout warn">
+          <p>
+            All figures below come from vendor surveys of self-selected respondents.
+            They are the best public numbers available and they are not neutral.
+            Read them as a description of what mature programs have, not as a causal
+            recipe.
+          </p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measure</th><th>Figure</th><th>Period</th></tr></thead>
+            <tbody>
+              <tr><td>Companies over 1,000 staff with a dedicated CI program</td><td>94%</td><td>2025</td></tr>
+              <tr><td>Average CI team size at those companies</td><td>4.2 full-time equivalents</td><td>2025</td></tr>
+              <tr><td>Teams running a dedicated CI platform</td><td>66.7%, up from roughly one third in 2022</td><td>2026</td></tr>
+              <tr><td>Teams tracking specific KPIs</td><td>60.5%, up from 30% in 2022</td><td>2026</td></tr>
+              <tr><td>Teams with an executive sponsor in sales</td><td>56.7%, flat for years</td><td>2026</td></tr>
+              <tr><td>Teams reporting a competitive win-rate increase</td><td>49.6%</td><td>2026</td></tr>
+              <tr><td>Teams where at least half of opportunities are competitive</td><td>70%</td><td>2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Condition</th><th>Reported revenue impact</th></tr></thead>
+            <tbody>
+              <tr><td>KPIs plus an executive sponsor</td><td>88% versus 29%</td></tr>
+              <tr><td>KPIs, platform, and executive sponsor together</td><td>90% versus 25%</td></tr>
+              <tr><td>AI agents in the sales motion</td><td>82% versus 42%</td></tr>
+              <tr><td>Weekly cadence versus monthly or slower</td><td>79% versus 41%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The honest reading: an executive sponsor, tracked KPIs, and a weekly rhythm
+          are the visible signature of a program leadership already takes seriously.
+          Buying a platform does not create the sponsor.
+        </p>
+
+        <h3>Cost bands</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Line</th><th>Typical range</th></tr></thead>
+            <tbody>
+              <tr><td>CI or MI monitoring platform</td><td>US$25k to US$100k per year</td></tr>
+              <tr><td>Consulting or expert-network engagement</td><td>US$15k to US$500k or more per engagement</td></tr>
+              <tr><td>Internal analyst, fully loaded</td><td>US$120k to US$200k or more</td></tr>
+              <tr><td>Total program, mid-size B2B company</td><td>US$25k to US$200k or more per year</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <p><b>Buy monitoring, build judgment.</b> Monitoring is a commodity with real economies of scale. Judgment about your market is the thing you cannot outsource without losing the point.</p>
+        </div>
+
+        <h3>The tool stack, by layer</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Layer</th><th>Job</th><th>Representative tools</th></tr></thead>
+            <tbody>
+              <tr><td>Monitoring</td><td>Watch defined sources, alert on change</td><td>Crayon, Klue, Kompyte, Contify</td></tr>
+              <tr><td>Aggregated research corpus</td><td>Search filings, calls, broker research, expert transcripts</td><td>AlphaSense</td></tr>
+              <tr><td>Digital and web signals</td><td>Traffic, ads, SEO, app data</td><td>Similarweb, Semrush, Sensor Tower</td></tr>
+              <tr><td>Private-market data</td><td>Companies, funding, investors, deals</td><td>PitchBook, Crunchbase, Dealroom, Tracxn, CB Insights</td></tr>
+              <tr><td>Primary research</td><td>Surveys, interviews, expert calls</td><td>Panels, expert networks, win/loss vendors</td></tr>
+              <tr><td>Alternative data</td><td>Transactions, geolocation, workforce, satellite</td><td>Vendor-specific, sourced via marketplaces or brokers</td></tr>
+              <tr><td>Knowledge store</td><td>Keep what you learned findable</td><td>Wiki, vector store, or the platform's repository</td></tr>
+              <tr><td>Delivery</td><td>Get it to the reader where they work</td><td>Chat, CRM, email, enablement tools</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout warn">
+          <p>
+            <b>Private-market data changes conclusions.</b> PitchBook relies heavily
+            on manual research staff and is the institutional default for verified
+            deal and fund records. Crunchbase blends community contributions and
+            automated collection: broader, less consistent. Dealroom is deepest on
+            European early stage. Tracxn goes deepest on sector taxonomies and on
+            India and Southeast Asia. A market map built from one database will
+            systematically miss whatever that database under-covers. If the map
+            matters, build it from two and reconcile. The reconciliation is usually
+            the informative part.
+          </p>
+        </div>
+
+        <h3>Metrics</h3>
+        <p>
+          Market intelligence has a measurement problem that never fully goes away:
+          its best outcomes are counterfactual. A threat neutralised early looks like
+          nothing happening.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Metric</th><th>Definition</th><th>How to capture</th></tr></thead>
+            <tbody>
+              <tr><td><b>Decision influence</b></td><td>Share of material decisions where an MI product was cited as an input</td><td>Ask the decider at the point of decision. Log it</td></tr>
+              <tr><td><b>Decision velocity</b></td><td>Time from question raised to decision taken</td><td>Timestamp the request and the decision</td></tr>
+              <tr><td><b>Early warnings delivered</b></td><td>Threats or opportunities surfaced before they appeared in sales data</td><td>Count and review at quarter end</td></tr>
+              <tr><td><b>Judgment accuracy</b></td><td>Scored probabilistic judgments against outcomes</td><td>Quarterly scoring of the judgment log</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A caution on win-rate attribution. Win rate moves for many reasons.
+          Attributing it to the intelligence program requires either a holdout group
+          or a long enough series to see the trend break. Most companies have neither
+          and claim the credit anyway.
+        </p>
+
+        <h3>Maturity ladder</h3>
+        <div class="flow">
+          <div class="flow-step"><b>0</b><span>Ad hoc<em>Someone Googles the competitor before a big meeting. No record exists a month later</em></span></div>
+          <div class="flow-step"><b>1</b><span>Reactive<em>Requests arrive, someone answers them. No requirements list</em></span></div>
+          <div class="flow-step"><b>2</b><span>Programmatic<em>Fixed products, fixed cadence, a named owner. A maintained battlecard set exists</em></span></div>
+          <div class="flow-step"><b>3</b><span>Decision-linked<em>Every product names a decision, decider, and date. A judgment log exists</em></span></div>
+          <div class="flow-step"><b>4</b><span>Anticipatory<em>Tripwires set in advance. Leadership has changed a plan because of an alert</em></span></div>
+        </div>
+        <p>
+          Most corporate functions sit at level 1 or 2. The step from 2 to 3 costs
+          almost nothing in tools and almost everything in discipline.
+        </p>
+      </section>
+
+      <section id="law">
+        <p class="eyebrow">Chapter 7</p>
+        <h2>Law and ethics</h2>
+
+        <div class="callout warn">
+          <p>
+            A working map, not legal advice. Rules differ by country and by industry,
+            and several of the cases below are still moving. Get counsel before
+            anything near a line.
+          </p>
+        </div>
+
+        <div class="callout">
+          <p>
+            <b>How you obtained the information matters more than what the
+            information is.</b> A competitor's manufacturing cost, worked out by
+            buying their product and taking it apart, is lawful nearly everywhere.
+            The same number, obtained by an investigator pretending to be their
+            employee, is not.
+          </p>
+        </div>
+
+        <h3>Trade secrets</h3>
+        <p>
+          Both major systems landed in a similar place in 2016. In the United States,
+          the Economic Espionage Act of 1996 as amended by the Defend Trade Secrets
+          Act of 2016. In the European Union, Directive (EU) 2016/943. Both define a
+          trade secret the same way in substance: information the owner took
+          reasonable steps to keep secret, which has economic value because it is not
+          generally known.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Route</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><b>Reverse engineering</b> a lawfully obtained product</td><td>Expressly permitted under both the DTSA and the EU Directive</td></tr>
+              <tr><td><b>Independent derivation</b></td><td>Lawful</td></tr>
+              <tr><td><b>Observation of what is publicly visible</b></td><td>Lawful</td></tr>
+              <tr><td><b>Other honest commercial practices</b> (EU) or other lawful means (US)</td><td>Lawful</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Unlawful: acquiring the secret through theft, bribery, misrepresentation,
+          breach or inducement of a duty of confidence, or espionage. Inducing
+          someone else's breach counts. Asking a rival's employee to share
+          confidential material puts you inside the prohibition even though you did
+          not take anything yourself.
+        </p>
+
+        <h3>The ethics line, drawn by real cases</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Case</th><th>What happened</th><th>Outcome</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>HP pretexting, 2006</b></td>
+                <td>HP's investigators impersonated board members and journalists, in some cases using their Social Security numbers, to obtain phone records while hunting a boardroom leak. Targets included nine journalists, nine directors, over twenty employees or contractors, and a journalist's children</td>
+                <td>Chair resigned, congressional hearings, criminal charges, a US$14.5 million settlement with California, and a new federal law on telephone records</td>
+              </tr>
+              <tr>
+                <td><b>P&amp;G and Unilever, 2001</b></td>
+                <td>P&amp;G staff went through Unilever's rubbish looking for competitive documents. P&amp;G disclosed it themselves and called it a rogue operation</td>
+                <td>At least three staff fired, roughly US$10 million paid to Unilever</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Both cases share a pattern: the collection was performed by people who
+          believed they were serving the company, under pressure, without a clear
+          written boundary. The fix is a written policy plus a named escalation path,
+          not exhortation.
+        </p>
+
+        <h3>The SCIP Code of Ethics</h3>
+        <p>
+          The most-cited standard in the field. Reproduced from a secondary source,
+          because scip.org blocks automated retrieval. Verify against the primary page
+          before quoting it formally.
+        </p>
+        <ol>
+          <li><b>Elevate the profession.</b> Continually strive to increase the recognition and respect of the profession.</li>
+          <li><b>Always in compliance.</b> Comply with all applicable laws, domestic and international.</li>
+          <li><b>Transparent.</b> Accurately disclose all relevant information, including one's identity and organisation, prior to all interviews.</li>
+          <li><b>Conflict-free.</b> Avoid conflicts of interest in fulfilling one's duties.</li>
+          <li><b>Honest.</b> Provide honest and realistic recommendations and conclusions.</li>
+          <li><b>Act as an ambassador.</b> Promote this code within one's company, with third-party contractors, and within the profession.</li>
+          <li><b>Strategically aligned.</b> Adhere to one's company policies, objectives, and guidelines.</li>
+        </ol>
+        <div class="callout">
+          <p>
+            Clause 3 is the operative one and the one most often broken. It rules out
+            calling a competitor's support line pretending to be a customer, and
+            attending a rival's webinar under a false name. If your collection method
+            depends on the other party not knowing who you are, stop.
+          </p>
+        </div>
+
+        <h3>Web scraping</h3>
+        <p>
+          <b>hiQ Labs v LinkedIn</b> narrowed the Computer Fraud and Abuse Act so
+          that it does not reach automated collection of data that is publicly
+          accessible without authentication. Note the counter-example inside the same
+          case: hiQ did get into trouble for hiring contractors to create fake
+          accounts to reach logged-in data.
+        </p>
+        <p>
+          <b>Meta Platforms v Bright Data.</b> On 23 January 2024, Judge Edward Chen
+          of the Northern District of California granted summary judgment for Bright
+          Data. The reasoning that matters: Meta's terms govern "your use" of its
+          products, and Bright Data did not use Facebook when it scraped public
+          logged-out pages after terminating its accounts.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Line</th><th>Rule</th></tr></thead>
+            <tbody>
+              <tr><td><b>Authentication</b></td><td>Do not bypass a login. Do not create fake accounts. This is where both defendants got into trouble</td></tr>
+              <tr><td><b>Personal data</b></td><td>GDPR and CCPA apply to scraped personal data whether or not it was publicly visible</td></tr>
+              <tr><td><b>Copyright</b></td><td>Extract facts. Do not republish creative expression</td></tr>
+              <tr><td><b>Harm</b></td><td>Respect rate limits. Causing degradation converts a civil argument into a much worse one</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <b>GDPR.</b> EDPB Opinion 28/2024 recognised legitimate interest under
+          Article 6(1)(f) as a viable basis for AI model development, subject to a
+          rigorous three-part test. EDPB Guidelines 03/2026 on web scraping for
+          generative AI, adopted July 2026, confirmed that GDPR applies whenever
+          scraping involves personal data regardless of public visibility, and that
+          consent is generally not viable at scale. Practical consequence: scraping
+          company pages, prices, and documentation is low risk. Scraping named
+          individuals requires a documented legitimate-interest assessment, data
+          minimisation before collection, and a retention decision. Write the
+          assessment before you collect.
+        </p>
+
+        <h3>Material non-public information and alternative data</h3>
+        <p>
+          The SEC's Division of Examinations published a risk alert on deficiencies
+          in advisers' use of alternative data and expert networks, with MNPI as the
+          central concern. In the Primary Global Research matter, the SEC charged
+          hedge funds and portfolio managers with trading on MNPI obtained from
+          public-company insiders moonlighting as expert-network consultants,
+          alleging more than US$30 million in illicit profits.
+        </p>
+        <p>Expert networks were never banned. The channel is not the problem. The control over what flows through it is.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Control</th><th>Detail</th></tr></thead>
+            <tbody>
+              <tr><td>Pre-clearance</td><td>Approve the expert and the topic list before the call</td></tr>
+              <tr><td>Chaperone or recording</td><td>For any call touching a covered issuer</td></tr>
+              <tr><td>Scope script</td><td>Read at the start: industry-level only, nothing confidential to a current or former employer</td></tr>
+              <tr><td>Employment screen</td><td>Screen out current employees, and recent leavers, of issuers you hold or research</td></tr>
+              <tr><td>Vendor contract terms</td><td>MNPI clauses, with liability on the vendor if MNPI is found in their data</td></tr>
+              <tr><td>Data provenance diligence</td><td>Written answers on origin, consent, and aggregation for every dataset</td></tr>
+              <tr><td>Restricted list integration</td><td>Data acquisition decisions checked against the firm's restricted list</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Antitrust: competitor information and pricing</h3>
+        <p>
+          The DOJ announced a proposed settlement with <b>RealPage</b> on 24 November
+          2025, resolving allegations that its revenue-management product used
+          competing landlords' data in an algorithm producing pricing
+          recommendations. The settlement bars RealPage from using competitors'
+          non-public data in that product and limits model training to historic,
+          backward-looking non-public data at least 12 months old.
+        </p>
+        <p>
+          The enforcement posture, as read by counsel: the DOJ is not against
+          algorithmic pricing tools as such. It is against tools that pool non-public
+          competitor data and produce coordinated outputs. Risk is highest when the
+          data is current or forward-looking, non-public, competitively sensitive,
+          and used at runtime in a pricing decision. Risk rises further when the
+          recommendation is applied automatically with no human override.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Do</th><th>Do not</th></tr></thead>
+            <tbody>
+              <tr><td>Collect published prices, public rate cards, public tender results</td><td>Exchange current or forward-looking non-public pricing with a competitor, directly or through any intermediary</td></tr>
+              <tr><td>Use aggregated, historic, anonymised benchmarks from a neutral third party</td><td>Contribute your own forward-looking pricing into a pool that feeds competitors' pricing</td></tr>
+              <tr><td>Keep a human decision step between any recommendation and a price change</td><td>Let a tool trained on rivals' non-public current data set prices automatically</td></tr>
+              <tr><td>Document the provenance of every input to a pricing model</td><td>Assume a vendor's data is clean because the vendor says so</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A one-page policy you can enforce</h3>
+        <div class="cards">
+          <div class="card">
+            <h4>Always allowed</h4>
+            <p>
+              Public sources, published prices, filings, patents, job ads, public
+              documentation, logged-out pages. Buying and testing a competitor's
+              product, including taking it apart. Attending public events and
+              identifying yourself honestly. Interviewing anyone after disclosing who
+              you are. Talking to your own customers, prospects, and partners.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Allowed with controls</h4>
+            <p>
+              Expert-network calls with pre-clearance and a scope script. Purchased
+              alternative data after provenance and MNPI diligence. Scraping public
+              pages within rate limits and with a legitimate-interest assessment
+              where personal data is involved. Research with a competitor's customers
+              where the sponsor is disclosed or the design is cleared by counsel.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Never</h4>
+            <p>
+              Misrepresenting who you are. Fake accounts or bypassing any login.
+              Asking anyone to breach a confidentiality obligation. Taking physical
+              material, including from bins. Recording without the consent local law
+              requires. Trading on non-public information about a specific issuer.
+              Pooling current or forward-looking non-public pricing with competitors.
+            </p>
+          </div>
+        </div>
+        <p><b>Escalation.</b> Any grey case goes to a named person before collection, not after. Write the name in the policy.</p>
+      </section>
+
+      <section id="changed">
+        <p class="eyebrow">Chapter 8</p>
+        <h2>What changed by 2026</h2>
+
+        <div class="callout">
+          <p>
+            Research agents made collection and first-draft synthesis fast and cheap.
+            They did not make verification cheap. The bottleneck moved from finding
+            evidence to deciding what is true. Every practical change below follows
+            from that one shift.
+          </p>
+        </div>
+
+        <p>
+          AlphaSense launched <b>Deep Research</b> on 10 June 2025, an agent running
+          multi-step research over a corpus of more than 500 million business and
+          financial documents: equity research, earnings calls, expert-call
+          transcripts, filings, news, and internal documents for enterprise
+          customers. It produces primers, screening work, and meeting briefings with
+          citations, in minutes. General-purpose equivalents from the large model
+          providers now do the open-web version of the same job.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Task</th><th>Before</th><th>Now</th></tr></thead>
+            <tbody>
+              <tr><td>Industry primer, first draft</td><td>2 to 5 analyst days</td><td>Under an hour, then a day of checking</td></tr>
+              <tr><td>Finding the relevant passage across 200 filings</td><td>Hours of search</td><td>Minutes</td></tr>
+              <tr><td>Competitor profile refresh</td><td>Half a day</td><td>Automated draft, analyst edits</td></tr>
+              <tr><td>Meeting brief</td><td>Often skipped</td><td>Routine</td></tr>
+              <tr><td><b>Deciding whether a claim is true</b></td><td>Analyst judgment</td><td><b>Analyst judgment, unchanged</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Adoption, measured</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measure</th><th>Figure</th><th>Period</th></tr></thead>
+            <tbody>
+              <tr><td>CI teams using AI to generate sales-facing competitive content</td><td>80%, up from 61% in 2025 and 25% in 2024</td><td>2026</td></tr>
+              <tr><td>CI teams running AI agents in production or pilot</td><td>50%, with another 14% planning within a year</td><td>2026</td></tr>
+              <tr><td>Teams with agents in the sales motion reporting revenue impact</td><td>82% versus 42%</td><td>2026</td></tr>
+              <tr><td>Alternative-data buyers using AI for productivity and workflow</td><td>66%</td><td>2026</td></tr>
+              <tr><td>Alternative-data buyers using AI for investment strategy</td><td>31%</td><td>2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The gap between the last two rows is the most informative number here.
+          Firms trust these systems to speed up work far more than they trust them to
+          decide anything.
+        </p>
+
+        <h3>The reliability ceiling</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measure</th><th>Reported figure</th></tr></thead>
+            <tbody>
+              <tr><td>Frontier model hallucination across test suites</td><td>4% to 19%, against 15% to 45% in 2024</td></tr>
+              <tr><td>Worst frontier citation accuracy in a 5,000-prompt study</td><td>19.1%</td></tr>
+              <tr><td>Best score on the FACTS factuality benchmark</td><td>68.8, meaning wrong more than 30% of the time</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout stop">
+          <p>
+            Read these as orders of magnitude, not measurements. They come from
+            aggregator sites, benchmarks differ in construction, and results move
+            month to month. The robust conclusion survives the imprecision:
+            <b>an unverified machine-written citation is not evidence.</b>
+          </p>
+        </div>
+
+        <h3>Synthetic respondents: useful, oversold</h3>
+        <p>
+          A Stanford study in 2024 found agents built from rich real interviews
+          matched a person's own survey answers roughly 85% as well as that person
+          matched their own answers two weeks later. Peer-reviewed work also finds
+          that synthetic respondents collapse variance and can flip the sign of key
+          relationships. Even when explicitly asked for diverse personas, outputs
+          cluster around a narrow stereotypical range.
+        </p>
+        <p>
+          The industry position is consistent across ESOMAR, GreenBook, Bain, NIQ and
+          Kantar: a supplement that must be validated against real humans, not a
+          replacement. The ICC/ESOMAR Code introduced an official definition of
+          synthetic data in June 2025.
+        </p>
+        <div class="cards">
+          <div class="card"><h4>Defensible</h4><p>Pre-testing a questionnaire. Generating hypotheses to test with real respondents. Rehearsing an objection or a buying-committee conversation. Filling a small gap in an otherwise human sample, with the share disclosed.</p></div>
+          <div class="card"><h4>Indefensible</h4><p>Sizing a market, setting a price, or claiming a preference share from synthetic responses alone. Variance collapse means you get a confident answer that is wrong in a predictable direction.</p></div>
+        </div>
+
+        <h3>What to automate and what not to</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Automate</th><th>Keep human</th></tr></thead>
+            <tbody>
+              <tr><td>Source monitoring and change detection</td><td>Deciding which questions matter</td></tr>
+              <tr><td>Extraction and normalisation from documents</td><td>Grading source reliability</td></tr>
+              <tr><td>First-draft summaries and profiles</td><td>The judgment and its confidence level</td></tr>
+              <tr><td>Translation and transcription</td><td>Choosing between competing hypotheses</td></tr>
+              <tr><td>Formatting and distribution</td><td>Anything a customer or regulator will read</td></tr>
+              <tr><td>Finding the passage in a 300-page filing</td><td>Deciding the passage means what it appears to mean</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A verification protocol for AI-assisted intelligence</h3>
+        <ol>
+          <li><b>Claim-level sourcing.</b> Every load-bearing claim carries a source and a retrieval date. No source, no claim.</li>
+          <li><b>Open the source.</b> Never cite a document the agent found but nobody opened. Machine-generated citations point to real documents that do not always say what the summary claims.</li>
+          <li><b>Two independent origins</b> for load-bearing numbers.</li>
+          <li><b>Keep the raw quote</b> next to the claim.</li>
+          <li><b>Date every figure.</b></li>
+          <li><b>Mark the tier:</b> directly sourced, inferred, or assumed. Readers weigh them differently and deserve the chance to.</li>
+          <li><b>Declare AI involvement</b> in the product. Increasingly a compliance matter as well as an honesty one.</li>
+        </ol>
+
+        <h3>What did not change</h3>
+        <ul>
+          <li>Requirements still decide quality. A fast answer to the wrong question is worse than no answer, because it is more convincing.</li>
+          <li>The legal perimeter is unchanged by speed, and in Europe it tightened.</li>
+          <li>Buyers still tell you things no dataset contains. Twenty good interviews still beat a large corrupted survey.</li>
+          <li>Decisions are still made by people who have nine minutes.</li>
+        </ul>
+      </section>
+
+      <section id="build">
+        <p class="eyebrow">Chapter 9</p>
+        <h2>Build guide: first 90 days</h2>
+
+        <p>
+          For one person, or a small team, standing up a market intelligence function
+          from nothing. Assumes no platform purchase in the first 90 days. That is
+          deliberate.
+        </p>
+
+        <h3>Day 0 to 15: decide what you are for</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Task</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td>Interview the five people whose decisions you will serve</td><td>A list of decisions they face in the next four quarters, with dates</td></tr>
+              <tr><td>Convert those into KITs and KIQs</td><td>One page. Between 4 and 8 KITs. No more</td></tr>
+              <tr><td>Name your executive sponsor</td><td>A person, in writing, who will read the output and act</td></tr>
+              <tr><td>Write the ethics policy</td><td>One page, with legal sign-off</td></tr>
+              <tr><td>Inventory what already exists</td><td>Existing reports, subscriptions, dashboards, unused CRM fields</td></tr>
+              <tr><td>Agree the first three products and their cadence</td><td>Usually: weekly digest, one battlecard set, one deep dive</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The interview script that works:</p>
+<pre><code>1. What decision are you making in the next two quarters that you feel
+   under-informed about?
+2. What would you need to know to feel confident?
+3. What is the last thing that surprised you about this market?
+4. Where do you go for market information today, and what is wrong with it?
+5. If I could put one page on your desk every week, what would be on it?</code></pre>
+        <p>
+          Question 3 is the most productive. Surprises map directly to the early
+          warning topics you should be covering and are not.
+        </p>
+
+        <h3>Day 16 to 45: build the evidence base</h3>
+        <ul>
+          <li>Build the source inventory, ranked by the source ladder</li>
+          <li>Mine what you already own: lost-deal reasons, support tickets, churn notes, call transcripts</li>
+          <li>Set up free monitoring: price-page diffs, job-ad watches, filing alerts, changelog feeds</li>
+          <li>Run 15 to 20 win/loss interviews. This will be your highest-value asset by day 90</li>
+          <li>Grade your sources and write the grades down</li>
+          <li>Ship the first weekly digest, even if thin. Rhythm before richness</li>
+        </ul>
+
+        <h3>Day 46 to 75: publish and close the loop</h3>
+        <ul>
+          <li>Ship the first battlecard set. Top 3 competitors only, one screen each</li>
+          <li>Ship the first deep dive, answering the highest-value KIT</li>
+          <li>Start the judgment log: every probabilistic judgment, with date and resolution date</li>
+          <li>Set tripwires: the specific observable that triggers an alert, and who receives it</li>
+          <li>Establish the archive, tagged by decision and question, not by source</li>
+          <li>Collect feedback formally: did this change anything you did?</li>
+        </ul>
+
+        <h3>Day 76 to 90: measure and decide what to scale</h3>
+        <ul>
+          <li>Baseline the four metrics</li>
+          <li>Score the first judgments that have resolved, even three or four</li>
+          <li>Review the KIT list with the sponsor. Kill what nobody used</li>
+          <li>Write the tooling case, now that you know which layer constrains you</li>
+          <li>Decide build versus buy per layer. Buy monitoring, build judgment</li>
+        </ul>
+
+        <h3>Templates</h3>
+        <h4>Judgment log entry</h4>
+<pre><code>ID:              J-0007
+Date:            2026-08-11
+KIT:             K1
+Judgment:        Rival X launches a mid-market tier before 2027-04-01
+Likelihood:      Likely (60% to 70%)
+Confidence:      Moderate
+Origins:         2 independent (hiring signals, channel reports)
+Assumptions:     Their Series D closes as reported; no leadership change
+Would falsify:   Hiring freeze; a public statement of enterprise-only focus
+Resolution date: 2027-04-01
+Outcome:         [ pending ]</code></pre>
+
+        <h4>Source card</h4>
+<pre><code>Source:        Rival X pricing page
+Type:          Company-published, tier 3
+Reliability:   A (published by the subject, factual content)
+Credibility:   1 for list prices, 4 for implied discounting
+Collected by:  Daily automated diff
+Retention:     Screenshot archived per change
+Known limits:  Regional variants and A/B tests produce false positives
+Legal:         Public, logged out, rate limited. No personal data</code></pre>
+
+        <h4>Product front page</h4>
+<pre><code>TITLE
+Decision this supports:  ...
+Decider and date:        ...
+Prepared:                YYYY-MM-DD
+
+BOTTOM LINE
+[Judgment, likelihood, confidence, recommended action.]
+
+SO WHAT
+[What the reader should do differently.]
+
+KEY JUDGMENTS
+1. ... (likelihood, confidence)
+
+WHAT WOULD CHANGE OUR MIND
+- ...
+
+SOURCING
+[Sources with grades. Gaps named explicitly.]</code></pre>
+
+        <h3>The 90-day success test</h3>
+        <ul>
+          <li>A one-page KIT list agreed with a named sponsor</li>
+          <li>Three products shipping on a fixed cadence</li>
+          <li>At least 15 buyer interviews conducted and coded</li>
+          <li>A judgment log with dated, probabilistic entries</li>
+          <li>At least one tripwire that fired, or was demonstrated to work</li>
+          <li><b>One decision a named person will say your work changed</b></li>
+          <li>A written ethics policy with a named escalation contact</li>
+        </ul>
+        <div class="callout">
+          <p>
+            If you can point to the sixth item, the program is real. If you cannot,
+            fix requirements and delivery before you buy any tool. No platform has
+            ever converted a program that nobody was waiting on.
+          </p>
+        </div>
+
+        <h3>Common first-year traps</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Trap</th><th>Symptom</th><th>Fix</th></tr></thead>
+            <tbody>
+              <tr><td>Boiling the ocean</td><td>30 competitors tracked, none well</td><td>Three competitors, properly. Add the fourth when the first three are boring</td></tr>
+              <tr><td>Tool before question</td><td>A platform purchased in month two</td><td>Delay all purchases to day 90</td></tr>
+              <tr><td>Reporting to nobody</td><td>A weekly digest with no named recipient</td><td>One named consumer per product, or kill the product</td></tr>
+              <tr><td>Avoiding a judgment</td><td>Reports that summarise without concluding</td><td>Every product ends with a probability and a recommended action</td></tr>
+              <tr><td>Neglecting internal evidence</td><td>Buying data your CRM already holds</td><td>Mine CRM and support before any purchase</td></tr>
+              <tr><td>Ethics by vibes</td><td>No written policy, grey calls made under deadline</td><td>Write the one-page policy in week one</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="glossary">
+        <p class="eyebrow">Reference</p>
+        <h2>Glossary</h2>
+        <div class="glossary-tools">
+          <input id="glossary-search" type="search" placeholder="Filter terms, for example: MNPI, KIT, triangulation" aria-label="Filter glossary terms">
+        </div>
+        <p class="no-results" id="glossary-empty" hidden>No terms match that filter.</p>
+        <div class="terms">
+          <div class="term" data-term><b>ACH (analysis of competing hypotheses)</b><p>A method that starts with every plausible explanation, then tries to disprove each against the evidence. The explanation with the least contradicting evidence wins.</p></div>
+          <div class="term" data-term><b>Admiralty scale</b><p>A two-part grading system. A letter A to F grades the source's reliability. A number 1 to 6 grades how credible the specific claim is. Graded separately, because a reliable source can pass on a false claim.</p></div>
+          <div class="term" data-term><b>Alternative data</b><p>Data not produced for financial reporting, bought to infer company or market performance: card transactions, phone location data, satellite images, scraped pages, job postings, app telemetry.</p></div>
+          <div class="term" data-term><b>Base rate</b><p>How often something of this general kind happens. Good forecasters start here and adjust for the specifics.</p></div>
+          <div class="term" data-term><b>Battlecard</b><p>A one-screen reference a seller uses during a live conversation with a prospect who is also considering a named competitor.</p></div>
+          <div class="term" data-term><b>BLUF (bottom line up front)</b><p>Writing the conclusion in the first sentences, before the evidence.</p></div>
+          <div class="term" data-term><b>Brier score</b><p>A measure of how good probabilistic forecasts were. Lower is better, zero is perfect. Rewards both being right and being appropriately confident.</p></div>
+          <div class="term" data-term><b>Business intelligence (BI)</b><p>Analysis of a company's own internal data to improve its own operations. Points inward.</p></div>
+          <div class="term" data-term><b>CFAA</b><p>The US anti-hacking statute, narrowed by hiQ v LinkedIn so that it does not cover automated collection of data publicly accessible without a login.</p></div>
+          <div class="term" data-term><b>Commercial due diligence</b><p>Research before an acquisition or investment to test whether the target's story about its market, customers, and competitive position is true.</p></div>
+          <div class="term" data-term><b>Competitive early warning</b><p>A system of pre-set indicators that fires when the market moves in a way that threatens the current strategy. Gilad's term for the gap between market reality and company strategy is "industry dissonance".</p></div>
+          <div class="term" data-term><b>Competitive intelligence (CI)</b><p>Intelligence about named competitors: capabilities, intentions, weaknesses. Narrower than market intelligence.</p></div>
+          <div class="term" data-term><b>Confidence</b><p>How much you trust the basis of a judgment: sourcing quality, independent origins, assumption load. Distinct from likelihood.</p></div>
+          <div class="term" data-term><b>Deep research agent</b><p>A system that plans a research task, runs many searches and reads, and produces a cited synthesis. Fast at drafting. Not a substitute for checking.</p></div>
+          <div class="term" data-term><b>DTSA</b><p>Defend Trade Secrets Act of 2016. US federal civil claim for misappropriation. Expressly permits reverse engineering and independent derivation.</p></div>
+          <div class="term" data-term><b>EDPB</b><p>European Data Protection Board. Issues authoritative GDPR guidance, including Opinion 28/2024 and Guidelines 03/2026 on scraping.</p></div>
+          <div class="term" data-term><b>Estimative language</b><p>Standardised words for probability, so that "likely" means the same thing to writer and reader.</p></div>
+          <div class="term" data-term><b>Expert network</b><p>A firm arranging paid calls between clients and practitioners with specific industry experience. High signal, high compliance attention.</p></div>
+          <div class="term" data-term><b>Intelligence cycle</b><p>The loop from decision need, through collection and analysis, to a delivered product and recorded outcome. A management model, not a literal description of practice.</p></div>
+          <div class="term" data-term><b>KIT (key intelligence topic)</b><p>A broad area leadership needs covered, tied to a decision or a risk. Sorted into strategic decisions, early warning, and key players.</p></div>
+          <div class="term" data-term><b>KIQ (key intelligence question)</b><p>One specific, answerable question under a KIT.</p></div>
+          <div class="term" data-term><b>Legitimate interest</b><p>One of six GDPR legal bases, requiring a documented three-part test. The main available basis for large-scale scraping, since consent is generally not workable at scale.</p></div>
+          <div class="term" data-term><b>Likelihood</b><p>How probable an event is, stated as a band. Distinct from confidence.</p></div>
+          <div class="term" data-term><b>Market intelligence (MI)</b><p>Collection and analysis of information about the external environment, done to answer a defined question and support a decision.</p></div>
+          <div class="term" data-term><b>Market map</b><p>A visual and tabular claim about how a market is organised. Trustworthy only if it publishes both its inclusion criteria and its exclusion list.</p></div>
+          <div class="term" data-term><b>Market research</b><p>Measurement of buyer attitudes and behaviour, usually through primary methods. One collection method inside market intelligence, not a synonym for it.</p></div>
+          <div class="term" data-term><b>Mirror imaging</b><p>Assuming a competitor will act as you would, with your incentives. A recurring source of wrong predictions.</p></div>
+          <div class="term" data-term><b>MNPI</b><p>Material non-public information. Trading on it, or passing it to someone who trades, is unlawful in most markets.</p></div>
+          <div class="term" data-term><b>Origin</b><p>The ultimate source of a claim, as opposed to the outlet that repeated it. Three articles quoting one press release are one origin.</p></div>
+          <div class="term" data-term><b>OSINT</b><p>Open source intelligence. Intelligence produced from publicly available information. The backbone of business market intelligence.</p></div>
+          <div class="term" data-term><b>PESTEL</b><p>A scan across political, economic, social, technological, environmental, and legal forces. Produces a list, not a ranking.</p></div>
+          <div class="term" data-term><b>Premortem</b><p>Assuming, before committing, that the decision failed badly, and writing the story of how.</p></div>
+          <div class="term" data-term><b>Pretexting</b><p>Obtaining information by pretending to be someone you are not. Prohibited by the SCIP code and at the centre of the 2006 HP scandal.</p></div>
+          <div class="term" data-term><b>Primary research</b><p>Evidence you generate yourself: interviews, surveys, observation, testing.</p></div>
+          <div class="term" data-term><b>Reverse engineering</b><p>Taking apart a lawfully obtained product to learn how it works. Expressly lawful under both the DTSA and EU Directive 2016/943.</p></div>
+          <div class="term" data-term><b>SAM</b><p>Serviceable available market. The part of the total market you could realistically reach, given your model, product, and geography.</p></div>
+          <div class="term" data-term><b>SCIP</b><p>The professional body for the field, founded in Washington DC in 1986. Renamed twice, most recently in April 2023 to the Strategic Consortium of Intelligence Professionals.</p></div>
+          <div class="term" data-term><b>Scenario planning</b><p>Constructing several internally consistent futures and testing strategy against each. Deliberately not a forecast.</p></div>
+          <div class="term" data-term><b>Signal</b><p>An observable proxy for something you cannot see directly. Job ads as a proxy for expansion. Pricing-page changes as a proxy for strategy.</p></div>
+          <div class="term" data-term><b>SOM</b><p>Serviceable obtainable market. The part of the SAM you can realistically win in a defined period.</p></div>
+          <div class="term" data-term><b>Structured analytic technique</b><p>A procedure that forces an analyst to consider what they would otherwise skip. The term entered US intelligence use in 2005.</p></div>
+          <div class="term" data-term><b>Synthetic respondent</b><p>A model-generated persona answering research questions in place of a person. Useful for pre-testing and hypothesis generation. Not a basis for sizing or pricing, because it collapses variance.</p></div>
+          <div class="term" data-term><b>TAM</b><p>Total addressable market. Total revenue available if you captured the entire market. Easily inflated. Meaningless without SAM and SOM beneath it.</p></div>
+          <div class="term" data-term><b>Trade secret</b><p>Information kept secret through reasonable steps, which has economic value because it is not generally known. Defined substantially the same way by US and EU law since 2016.</p></div>
+          <div class="term" data-term><b>Triangulation</b><p>Confirming a claim from two or more genuinely independent origins, ideally collected by different methods.</p></div>
+          <div class="term" data-term><b>Tripwire</b><p>A pre-set observable that, when seen, automatically triggers an alert. The mechanism that turns monitoring into early warning.</p></div>
+          <div class="term" data-term><b>War game</b><p>A structured exercise in which teams play competitors and respond to a proposed move.</p></div>
+          <div class="term" data-term><b>Win/loss analysis</b><p>Structured interviews with buyers after a deal closes, won or lost, to learn why. The highest-return recurring primary research most B2B companies can run.</p></div>
+        </div>
+      </section>
+
+      <section id="sources-list">
+        <p class="eyebrow">Reference</p>
+        <h2>Sources</h2>
+        <p>All sources accessed 11 August 2026. Full annotated list in <code>SOURCES.md</code>. Badges mark the source class, because it changes how much weight a figure deserves.</p>
+
+        <h3>Doctrine and method</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge primary">Primary</span><a href="https://www.odni.gov/files/documents/ICD/ICD-203.pdf">ODNI, ICD 203: Analytic Standards</a><p>Uncertainty language, and distinguishing it from confidence in sourcing.</p></div>
+          <div class="src"><span class="badge academic">Academic</span><a href="https://us.sagepub.com/sites/default/files/upm-assets/107812_book_item_107812.pdf">SAGE, Structured Analytic Techniques, chapter 1</a><p>Origin of the term in 2005 and its roots in Jack Davis's alternative analysis.</p></div>
+          <div class="src"><span class="badge academic">Academic</span><a href="https://aiimpacts.org/evidence-on-good-forecasting-practices-from-the-good-judgment-project/">Good Judgment Project findings</a><p>Calibration, base rates, updating, team performance.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://kravensecurity.com/analysis-of-competing-hypotheses/">Kraven Security, Analysis of competing hypotheses</a><p>Working description of ACH.</p></div>
+        </div>
+
+        <h3>Discipline and history</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge tertiary">Tertiary</span><a href="https://en.wikipedia.org/wiki/Competitive_intelligence">Wikipedia, Competitive intelligence</a><p>SCIP founded 1986, Herring's Motorola function in 1982, Fuld and Gilad publications.</p></div>
+          <div class="src"><span class="badge primary">Primary</span><a href="https://www.prnewswire.com/news-releases/scip-changes-name-to-strategic-and-competitive-intelligence-professionals-100524874.html">PR Newswire, SCIP name change</a><p>Organisational renamings.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.ismpp-newsletter.com/2019/11/13/converting-insight-to-action-key-aspects-of-competitive-intelligence-for-strategic-planning/">The MAP Newsletter, KITs and KIQs</a><p>Definitions used in chapter 2.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.productmarketingalliance.com/why-competitive-intelligence-programs-fail-and-what-to-do-about-it/">Product Marketing Alliance, Why CI programs fail</a><p>Librarian trap, the Forrester-cited 90-day findability figure.</p></div>
+        </div>
+
+        <h3>Industry sizing and data</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge trade">Trade</span><a href="https://researchworld.com/articles/inside-the-153bn-insights-industry">Research World, Inside the $153bn insights industry</a><p>ESOMAR 2024 figures and sector splits. Primary report is paywalled.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.neudata.co/blog/state-of-the-alternative-data-market-2026">Neudata, State of the alternative data market 2026</a><p>Buy-side spend, dataset counts, clients per dataset, AI adoption.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.linkup.com/use-cases/the-market-reaction-to-job-listing-data">LinkUp, Market reaction to job listing data</a><p>Job postings as a leading indicator.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.reveliolabs.com/job-postings-cosmos">Revelio Labs, COSMOS job postings</a><p>Coverage scale claims.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.omniconvert.com/blog/we-analyzed-1787-ecommerce-websites-similarweb-google-analytics-thats-we-learned/">Omniconvert, 1,787 sites compared with Google Analytics</a><p>Web traffic estimate accuracy. Contradicted by other comparisons, which is the finding.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://imotions.com/blog/insights/thought-leadership/fraud-in-online-surveys/">iMotions, Combatting fraud in online surveys</a><p>Research Defender, Kantar, and Westwood figures, all second-hand in this source.</p></div>
+        </div>
+
+        <h3>Programs, benchmarks, tools</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.crayon.co/state-of-competitive-intelligence-2026">Crayon, 2026 State of Competitive Intelligence</a><p>Ninth edition. Source for platform, KPI, sponsor, cadence, AI adoption, and impact comparisons. Self-selected sample, self-reported outcomes, correlational.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.userintuition.ai/posts/competitive-intelligence-pricing/">UserIntuition, CI pricing</a><p>Cost bands and Crayon 2025 program adoption figures.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://liminal.co/articles/insights/win-loss-analysis-guide/">Liminal, Win-loss analysis guide</a><p>Interview volume thresholds.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://pitchbook.com/compare/pitchbook-vs-crunchbase">PitchBook vs Crunchbase</a><p>Coverage differences. Published by one of the compared parties.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://crustdata.com/blog/7-best-startup-databases-for-investors-in-2026">Crustdata, Startup databases for investors</a><p>Comparative coverage of PitchBook, Crunchbase, Dealroom, Tracxn.</p></div>
+        </div>
+
+        <h3>Law and ethics</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge primary">Primary</span><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32016L0943">EUR-Lex, Directive (EU) 2016/943</a><p>EU trade secrets.</p></div>
+          <div class="src"><span class="badge legal">Legal</span><a href="https://www.osborneclarke.com/insights/trade-secrets-harmony-us-europe">Osborne Clarke, Trade secrets: US and Europe</a><p>Convergent definitions and lawful acquisition.</p></div>
+          <div class="src"><span class="badge legal">Legal</span><a href="https://www.quinnemanuel.com/the-firm/news-events/client-alert-what-does-the-meta-v-bright-data-summary-judgment-ruling-mean-for-web-scraping/">Quinn Emanuel, Meta v Bright Data</a><p>23 January 2024 summary judgment.</p></div>
+          <div class="src"><span class="badge legal">Legal</span><a href="https://www.fbm.com/publications/what-recent-rulings-in-hiq-v-linkedin-and-other-cases-say-about-the-legality-of-data-scraping/">Farella Braun + Martel, hiQ v LinkedIn</a><p>CFAA narrowing for public data.</p></div>
+          <div class="src"><span class="badge primary">Primary</span><a href="https://www.edpb.europa.eu/news/edpb-sheds-light-on-anonymisation-and-web-scraping-for-generative-ai-and-adopts-final-version_en">EDPB, Anonymisation and web scraping for generative AI</a><p>Guidelines 03/2026.</p></div>
+          <div class="src"><span class="badge legal">Legal</span><a href="https://www.akingump.com/en/insights/alerts/sec-division-of-examinations-finally-speaks-on-alternative-data">Akin, SEC Division of Examinations on alternative data</a><p>Risk alert on alternative data and expert networks.</p></div>
+          <div class="src"><span class="badge legal">Legal</span><a href="https://www.hoganlovells.com/en/publications/proposed-doj-settlement-provides-guidance-on-use-of-competitive-information">Hogan Lovells, DOJ settlement on competitive information in pricing tools</a><p>RealPage settlement terms and the risk factors.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.rcfp.org/hp-pay-145-million-settlement-pretexting-scandal/">RCFP, HP settlement</a><p>US$14.5 million settlement.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.cbsnews.com/news/thou-shalt-not-steal-thy-competitors-secrets/">CBS News, competitor secrets</a><p>P&amp;G and Unilever, 2001.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.octopusintelligence.com/scip-competitive-intelligence-code-of-ethics/">Octopus Intelligence, SCIP code of ethics</a><p>Secondary reproduction. scip.org returned HTTP 403 to automated retrieval.</p></div>
+        </div>
+
+        <h3>AI and 2026 practice</h3>
+        <div class="srclist">
+          <div class="src"><span class="badge primary">Primary</span><a href="https://www.alpha-sense.com/press/alphasense-launches-deep-research-automating-in-depth-analysis-with-agentic-ai-on-high-value-content">AlphaSense, Deep Research launch</a><p>10 June 2025, corpus of more than 500 million documents. Company claim about its own product.</p></div>
+          <div class="src"><span class="badge trade">Trade</span><a href="https://www.digitalapplied.com/blog/ai-model-hallucination-rate-benchmarks-2026-study">Digital Applied, hallucination rate benchmarks 2026</a><p>Aggregated secondary figures. Orders of magnitude only.</p></div>
+          <div class="src"><span class="badge academic">Academic</span><a href="https://arxiv.org/pdf/2511.07685">ResearchRubrics benchmark</a><p>Rubric-based evaluation of deep research agents.</p></div>
+          <div class="src"><span class="badge academic">Academic</span><a href="https://arxiv.org/pdf/2510.13936">FinDeepResearch benchmark</a><p>Financial-analysis evaluation of deep research agents.</p></div>
+          <div class="src"><span class="badge vendor">Vendor</span><a href="https://www.symar.ai/blog/synthetic-market-research-practical-guide/">SYMAR, Synthetic market research guide</a><p>Stanford 85% finding, variance collapse, ICC/ESOMAR June 2025 definition. All second-hand.</p></div>
+        </div>
+
+        <h3>Known gaps</h3>
+        <div class="callout warn">
+          <p>Stated plainly, because a sources list that hides its holes is worse than none.</p>
+          <ol>
+            <li>The SCIP code could not be retrieved from the primary site. It is reproduced from a secondary source and flagged wherever it appears.</li>
+            <li>ESOMAR's Global Market Research report is paywalled. All industry-size figures come from a summary article.</li>
+            <li>Crayon's full 2026 survey is gated. Sample size is described only as "hundreds", and no methodology statement was available.</li>
+            <li>Several statistics reach this report second-hand: the Research Defender fraud rate, the Kantar discard rate, the Westwood PNAS result, the Stanford synthetic-respondent study, and the Forrester findability figure. Each is labelled at the point of use.</li>
+            <li>No proprietary or paid data was used. Everything here is open source.</li>
+            <li>US and EU law dominate the legal chapter. UK, Chinese, Indian, and Brazilian regimes differ in ways this report does not cover.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>
+      Market Intelligence: A Working Handbook. Research date 11 August 2026.
+      Companion files: <code>README.md</code>, nine numbered chapters,
+      <code>GLOSSARY.md</code>, <code>SOURCES.md</code>, and <code>data.json</code>,
+      which records every quantitative claim with its period, source, and
+      confidence. <code>verify.mjs</code> checks that this page and the data file
+      agree.
+    </p>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeButton = document.getElementById('theme-toggle');
+      let storedTheme = null;
+      try { storedTheme = localStorage.getItem('market-intel-theme'); } catch (_) {}
+      if (storedTheme === 'light' || storedTheme === 'dark') root.dataset.theme = storedTheme;
+
+      themeButton.addEventListener('click', () => {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('market-intel-theme', next); } catch (_) {}
+      });
+
+      const search = document.getElementById('glossary-search');
+      const empty = document.getElementById('glossary-empty');
+      const terms = [...document.querySelectorAll('[data-term]')];
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        terms.forEach((term) => {
+          const match = query.length === 0 || term.textContent.toLowerCase().includes(query);
+          term.hidden = !match;
+          if (match) visible += 1;
+        });
+        empty.hidden = visible > 0;
+      });
+
+      const sections = [...document.querySelectorAll('main section[id]')];
+      const links = [...document.querySelectorAll('.toc a')];
+      const byId = new Map(links.map((link) => [link.getAttribute('href').slice(1), link]));
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        links.forEach((link) => link.classList.remove('active'));
+        byId.get(visible.target.id)?.classList.add('active');
+      }, { rootMargin: '-15% 0px -72% 0px', threshold: [0, 0.2, 0.5] });
+      sections.forEach((section) => observer.observe(section));
+    })();
+  </script>
+</body>
+</html>

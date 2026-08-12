@@ -1,0 +1,648 @@
+{
+  "schemaVersion": 1,
+  "title": "Modern UI/UX: A Working Reference",
+  "generatedAt": "2026-08-11",
+  "generator": {
+    "report": "modern-ui-ux-001",
+    "workflow": "11archive-create-report",
+    "renderedFormats": ["markdown", "html", "json"]
+  },
+  "scope": {
+    "subject": "Interface design and front-end interface behaviour for web and mobile",
+    "period": "2023 to 2026-08",
+    "researchDate": "2026-08-11",
+    "audience": "Product designers, front-end and design engineers, release approvers",
+    "includes": [
+      "principles and human-factors laws",
+      "design systems and design tokens",
+      "layout and responsive behaviour",
+      "colour, typography, theming",
+      "interaction and motion",
+      "accessibility and the regulation behind it",
+      "performance experienced as user experience",
+      "forms and authentication",
+      "AI-native interface patterns",
+      "deceptive design and consumer regulation",
+      "measurement and research method"
+    ],
+    "excludes": [
+      "brand identity and marketing copy",
+      "print design",
+      "game interfaces",
+      "spatial, voice, and automotive interfaces",
+      "tool and product rankings"
+    ],
+    "evidenceBoundary": "Public specifications, standards bodies, regulator publications, browser vendor documentation, large-sample public crawls, and named academic work, all retrieved 2026-08-11"
+  },
+  "evidenceStates": [
+    { "state": "specified", "meaning": "Stated in a specification or standard" },
+    { "state": "regulatory", "meaning": "Stated in law, a final rule, or an official publication" },
+    { "state": "measured", "meaning": "From a disclosed large-sample measurement with published method" },
+    { "state": "vendor-reported", "meaning": "Published by an interested party with method partly disclosed" },
+    { "state": "secondary", "meaning": "Reported by a third party without access to the method" },
+    { "state": "excluded", "meaning": "Encountered but not used; reason recorded" }
+  ],
+  "confidenceTiers": [
+    { "tier": "high", "appliesTo": "Specification text, thresholds, regulatory dates, disclosed large-sample crawl figures" },
+    { "tier": "medium", "appliesTo": "Browser availability status, vendor-published research" },
+    { "tier": "low", "appliesTo": "Market and adoption statistics from interested parties, litigation counts where trackers disagree" }
+  ],
+  "sections": [
+    { "file": "README.md", "title": "Report map", "summary": "Audience, objective, scope, evidence boundary, and how to read the bundle" },
+    { "file": "00-executive-brief.md", "title": "Executive brief", "summary": "The main result, twelve rules, what changed since 2023, and a 30-minute audit" },
+    { "file": "01-principles-and-laws.md", "title": "Principles and laws that still hold", "summary": "Ten heuristics, three response-time limits, Fitts, Hick, cognitive load, component states" },
+    { "file": "02-design-systems-and-tokens.md", "title": "Design systems and tokens", "summary": "The stable token format, three token layers, naming, component ownership, adoption metrics" },
+    { "file": "03-layout-and-responsive.md", "title": "Layout and responsive behaviour", "summary": "Baseline, container queries, intrinsic layout, viewport units, safe areas, right-to-left" },
+    { "file": "04-color-typography-and-theming.md", "title": "Colour, typography, and theming", "summary": "Contrast maths, oklch, light-dark(), contrast-color(), type numbers, density and translucency" },
+    { "file": "05-interaction-and-motion.md", "title": "Interaction and motion", "summary": "Target sizes, drag alternatives, focus, native overlays, motion durations, reduced motion" },
+    { "file": "06-accessibility-and-law.md", "title": "Accessibility, and the law behind it", "summary": "WCAG structure, the nine new 2.2 rules, WCAG 3 status, EAA and ADA, what real sites fail" },
+    { "file": "07-performance-as-ux.md", "title": "Performance felt as experience", "summary": "Core Web Vitals, real-world pass rates, page weight, budgets, perceived speed, field versus lab" },
+    { "file": "08-forms-and-authentication.md", "title": "Forms and authentication", "summary": "Labels, type and inputmode and autocomplete, structure, validation, mobile failures, passkeys" },
+    { "file": "09-ai-native-ux.md", "title": "AI-native interface design", "summary": "The 18 human-AI guidelines, five states, streaming, chat as fallback, generative UI, agents" },
+    { "file": "10-anti-patterns-and-regulation.md", "title": "Anti-patterns, deceptive design, and regulation", "summary": "Enforcement status, the deceptive pattern catalogue, consent banners, overlays, 24 anti-patterns" },
+    { "file": "11-measurement-and-research.md", "title": "Measuring and researching interface quality", "summary": "HEART and Goals-Signals-Metrics, SUS benchmarks, sample sizes, task measures, honest reporting" },
+    { "file": "12-implementation-checklist.md", "title": "Implementation checklist", "summary": "64 checks in five tiers, plus what can and cannot be automated" },
+    { "file": "13-glossary.md", "title": "Glossary", "summary": "86 terms defined for this audience" },
+    { "file": "14-methodology-and-sources.md", "title": "Methodology, sources, and limitations", "summary": "How the report was built, 55 sources with evidence state, conflicts, exclusions, limitations" }
+  ],
+  "wcag": {
+    "currentVersion": "2.2",
+    "revisionDate": "2024-12-12",
+    "publisher": "W3C",
+    "principles": ["Perceivable", "Operable", "Understandable", "Robust"],
+    "levels": ["A", "AA", "AAA"],
+    "targetLevelForLaw": "AA",
+    "removedInThisVersion": [
+      { "id": "4.1.1", "name": "Parsing", "note": "Removed in 2.2 because browsers recover from malformed markup consistently. Organisations reporting against 2.0 or 2.1 may still be asked for it" }
+    ],
+    "newCriteria": [
+      { "id": "2.4.11", "name": "Focus Not Obscured (Minimum)", "level": "AA", "requirement": "A component receiving keyboard focus is not entirely hidden by author-created content", "commonCause": "Sticky headers, cookie bars, chat widgets" },
+      { "id": "2.4.12", "name": "Focus Not Obscured (Enhanced)", "level": "AAA", "requirement": "No part of the focused component is hidden by author-created content", "commonCause": "Same as 2.4.11, stricter" },
+      { "id": "2.4.13", "name": "Focus Appearance", "level": "AAA", "requirement": "Focus indicator at least 2 CSS pixels thick around the component, with 3:1 contrast", "commonCause": "Thin or low-contrast custom focus rings" },
+      { "id": "2.5.7", "name": "Dragging Movements", "level": "AA", "requirement": "Anything achievable by dragging is also achievable with a single pointer action unless dragging is essential", "commonCause": "Sliders, reorderable lists, kanban boards, map panning" },
+      { "id": "2.5.8", "name": "Target Size (Minimum)", "level": "AA", "requirement": "Targets are at least 24 by 24 CSS pixels, or spaced so a 24 px circle around each does not overlap another", "commonCause": "Toast close buttons, table row icons, pagination" },
+      { "id": "3.2.6", "name": "Consistent Help", "level": "A", "requirement": "Help mechanisms appear in the same relative order on every page that includes them", "commonCause": "Help link moving between header and footer" },
+      { "id": "3.3.7", "name": "Redundant Entry", "level": "A", "requirement": "Information already entered in a process is not requested again, unless essential", "commonCause": "Multi-step checkout re-asking for an address" },
+      { "id": "3.3.8", "name": "Accessible Authentication (Minimum)", "level": "AA", "requirement": "No authentication step requires a cognitive function test without an alternative or assistance mechanism", "commonCause": "Blocking paste in password fields, puzzle-only sign-in" },
+      { "id": "3.3.9", "name": "Accessible Authentication (Enhanced)", "level": "AAA", "requirement": "As 3.3.8, without the object or personal content recognition exception", "commonCause": "Image recognition as the only alternative" }
+    ],
+    "otherCriteriaCited": [
+      { "id": "1.3.5", "name": "Identify Input Purpose", "level": "AA", "relevance": "Satisfied by correct autocomplete tokens" },
+      { "id": "1.4.3", "name": "Contrast (Minimum)", "level": "AA", "relevance": "4.5:1 text, 3:1 large text" },
+      { "id": "1.4.4", "name": "Resize Text", "level": "AA", "relevance": "Blocking pinch zoom fails this" },
+      { "id": "1.4.6", "name": "Contrast (Enhanced)", "level": "AAA", "relevance": "7:1 text, 4.5:1 large text" },
+      { "id": "1.4.11", "name": "Non-text Contrast", "level": "AA", "relevance": "3:1 for control boundaries and meaningful graphics" },
+      { "id": "2.2.2", "name": "Pause, Stop, Hide", "level": "A", "relevance": "Pause control required for motion or auto-update over five seconds" },
+      { "id": "2.3.3", "name": "Animation from Interactions", "level": "AAA", "relevance": "Interaction-triggered motion must be disableable" },
+      { "id": "2.5.1", "name": "Pointer Gestures", "level": "A", "relevance": "Single-pointer alternative to path-based or multipoint gestures" },
+      { "id": "2.5.5", "name": "Target Size (Enhanced)", "level": "AAA", "relevance": "44 by 44 CSS pixels" }
+    ],
+    "nextVersion": {
+      "version": "3.0",
+      "status": "Working Draft",
+      "lastDraftUpdate": "2026-03",
+      "reportedOutcomeCount": 174,
+      "conformanceTiers": ["Bronze", "Silver", "Gold"],
+      "expectedCandidateRecommendation": "2027-Q4",
+      "expectedRecommendation": "not before 2028",
+      "contrastNote": "APCA is explored but not normative",
+      "confidence": "medium",
+      "state": "secondary"
+    }
+  },
+  "contrastRequirements": [
+    { "criterion": "1.4.3", "level": "AA", "content": "Normal text", "ratio": "4.5:1" },
+    { "criterion": "1.4.3", "level": "AA", "content": "Large text: 18 pt, or 14 pt bold, or CJK equivalent", "ratio": "3:1" },
+    { "criterion": "1.4.6", "level": "AAA", "content": "Normal text", "ratio": "7:1" },
+    { "criterion": "1.4.6", "level": "AAA", "content": "Large text", "ratio": "4.5:1" },
+    { "criterion": "1.4.11", "level": "AA", "content": "Component boundaries, meaningful icons and graphics", "ratio": "3:1" }
+  ],
+  "contrastExemptions": [
+    "Text in a logo or brand name",
+    "Purely decorative text",
+    "Invisible text",
+    "Text in an image that is mostly other visual content",
+    "Text in a genuinely disabled control"
+  ],
+  "coreWebVitals": [
+    { "metric": "LCP", "name": "Largest Contentful Paint", "measures": "When the largest visible element finished rendering", "good": "2.5 s or less", "needsImprovement": "up to 4.0 s", "poor": "over 4.0 s", "percentile": "75th of page views" },
+    { "metric": "INP", "name": "Interaction to Next Paint", "measures": "Visible response time to clicks, taps, and key presses", "good": "200 ms or less", "needsImprovement": "up to 500 ms", "poor": "over 500 ms", "percentile": "75th of page views" },
+    { "metric": "CLS", "name": "Cumulative Layout Shift", "measures": "Unexpected movement of visible content", "good": "0.1 or less", "needsImprovement": "up to 0.25", "poor": "over 0.25", "percentile": "75th of page views" }
+  ],
+  "inp": {
+    "replacedMetric": "First Input Delay (FID)",
+    "replacedOn": "2024-03",
+    "countedInteractions": ["mouse click", "touchscreen tap", "key press"],
+    "excludedInteractions": ["scroll", "hover", "zoom"],
+    "outlierHandling": "One high-latency interaction ignored per 50 interactions on heavily used pages",
+    "phases": [
+      { "phase": "Input delay", "definition": "Time before event handlers start running", "usualCause": "Main thread busy with other script" },
+      { "phase": "Processing duration", "definition": "Time for event handler callbacks to execute", "usualCause": "Your own code" },
+      { "phase": "Presentation delay", "definition": "Time from callbacks finishing to the next paint", "usualCause": "Expensive layout, large DOM, heavy style recalculation" }
+    ]
+  },
+  "responseTimeLimits": [
+    { "limit": "0.1 s", "userExperience": "Feels instant; direct manipulation", "buildResponse": "No indicator; optimistic updates belong here" },
+    { "limit": "1.0 s", "userExperience": "Noticeable pause, train of thought survives", "buildResponse": "No spinner; a subtle state change is enough" },
+    { "limit": "10 s", "userExperience": "Edge of held attention", "buildResponse": "Progress indicator with an estimate, and the ability to leave" }
+  ],
+  "targetSizes": [
+    { "source": "WCAG 2.2 rule 2.5.8", "level": "AA", "minimum": "24 by 24 CSS px", "nature": "Standard, legally referenced", "note": "Spacing exception: a 24 px circle around each target must not overlap another target's circle" },
+    { "source": "WCAG 2.2 rule 2.5.5", "level": "AAA", "minimum": "44 by 44 CSS px", "nature": "Standard, aspirational level", "note": "n/a" },
+    { "source": "Apple Human Interface Guidelines", "level": "n/a", "minimum": "44 by 44 pt", "nature": "Platform guidance", "note": "Hit area may exceed the visible drawing" },
+    { "source": "Material Design", "level": "n/a", "minimum": "48 by 48 dp", "nature": "Platform guidance", "note": "About 9 mm physical" }
+  ],
+  "motionDurations": [
+    { "movement": "Small state change: hover, toggle, checkbox", "duration": "100 to 150 ms" },
+    { "movement": "Element entering or leaving: dropdown, tooltip", "duration": "150 to 250 ms" },
+    { "movement": "Larger transition: panel, sheet, page", "duration": "250 to 400 ms" },
+    { "movement": "Anything above 400 ms", "duration": "Almost always too slow" }
+  ],
+  "regulations": [
+    { "id": "EAA", "name": "European Accessibility Act", "binds": "Businesses selling covered products and services to EU consumers, wherever based", "standard": "EN 301 549, whose web chapter references WCAG 2.1 AA", "keyDate": "2025-06-28", "note": "Applies to new products and newly published content; enforcement began immediately", "state": "regulatory" },
+    { "id": "EN301549", "name": "EN 301 549", "binds": "Used to demonstrate EAA compliance", "standard": "Contains WCAG 2.1 AA for web", "keyDate": "current", "note": "Harmonised European standard", "state": "regulatory" },
+    { "id": "ADA-II", "name": "ADA Title II (United States)", "binds": "State and local government bodies including public universities", "standard": "WCAG 2.1 AA", "keyDate": "2027-04-26 and 2028-04-28", "note": "Final rule 2024-04-24; compliance dates extended one year in April 2026. 2027-04-26 for entities serving 50,000 or more people, 2028-04-26 for smaller entities and special districts", "state": "regulatory" },
+    { "id": "ADA-III", "name": "ADA Title III (United States)", "binds": "Places of public accommodation, applied to websites through case law", "standard": "Courts commonly reference WCAG 2.1 AA", "keyDate": "ongoing", "note": "No fixed technical rule or deadline", "state": "regulatory" },
+    { "id": "508", "name": "Section 508 (United States)", "binds": "Federal agencies and their suppliers", "standard": "WCAG 2.0 AA via the Section 508 refresh", "keyDate": "in force", "note": "n/a", "state": "regulatory" },
+    { "id": "FTC-NOR", "name": "FTC Negative Option Rule (click to cancel)", "binds": "Subscription sellers in the United States", "standard": "Cancellation as easy as sign-up", "keyDate": "2024 finalised, 2025 vacated", "note": "Vacated on procedural grounds; enforcement continues under the FTC Act", "state": "regulatory" },
+    { "id": "DFA", "name": "EU Digital Fairness Act", "binds": "Planned: manipulative design, addictive design, unfair personalisation", "standard": "Proposal expected late 2026", "keyDate": "2025-11-19", "note": "Headline item in the 2030 Consumer Agenda adopted 2025-11-19", "state": "regulatory" }
+  ],
+  "enforcementExamples": [
+    { "matter": "Amazon subscription sign-up and cancellation", "outcome": "Reported 2.5 billion USD settlement", "date": "2025-09", "state": "secondary", "confidence": "low" },
+    { "matter": "Care.com", "outcome": "Reported 8 million USD settlement", "date": "2025", "state": "secondary", "confidence": "low" },
+    { "matter": "French disability organisations, formal legal notices to grocery retailers", "outcome": "Notices issued within days of the EAA date", "date": "2025-06", "state": "secondary", "confidence": "low" },
+    { "matter": "CNIL formal notices on cookie banner design asymmetry", "outcome": "Formal notices to multiple publishers", "date": "2025", "state": "secondary", "confidence": "low" },
+    { "matter": "Austrian highest court on consent button parity", "outcome": "Coloured accept plus grey reject link ruled a violation", "date": "2025", "state": "secondary", "confidence": "low" }
+  ],
+  "measurements": {
+    "webaimMillion2026": {
+      "source": "WebAIM Million",
+      "date": "2026-02",
+      "population": "1,000,000 home pages, Tranco ranking",
+      "method": "Automated (WAVE)",
+      "state": "measured",
+      "confidence": "high",
+      "pagesWithDetectedFailures": "95.9%",
+      "averageFailuresPerPage": 56.1,
+      "yearOverYear": { "pagesWithDetectedFailures2025": "94.8%", "averageFailuresPerPage2025": 51.0, "failuresChange": "up 10.1%" },
+      "failures": [
+        { "failure": "Low contrast text", "share2026": "83.9%", "share2025": "79.1%", "direction": "worse" },
+        { "failure": "Missing alternative text on images", "share2026": "53.1%", "share2025": "55.5%", "direction": "better" },
+        { "failure": "Missing form input labels", "share2026": "51.0%", "share2025": "48.2%", "direction": "worse" },
+        { "failure": "Empty links", "share2026": "46.3%", "share2025": "n/a", "direction": "n/a" },
+        { "failure": "Empty buttons", "share2026": "30.6%", "share2025": "n/a", "direction": "n/a" },
+        { "failure": "Missing document language", "share2026": "13.5%", "share2025": "n/a", "direction": "n/a" }
+      ],
+      "ariaFinding": {
+        "averageFailuresWithAria": 59.1,
+        "averageFailuresWithoutAria": 42.0,
+        "ariaAttributeGrowthOneYear": "27%",
+        "averageAriaAttributesPerPage": "over 133",
+        "comparedTo2019": "more than six times higher"
+      }
+    },
+    "almanacAccessibility2025": {
+      "source": "HTTP Archive Web Almanac 2025, Accessibility chapter",
+      "date": "2025-07 crawl",
+      "population": "about 16.2 million sites",
+      "method": "Lighthouse with axe-core",
+      "state": "measured",
+      "confidence": "high",
+      "rows": [
+        { "measure": "Sites passing colour contrast checks", "desktop": "30%", "mobile": "31%" },
+        { "measure": "Sites removing the default focus outline", "desktop": "about 67%", "mobile": "about 67%" },
+        { "measure": "Sites using :focus-visible", "desktop": "about 25%", "mobile": "about 25%" },
+        { "measure": "Inputs whose only label is placeholder text", "desktop": "53%", "mobile": "55%" },
+        { "measure": "Inputs with no accessible name", "desktop": "24% to 25%", "mobile": "24% to 25%" },
+        { "measure": "Inputs labelled with a real label element", "desktop": "n/a", "mobile": "35%" },
+        { "measure": "Pages responding to prefers-reduced-motion", "desktop": "about 50%", "mobile": "about 50%" },
+        { "measure": "Pages responding to forced-colors", "desktop": "16% to 19%", "mobile": "16% to 19%" },
+        { "measure": "Pages responding to prefers-color-scheme", "desktop": "about 13%", "mobile": "about 13%" },
+        { "measure": "Pages that disable pinch zoom", "desktop": "21%", "mobile": "19%" },
+        { "measure": "Sites setting font sizes in pixels", "desktop": "67%", "mobile": "67%" },
+        { "measure": "Pages with a detectable skip link", "desktop": "24%", "mobile": "24%" },
+        { "measure": "Pages with a valid lang attribute", "desktop": "about 86%", "mobile": "about 86%" },
+        { "measure": "Sites using a third-party accessibility overlay", "desktop": "about 2%", "mobile": "n/a" },
+        { "measure": "Top 1,000 sites using an accessibility overlay", "desktop": "0.2%", "mobile": "n/a" },
+        { "measure": "Median Lighthouse accessibility score", "desktop": "85%", "mobile": "85%" }
+      ]
+    },
+    "almanacPerformance2025": {
+      "source": "HTTP Archive Web Almanac 2025, Performance chapter",
+      "date": "2025-07 crawl plus CrUX field data",
+      "state": "measured",
+      "confidence": "high",
+      "rows": [
+        { "measure": "All three Core Web Vitals good", "desktop": "56%", "mobile": "48%", "previousYearDesktop": "55%", "previousYearMobile": "44%" },
+        { "measure": "LCP good", "desktop": "74%", "mobile": "62%", "previousYearDesktop": "n/a", "previousYearMobile": "n/a" },
+        { "measure": "INP good", "desktop": "97%", "mobile": "77%", "previousYearDesktop": "n/a", "previousYearMobile": "74%" },
+        { "measure": "CLS good", "desktop": "72%", "mobile": "81%", "previousYearDesktop": "n/a", "previousYearMobile": "n/a" }
+      ],
+      "lcpComposition": {
+        "imageIsLcpElementDesktop": "85.3%",
+        "imageIsLcpElementMobile": "76%",
+        "mostCommonFormat": "JPEG at 57%",
+        "lcpImageOnDifferentDomain": "16% to 18%",
+        "mobilePagesUsingFetchpriorityHigh": "17%"
+      },
+      "note": "Field INP improved while lab Total Blocking Time worsened, which is why field and lab data must both be read"
+    },
+    "almanacPageWeight2025": {
+      "source": "HTTP Archive Web Almanac 2025, Page Weight chapter",
+      "date": "2025-07 crawl",
+      "state": "measured",
+      "confidence": "high",
+      "rows": [
+        { "measure": "Median total page weight", "desktop": "2,412 KB", "mobile": "2,164 KB" },
+        { "measure": "90th percentile page weight", "desktop": "9,179 KB", "mobile": "8,337 KB" },
+        { "measure": "Median images", "desktop": "1,058 KB", "mobile": "n/a" },
+        { "measure": "Median JavaScript", "desktop": "697 KB", "mobile": "n/a" },
+        { "measure": "Median fonts", "desktop": "139 KB", "mobile": "n/a" },
+        { "measure": "Median CSS", "desktop": "82 KB", "mobile": "n/a" },
+        { "measure": "Median HTML", "desktop": "22 KB", "mobile": "n/a" },
+        { "measure": "Median unused JavaScript, uncompressed", "desktop": "280 KB", "mobile": "251 KB" }
+      ],
+      "tenYearGrowth": {
+        "mobileMedian2015": "845 KB",
+        "mobileMedian2025": "2,362 KB",
+        "mobileChange": "up 202.8%",
+        "desktopChange": "up 110.2%"
+      },
+      "internalInconsistency": "The resource table gives median desktop JavaScript as 697 KB while the narrative cites about 708 KB of total JavaScript. Medians of different groupings need not agree"
+    },
+    "almanacGenerativeAi2025": {
+      "source": "HTTP Archive Web Almanac 2025, Generative AI chapter",
+      "date": "2025-07 crawl",
+      "population": "about 12.9 million sites",
+      "state": "measured",
+      "confidence": "high",
+      "rows": [
+        { "feature": "Browser Prompt API detected", "desktop": "0.095%", "mobile": "0.078%" },
+        { "feature": "Translator and Language Detector APIs", "desktop": "0.277%", "mobile": "0.262%" },
+        { "feature": "Writing assistance APIs", "desktop": "0.127%", "mobile": "0.137%" },
+        { "feature": "Valid llms.txt present", "desktop": "2.13%", "mobile": "2.10%" },
+        { "feature": "robots.txt present with directives", "desktop": "94.1%", "mobile": "n/a" },
+        { "feature": "robots.txt mentioning GPTBot", "desktop": "4.5%", "mobile": "n/a" },
+        { "feature": "robots.txt mentioning GPTBot, top 1,000 sites", "desktop": "20.9%", "mobile": "n/a" }
+      ],
+      "enablingTechnologyGrowth": {
+        "webAssemblyPageLoads": "4.44% to 5.64% across 2025, up 27%",
+        "webGpuDesktop": "0.035% to 0.243%, up 591%",
+        "webGpuMobile": "0.029% to 0.238%, up 709%"
+      }
+    }
+  },
+  "platformFeatures": [
+    { "feature": "Container queries", "does": "Style an element by its container's size rather than the window", "status": "Baseline widely available", "since": "2023", "interop2026": false },
+    { "feature": ":has()", "does": "Style a parent based on its descendants", "status": "Baseline widely available", "since": "2023", "interop2026": false },
+    { "feature": "Cascade layers", "does": "Declare which groups of styles win, removing specificity fights", "status": "Baseline widely available", "since": "n/a", "interop2026": false },
+    { "feature": "Logical properties", "does": "Name box edges by text flow so layouts work in right-to-left", "status": "Baseline widely available", "since": "n/a", "interop2026": false },
+    { "feature": "Subgrid", "does": "Let a nested grid use its parent's tracks", "status": "Baseline widely available", "since": "n/a", "interop2026": false },
+    { "feature": "dvh, svh, lvh units", "does": "Viewport heights that account for mobile browser toolbars", "status": "Baseline widely available", "since": "n/a", "interop2026": false },
+    { "feature": "Same-document view transitions", "does": "Animate between two states of one page without keyframes", "status": "Baseline newly available", "since": "Firefox 144, October 2025", "interop2026": true },
+    { "feature": "Cross-document view transitions", "does": "Animate between two page navigations", "status": "Interop 2026 focus area", "since": "n/a", "interop2026": true },
+    { "feature": "Element-scoped view transitions", "does": "Transition one component instead of the whole page", "status": "Chrome 147 and later", "since": "Chrome 147", "interop2026": true },
+    { "feature": "Scroll-driven animations", "does": "Tie animation progress to scroll position, off the main thread", "status": "Broadly supported, Interop 2026 focus area", "since": "n/a", "interop2026": true },
+    { "feature": "Scroll-triggered animations", "does": "Start a timed animation when a scroll boundary is crossed", "status": "Chrome 146 and later", "since": "Chrome 146", "interop2026": false },
+    { "feature": "Scroll-state queries", "does": "Style based on scrollable, stuck, or snapped state", "status": "Chrome 133 and later", "since": "Chrome 133", "interop2026": false },
+    { "feature": "Anchor positioning", "does": "Tether one element to another in CSS", "status": "Interop 2026 focus area", "since": "n/a", "interop2026": true },
+    { "feature": "Anchored container queries", "does": "Style by an element's anchor fallback position", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "popover attribute", "does": "Top-layer stacking and light dismissal for menus and panels", "status": "In all engines", "since": "n/a", "interop2026": true },
+    { "feature": "popover=hint", "does": "Tooltip-style popover that does not close other popovers", "status": "Newer, check support", "since": "n/a", "interop2026": true },
+    { "feature": "dialog closedby attribute", "does": "Close a dialog by clicking outside or pressing Escape", "status": "Chrome 134 and later", "since": "Chrome 134", "interop2026": true },
+    { "feature": "Invoker commands (command, commandfor)", "does": "Trigger dialogs and popovers from a button with no JavaScript", "status": "Chrome 135 and later", "since": "Chrome 135", "interop2026": false },
+    { "feature": "interestfor attribute", "does": "Show UI on hover or keyboard focus, with interest-delay", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "Customizable select (appearance: base-select)", "does": "Style the whole select and its option list", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "::scroll-button() and ::scroll-marker()", "does": "Browser-generated, keyboard-accessible carousel controls", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "scroll-target-group with :target-current", "does": "Scroll-spy navigation with no scroll listener", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "light-dark()", "does": "Hold light and dark values in one declaration", "status": "Reported stable in all engines as of May 2026", "since": "Chrome 150 also accepts images", "interop2026": false },
+    { "feature": "contrast-color()", "does": "Return black or white, whichever contrasts more with a colour", "status": "Interop 2026 focus area; Safari shipped first", "since": "n/a", "interop2026": true },
+    { "feature": "oklch() and color-mix()", "does": "Perceptual colour and predictable mixing", "status": "Baseline widely available", "since": "n/a", "interop2026": false },
+    { "feature": "Style queries", "does": "Style descendants by a custom property value on an ancestor", "status": "Interop 2026 focus area", "since": "n/a", "interop2026": true },
+    { "feature": "shape()", "does": "Complex responsive clip shapes in CSS instead of SVG paths", "status": "Interop 2026 focus area; Safari shipped first", "since": "n/a", "interop2026": true },
+    { "feature": "if()", "does": "Inline conditional logic in a property value", "status": "Chrome 150 and later", "since": "Chrome 150", "interop2026": false },
+    { "feature": "Custom functions (@function)", "does": "Reusable CSS functions with arguments", "status": "Chrome 150 and later", "since": "Chrome 150", "interop2026": false },
+    { "feature": "text-box trim", "does": "Trim font leading so text is optically centred", "status": "Chrome 150 and later", "since": "Chrome 150", "interop2026": false },
+    { "feature": "text-wrap: balance and pretty", "does": "Even out heading lines and improve paragraph endings", "status": "Widely available; adoption 2.67% and 1.71% of sites", "since": "2023", "interop2026": false },
+    { "feature": "corner-shape", "does": "Bevel, notch, scoop, and squircle corners", "status": "Experimental", "since": "n/a", "interop2026": false },
+    { "feature": "moveBefore()", "does": "Move an element without resetting video, iframes, or animations", "status": "Chrome 133 and later", "since": "Chrome 133", "interop2026": false },
+    { "feature": "@starting-style", "does": "Define the state an element animates from on first appearance", "status": "Widely supported", "since": "n/a", "interop2026": false },
+    { "feature": "sibling-index() and sibling-count()", "does": "Stagger animations without per-child delays", "status": "Newer, check support", "since": "n/a", "interop2026": false },
+    { "feature": "attr() for any property", "does": "Parse attribute values into colours, lengths, and identifiers", "status": "Interop 2026 focus area", "since": "n/a", "interop2026": true }
+  ],
+  "baselineLabels": [
+    { "label": "Limited availability", "meaning": "Not in every major engine yet", "howToTreat": "Behind a feature check, or not at all" },
+    { "label": "Newly available", "meaning": "Just supported in all major engines", "howToTreat": "Usable with a fallback for older installed versions" },
+    { "label": "Widely available", "meaning": "In all major engines for about 30 months", "howToTreat": "Use without a fallback" }
+  ],
+  "interop2026FocusAreas": [
+    "Anchor positioning",
+    "Container style queries",
+    "Dialogs and popovers",
+    "Scroll-driven animations",
+    "View transitions",
+    "attr() CSS function",
+    "contrast-color() CSS function",
+    "Custom highlights",
+    "Fetch uploads and ranges",
+    "IndexedDB",
+    "JSPI for WebAssembly",
+    "Media pseudo-classes",
+    "Navigation API",
+    "Scoped custom element registries",
+    "Scroll snap",
+    "shape() CSS function",
+    "Web compat",
+    "WebRTC",
+    "WebTransport API",
+    "zoom CSS property"
+  ],
+  "designTokens": {
+    "spec": "Design Tokens Format Module",
+    "stableVersion": "2025.10",
+    "stableAnnounced": "2025-10-28",
+    "publisher": "W3C Design Tokens Community Group",
+    "caution": "The drafts site also carries a later preview draft dated 2026-07-30 marked not to implement or cite",
+    "fileFormat": "JSON, extension .tokens or .tokens.json, media type application/design-tokens+json",
+    "requiredProperties": ["$value", "$type (on the token or inherited from its group)"],
+    "optionalProperties": ["$description", "$extensions", "$deprecated"],
+    "simpleTypes": ["color", "dimension", "fontFamily", "fontWeight", "duration", "cubicBezier", "number"],
+    "compositeTypes": ["strokeStyle", "border", "transition", "shadow", "gradient", "typography"],
+    "referencing": ["{group.token} for a whole value", "JSON Pointer such as #/path/to/$value for a property inside a composite"],
+    "errors": ["Circular references must be detected and reported"],
+    "inheritance": "$extends lets one group inherit another, local tokens overriding by deep merge",
+    "themingPosition": "Deliberately agnostic; the spec standardises the container, not the strategy",
+    "layers": [
+      { "layer": 1, "name": "Primitive", "alsoCalled": "reference, global", "example": "green.600", "exampleValue": "oklch(0.508 0.118 165.6)", "mayBeUsedBy": "Nobody outside the system" },
+      { "layer": 2, "name": "Semantic", "alsoCalled": "system, alias", "example": "color.action.background", "exampleValue": "{green.600}", "mayBeUsedBy": "Component authors" },
+      { "layer": 3, "name": "Component", "alsoCalled": "scoped", "example": "button.primary.background", "exampleValue": "{color.action.background}", "mayBeUsedBy": "That component only" }
+    ]
+  },
+  "componentEcosystem": [
+    { "project": "shadcn/ui", "kind": "Copy-in registry on unstyled primitives plus utility CSS", "status": "121.1k stars on GitHub", "readOn": "2026-08-11", "state": "measured" },
+    { "project": "Radix Primitives", "kind": "Unstyled accessible primitives", "status": "Maintained by WorkOS, which acquired the original team (Modulz) in 2022", "readOn": "2026-08-11", "state": "vendor-reported" },
+    { "project": "Base UI", "kind": "Unstyled primitives from the MUI team", "status": "v1.0.0 released December 2025", "readOn": "2026-08-11", "state": "vendor-reported" }
+  ],
+  "typographyNumbers": [
+    { "decision": "Body text size on mobile", "value": "16 px minimum", "why": "Below 16 px, mobile Safari zooms the page when an input is focused" },
+    { "decision": "Line length", "value": "45 to 75 characters, target about 66", "why": "Long-standing typographic guidance supported by eye-movement studies" },
+    { "decision": "Line height", "value": "1.4 to 1.6 for body text", "why": "Longer lines need more leading" },
+    { "decision": "Paragraph width in CSS", "value": "max-width: 65ch", "why": "ch tracks the typeface" },
+    { "decision": "Sizing unit", "value": "rem for type and spacing", "why": "Respects the user's browser font size; 67% of sites still use pixels" },
+    { "decision": "Type scale", "value": "Fluid via clamp() with a rem term in the preferred value", "why": "A pure vw preferred value stops text scaling on zoom, which is an accessibility failure" }
+  ],
+  "aiGuidelines": {
+    "source": "Amershi et al., Guidelines for Human-AI Interaction, CHI 2019; Microsoft HAX Toolkit",
+    "validation": "49 design practitioners applied them against 20 shipped AI products",
+    "items": [
+      { "id": "G1", "phase": "Initially", "guideline": "Make clear what the system can do" },
+      { "id": "G2", "phase": "Initially", "guideline": "Make clear how well the system can do what it can do" },
+      { "id": "G3", "phase": "During interaction", "guideline": "Time services based on context" },
+      { "id": "G4", "phase": "During interaction", "guideline": "Show contextually relevant information" },
+      { "id": "G5", "phase": "During interaction", "guideline": "Match relevant social norms" },
+      { "id": "G6", "phase": "During interaction", "guideline": "Mitigate social biases" },
+      { "id": "G7", "phase": "When wrong", "guideline": "Support efficient invocation" },
+      { "id": "G8", "phase": "When wrong", "guideline": "Support efficient dismissal" },
+      { "id": "G9", "phase": "When wrong", "guideline": "Support efficient correction" },
+      { "id": "G10", "phase": "When wrong", "guideline": "Scope services when in doubt" },
+      { "id": "G11", "phase": "When wrong", "guideline": "Make clear why the system did what it did" },
+      { "id": "G12", "phase": "Over time", "guideline": "Remember recent interactions" },
+      { "id": "G13", "phase": "Over time", "guideline": "Learn from user behaviour" },
+      { "id": "G14", "phase": "Over time", "guideline": "Update and adapt cautiously" },
+      { "id": "G15", "phase": "Over time", "guideline": "Encourage granular feedback" },
+      { "id": "G16", "phase": "Over time", "guideline": "Convey the consequences of user actions" },
+      { "id": "G17", "phase": "Over time", "guideline": "Provide global controls" },
+      { "id": "G18", "phase": "Over time", "guideline": "Notify users about changes" }
+    ]
+  },
+  "aiFeatureStates": [
+    { "state": "Empty, before first use", "requirement": "Say what this can do, give concrete example prompts, and say what it cannot do" },
+    { "state": "Working", "requirement": "Stream partial output past about a second; name the current step for multi-step work" },
+    { "state": "Complete", "requirement": "Show provenance; offer edit, regenerate, and dismiss with equal weight" },
+    { "state": "Uncertain", "requirement": "Say so in words; narrow the claim, offer to search, or ask a clarifying question" },
+    { "state": "Failed", "requirement": "Explain what failed, whether retrying helps, and offer the non-AI path" }
+  ],
+  "deceptivePatterns": [
+    { "pattern": "Confirmshaming", "looksLike": "No thanks, I prefer paying full price", "problem": "Coerces through embarrassment", "fix": "Neutral decline wording at equal visual weight" },
+    { "pattern": "Asymmetric buttons", "looksLike": "Filled Accept all, grey text Reject", "problem": "Manipulates by hierarchy rather than information", "fix": "Equal size, weight, and colour treatment" },
+    { "pattern": "Roach motel", "looksLike": "Easy to subscribe, phone call to cancel", "problem": "The specific target of FTC action", "fix": "Cancel in the same steps and channel as sign-up" },
+    { "pattern": "Hidden costs", "looksLike": "Fees appear at the last step", "problem": "Sunk-cost manipulation", "fix": "Total price including fees from the first step" },
+    { "pattern": "Forced continuity", "looksLike": "Trial converts silently to paid", "problem": "Charges without a decision", "fix": "Reminder before charge and a visible cancel path" },
+    { "pattern": "Pre-checked options", "looksLike": "Marketing consent already ticked", "problem": "Consent never given", "fix": "Unchecked by default, always" },
+    { "pattern": "Fake urgency", "looksLike": "3 people are viewing this, with no basis", "problem": "False information", "fix": "Only true, verifiable counts and timers" },
+    { "pattern": "Nagging", "looksLike": "Repeated notification prompts", "problem": "Wears down refusal", "fix": "Ask once, respect the answer, offer it in settings" },
+    { "pattern": "Disguised ads", "looksLike": "Sponsored content styled as results", "problem": "Confuses the identity of content", "fix": "Clear, persistent labelling" },
+    { "pattern": "Trick wording", "looksLike": "Double negatives on opt-outs", "problem": "Confuses through language", "fix": "One clear affirmative statement per choice" },
+    { "pattern": "Obstruction", "looksLike": "Cancellation buried five levels deep", "problem": "Friction as retention strategy", "fix": "Direct route from the account page" },
+    { "pattern": "Bait and switch", "looksLike": "The button does something other than its label", "problem": "Breaks the basic contract of a control", "fix": "Labels describe the action" }
+  ],
+  "antiPatterns": [
+    { "antiPattern": "Removing the focus ring", "symptom": "Keyboard users cannot see where they are; about 67% of sites do this", "fix": "Style :focus-visible, 2 px, 3:1 contrast", "section": "05" },
+    { "antiPattern": "Placeholder as label", "symptom": "Field meaning vanishes on typing", "fix": "Real label element", "section": "08" },
+    { "antiPattern": "div as button", "symptom": "No keyboard, no role, no focus", "fix": "Use button", "section": "06" },
+    { "antiPattern": "ARIA over native", "symptom": "More detected failures, not fewer", "fix": "Native element first", "section": "06" },
+    { "antiPattern": "Blocking pinch zoom", "symptom": "Fails WCAG 1.4.4; one page in five does it", "fix": "Remove maximum-scale; use 16 px inputs", "section": "04" },
+    { "antiPattern": "Drag-only interaction", "symptom": "Fails WCAG 2.5.7", "fix": "Add a single-pointer alternative", "section": "05" },
+    { "antiPattern": "Hover-only reveal", "symptom": "Invisible on touch, unreachable by keyboard", "fix": "Click or interestfor", "section": "05" },
+    { "antiPattern": "Tiny tap targets", "symptom": "Mis-taps and rage taps", "fix": "24 px floor, 44 px for frequent actions", "section": "05" },
+    { "antiPattern": "Low-contrast grey text", "symptom": "Most common failure on the web", "fix": "4.5:1 body, 3:1 large and controls", "section": "04" },
+    { "antiPattern": "Colour-only status", "symptom": "Invisible to about 8% of men", "fix": "Add icon, shape, or text", "section": "04" },
+    { "antiPattern": "Infinite scroll with a footer", "symptom": "Footer becomes unreachable", "fix": "Paginate or relocate footer content", "section": "03" },
+    { "antiPattern": "Carousel as primary navigation", "symptom": "Very low interaction past the first slide", "fix": "Show the content; add pause and controls if kept", "section": "05" },
+    { "antiPattern": "Auto-playing motion with no pause", "symptom": "Fails WCAG 2.2.2", "fix": "Pause control; respect reduced motion", "section": "05" },
+    { "antiPattern": "Layout shift from late content", "symptom": "Users click the wrong thing", "fix": "Reserve space, aspect-ratio", "section": "07" },
+    { "antiPattern": "Fake progress bar", "symptom": "Stalls at 90%, destroys trust", "fix": "Real progress or an honest indeterminate state", "section": "07" },
+    { "antiPattern": "Modal on arrival", "symptom": "Blocks the task before it starts", "fix": "Delay, or use an inline offer", "section": "01" },
+    { "antiPattern": "Scroll hijacking", "symptom": "Removes control of the page", "fix": "Do not intercept scroll", "section": "05" },
+    { "antiPattern": "Icon-only toolbars", "symptom": "Meaning guessed, not read", "fix": "Labels plus accessible names", "section": "04" },
+    { "antiPattern": "Destructive action beside a common one", "symptom": "Deletes the wrong thing", "fix": "Separate, differentiate, confirm, offer undo", "section": "01" },
+    { "antiPattern": "Error message without a fix", "symptom": "Invalid input", "fix": "Say what and how", "section": "08" },
+    { "antiPattern": "Disabled submit with no explanation", "symptom": "User cannot tell what is missing", "fix": "Explain the blocker inline, or explain on submit", "section": "08" },
+    { "antiPattern": "Silent AI confidence", "symptom": "Wrong answers stated as facts", "fix": "Express uncertainty, show provenance", "section": "09" },
+    { "antiPattern": "Unlabelled AI action with side effects", "symptom": "Something got sent", "fix": "Confirm specifically, state whether undo exists", "section": "09" },
+    { "antiPattern": "Half-migrated design system", "symptom": "Two versions of every pattern", "fix": "Finish the migration, or revert it", "section": "02" }
+  ],
+  "measurementFrameworks": {
+    "heart": {
+      "source": "Rodden, Hutchinson and Fu, Google",
+      "categories": [
+        { "letter": "H", "category": "Happiness", "question": "How do users feel about it?", "typicalMeasure": "Survey score, satisfaction rating, System Usability Scale" },
+        { "letter": "E", "category": "Engagement", "question": "How much do they use it?", "typicalMeasure": "Actions per active user per week, session depth" },
+        { "letter": "A", "category": "Adoption", "question": "Are new users taking it up?", "typicalMeasure": "New users completing the core action in week one" },
+        { "letter": "R", "category": "Retention", "question": "Do they come back?", "typicalMeasure": "Share active in one period who are active in the next" },
+        { "letter": "T", "category": "Task success", "question": "Can they do the thing?", "typicalMeasure": "Completion rate, time on task, error rate" }
+      ],
+      "process": ["Goal: what should be true for the user", "Signal: the observable behaviour that shows it", "Metric: the exact number with population, numerator, denominator, period"],
+      "warning": "Engagement rises when a product is confusing, so pair it with task success"
+    },
+    "sus": {
+      "instrument": "System Usability Scale",
+      "items": 10,
+      "range": "0 to 100",
+      "average": 68,
+      "averageBasis": "Sauro meta-analysis of about 5,000 scores across 500 studies",
+      "grading": "Sauro and Lewis curved scale from 241 studies; 68 is the centre of a C grade and the 50th percentile",
+      "misreading": "A SUS score is not a percentage. 68 means exactly ordinary",
+      "state": "measured"
+    },
+    "sampleSizes": [
+      { "purpose": "Formative usability test, one user group", "participants": "5 per round, 3 rounds", "note": "Fix between rounds" },
+      { "purpose": "Multiple distinct user groups", "participants": "3 to 4 per group", "note": "Analyse separately" },
+      { "purpose": "Comparing two designs qualitatively", "participants": "8 to 12", "note": "Counterbalance the order" },
+      { "purpose": "Measuring a completion rate or time", "participants": "Usually 20 or more per condition", "note": "Calculate from the effect size" },
+      { "purpose": "A/B test of a conversion metric", "participants": "Usually thousands", "note": "Calculate from baseline rate and expected lift" },
+      { "purpose": "Card sorting or tree testing", "participants": "15 to 30", "note": "Quantitative despite feeling qualitative" }
+    ],
+    "fiveUserRule": {
+      "origin": "Nielsen 2000, on the Nielsen and Landauer model of 1993",
+      "formula": "N x (1 - (1 - L)^n)",
+      "typicalDiscoveryRate": "about 31%",
+      "coverageAtFiveUsers": "about 85% at L = 31%",
+      "breaksWhen": [
+        "Problems are rarer than 31%: about 9 users at 20%, about 18 at 10%",
+        "Sample variance is large: sets of five found 55% to 99% in one 60-user study; ten users raised the worst case to 80%, twenty to 95%",
+        "There is more than one distinct user group",
+        "The question is quantitative rather than formative"
+      ],
+      "actualRecommendation": "Run more, smaller studies. Three rounds of five with fixes between beats one round of fifteen"
+    }
+  },
+  "passkeys": {
+    "source": "FIDO Alliance, World Passkey Day 2026; surveys by Sapio Research, April 2026",
+    "population": "11,000 consumers across ten countries",
+    "state": "vendor-reported",
+    "confidence": "low",
+    "rows": [
+      { "measure": "Passkeys in use worldwide", "figure": "about 5 billion" },
+      { "measure": "Consumers aware of passkeys", "figure": "90%" },
+      { "measure": "Consumers who have enabled at least one", "figure": "75%" },
+      { "measure": "Consumers who use them regularly where available", "figure": "49%" },
+      { "measure": "Organisations deployed or actively deploying for employees", "figure": "68%" },
+      { "measure": "Top 100 websites supporting them", "figure": "about 48%" }
+    ]
+  },
+  "expressiveDesignResearch": {
+    "source": "Google Design, expressive Material Design research",
+    "state": "vendor-reported",
+    "confidence": "medium",
+    "studies": 46,
+    "participants": "more than 18,000",
+    "duration": "three years",
+    "methods": ["eye tracking", "surveys", "focus groups", "usability testing"],
+    "findings": [
+      { "finding": "Key buttons spotted faster in expressive designs", "figure": "up to four times faster, across 10 apps" },
+      { "finding": "Preference among 18 to 24 year olds", "figure": "87%" },
+      { "finding": "Brand relevance", "figure": "up 32%" },
+      { "finding": "Perceived modernity", "figure": "up 34%" },
+      { "finding": "Perceived boldness and innovation", "figure": "up 30%" }
+    ],
+    "designVariables": ["colour", "shape", "size", "motion", "containment"]
+  },
+  "performanceBudget": [
+    { "budget": "JavaScript on the critical path, compressed", "value": "150 to 200 KB", "why": "Beyond this, mid-range phones struggle to stay under 200 ms INP" },
+    { "budget": "LCP image, compressed", "value": "150 KB", "why": "It must arrive before 2.5 s on a slow connection" },
+    { "budget": "Fonts", "value": "Two files, 100 KB total", "why": "Variable fonts make this achievable" },
+    { "budget": "Requests before first paint", "value": "under 20", "why": "Each one is a queue slot" },
+    { "budget": "Third-party scripts", "value": "Counted individually with a named owner and removal date", "why": "Third parties are where budgets die" }
+  ],
+  "perceivedSpeedTechniques": [
+    { "technique": "Optimistic update", "helpsWhen": "Actions that almost always succeed: like, favourite, rename", "backfiresWhen": "Failure is likely or costly; a surprising rollback is worse than a wait" },
+    { "technique": "Skeleton placeholder", "helpsWhen": "Layout known in advance and the wait is about 1 to 10 s", "backfiresWhen": "Very short waits, where it flashes; unknown layouts, where it lies" },
+    { "technique": "Spinner", "helpsWhen": "Short indeterminate waits", "backfiresWhen": "Over a few seconds, where it reads as stuck" },
+    { "technique": "Progress bar with estimate", "helpsWhen": "Waits over 10 s", "backfiresWhen": "Fake progress stalling at 90% destroys trust" },
+    { "technique": "Streaming or progressive rendering", "helpsWhen": "Long generation, search results, long documents", "backfiresWhen": "Partial output is misleading on its own" },
+    { "technique": "Preload or speculative load on hover", "helpsWhen": "Predictable next navigation", "backfiresWhen": "Aggressive prefetch wastes data and can trigger side effects" }
+  ],
+  "checklistTiers": [
+    { "tier": 1, "name": "Blocks release", "checkCount": 15, "basis": "Failures against a standard a law references, or defects that exclude a group of people" },
+    { "tier": 2, "name": "Fix before it becomes a habit", "checkCount": 21, "basis": "Quality failures that compound across a codebase" },
+    { "tier": 3, "name": "Performance gate", "checkCount": 10, "basis": "Core Web Vitals and budget" },
+    { "tier": 4, "name": "AI features", "checkCount": 10, "basis": "Only applies if a model is in the interface" },
+    { "tier": 5, "name": "System health", "checkCount": 8, "basis": "Quarterly, not per release" }
+  ],
+  "sources": [
+    { "id": "S1", "title": "W3C, Web Content Accessibility Guidelines (WCAG) 2.2", "usedFor": "Principles, levels, nine new criteria, 4.1.1 removal, revision date", "state": "specified", "confidence": "high" },
+    { "id": "S2", "title": "W3C, Understanding SC 1.4.3 Contrast (Minimum)", "usedFor": "Exact ratios, large-text definition, exceptions", "state": "specified", "confidence": "high" },
+    { "id": "S3", "title": "W3C, Understanding SC 2.3.3 Animation from Interactions", "usedFor": "Motion disable requirement", "state": "specified", "confidence": "high" },
+    { "id": "S4", "title": "W3C WAI, ARIA Authoring Practices Guide", "usedFor": "What the APG contains", "state": "specified", "confidence": "high" },
+    { "id": "S5", "title": "W3C ARIA guidance via the APG Read Me First practice", "usedFor": "No ARIA is better than bad ARIA", "state": "specified", "confidence": "high" },
+    { "id": "S6", "title": "Design Tokens Format Module 2025.10", "usedFor": "Token format, properties, types, aliases, groups", "state": "specified", "confidence": "high" },
+    { "id": "S7", "title": "Design Tokens Community Group announcement, 2025-10-28", "usedFor": "First stable version date", "state": "specified", "confidence": "high" },
+    { "id": "S8", "title": "W3C, CSS Logical Properties and Values Module Level 1", "usedFor": "Logical property names and behaviour", "state": "specified", "confidence": "high" },
+    { "id": "S9", "title": "WCAG 2.2 individual success criteria cited throughout", "usedFor": "Specific requirements", "state": "specified", "confidence": "high" },
+    { "id": "S10", "title": "European Accessibility Act and EN 301 549", "usedFor": "EU obligation, standard referenced, reach", "state": "regulatory", "confidence": "high" },
+    { "id": "S11", "title": "US Federal Register, ADA Title II final rule, 2024-04-24", "usedFor": "WCAG 2.1 AA requirement for government bodies", "state": "regulatory", "confidence": "high" },
+    { "id": "S12", "title": "US Federal Register, extension of ADA Title II compliance dates, 2026-04-20", "usedFor": "New deadlines 2027-04-26 and 2028-04-26", "state": "regulatory", "confidence": "high" },
+    { "id": "S13", "title": "FTC Negative Option Rule, finalised 2024, vacated 2025", "usedFor": "Rule status and continued enforcement", "state": "regulatory", "confidence": "high" },
+    { "id": "S14", "title": "European Commission 2030 Consumer Agenda and the Digital Fairness Act plan", "usedFor": "Planned EU instrument and timing", "state": "regulatory", "confidence": "high" },
+    { "id": "S15", "title": "European Parliament briefing on regulating dark patterns", "usedFor": "Policy scope", "state": "regulatory", "confidence": "medium" },
+    { "id": "S16", "title": "WebAIM Million, February 2026", "usedFor": "Failure rates, failures per page, ARIA correlation", "state": "measured", "confidence": "high" },
+    { "id": "S17", "title": "WebAIM Million, 2025", "usedFor": "Year-over-year comparison", "state": "measured", "confidence": "high" },
+    { "id": "S18", "title": "Web Almanac 2025, Accessibility chapter", "usedFor": "Contrast, labels, focus, preferences, zoom, skip links, overlays", "state": "measured", "confidence": "high" },
+    { "id": "S19", "title": "Web Almanac 2025, Performance chapter", "usedFor": "Core Web Vitals pass rates, LCP composition, field versus lab", "state": "measured", "confidence": "high" },
+    { "id": "S20", "title": "Web Almanac 2025, Page Weight chapter", "usedFor": "Weights, resource breakdown, ten-year growth, unused JavaScript", "state": "measured", "confidence": "high" },
+    { "id": "S21", "title": "Web Almanac 2025, Generative AI chapter", "usedFor": "AI API adoption, llms.txt, robots.txt, WebAssembly and WebGPU growth", "state": "measured", "confidence": "high" },
+    { "id": "S22", "title": "Web Almanac 2025, index and methodology", "usedFor": "Sample size and chapter list", "state": "measured", "confidence": "high" },
+    { "id": "S23", "title": "State of CSS 2025 survey", "usedFor": "Feature sentiment and pain points, qualitative only", "state": "secondary", "confidence": "low" },
+    { "id": "S24", "title": "web.dev, Interop 2026 announcement", "usedFor": "The 20 focus areas and participants", "state": "specified", "confidence": "high" },
+    { "id": "S25", "title": "WebKit and Mozilla Interop 2026 announcements", "usedFor": "Cross-checking focus areas and Safari-first features", "state": "specified", "confidence": "medium" },
+    { "id": "S26", "title": "chrome.dev, CSS Wrapped 2025", "usedFor": "The 2025 platform feature set", "state": "specified", "confidence": "high" },
+    { "id": "S27", "title": "Chrome for Developers, What's new in web UI (I/O 2026)", "usedFor": "Chrome 146, 147, 150 features and view transition variants", "state": "specified", "confidence": "high" },
+    { "id": "S28", "title": "MDN Web Docs, light-dark() and contrast-color()", "usedFor": "Function behaviour and support notes", "state": "specified", "confidence": "high" },
+    { "id": "S29", "title": "web.dev, Interaction to Next Paint", "usedFor": "Definition, measurement, thresholds, three phases", "state": "specified", "confidence": "high" },
+    { "id": "S30", "title": "Baseline definitions as used by web.dev and MDN", "usedFor": "The three availability labels", "state": "specified", "confidence": "high" },
+    { "id": "S31", "title": "una.im, Modern CSS theming", "usedFor": "Reported stable-in-all-engines status as of May 2026", "state": "secondary", "confidence": "medium" },
+    { "id": "S32", "title": "Nielsen Norman Group, 10 Usability Heuristics (1994, revised 2020)", "usedFor": "The ten heuristics", "state": "specified", "confidence": "high" },
+    { "id": "S33", "title": "Nielsen, Response Time Limits, from Usability Engineering (1993)", "usedFor": "The 0.1 s, 1 s, 10 s limits", "state": "specified", "confidence": "high" },
+    { "id": "S34", "title": "Fitts (1954); Fitts and Peterson (1964)", "usedFor": "Fitts's law", "state": "specified", "confidence": "high" },
+    { "id": "S35", "title": "Hick (1952); Hyman (1953); Card, Moran and Newell (1983)", "usedFor": "Hick's law and its application to interfaces", "state": "specified", "confidence": "high" },
+    { "id": "S36", "title": "Nielsen, Why You Only Need to Test with 5 Users (2000)", "usedFor": "The formula, the 31% rate, the real recommendation", "state": "specified", "confidence": "high" },
+    { "id": "S37", "title": "Springer, Benefits of increased sample sizes in usability testing", "usedFor": "Sample variance figures", "state": "measured", "confidence": "medium" },
+    { "id": "S38", "title": "Sauro SUS meta-analysis; Sauro and Lewis (2016) grading curve", "usedFor": "The 68 average and its interpretation", "state": "measured", "confidence": "high" },
+    { "id": "S39", "title": "Rodden, Hutchinson and Fu, HEART framework", "usedFor": "Metric selection method", "state": "specified", "confidence": "high" },
+    { "id": "S40", "title": "Bringhurst; Tinker and Paterson eye-movement studies", "usedFor": "Line length range", "state": "secondary", "confidence": "medium" },
+    { "id": "S41", "title": "Miller (1956)", "usedFor": "Why seven plus or minus two does not apply to menus", "state": "specified", "confidence": "high" },
+    { "id": "S42", "title": "Amershi et al., Guidelines for Human-AI Interaction, CHI 2019; Microsoft HAX Toolkit", "usedFor": "All 18 guidelines, phases, validation", "state": "specified", "confidence": "high" },
+    { "id": "S43", "title": "Google PAIR, People + AI Guidebook", "usedFor": "Mental models, explainability, feedback and control, graceful failure", "state": "specified", "confidence": "high" },
+    { "id": "S44", "title": "Vendor articles on streaming UI and skeleton screens", "usedFor": "Reviewed and excluded for numeric claims", "state": "excluded", "confidence": "low" },
+    { "id": "S45", "title": "Google Design, expressive Material Design research", "usedFor": "Study scale and reported effects", "state": "vendor-reported", "confidence": "medium" },
+    { "id": "S46", "title": "Apple Liquid Glass material documentation and design commentary", "usedFor": "The material, legibility criticism, accessibility settings", "state": "vendor-reported", "confidence": "medium" },
+    { "id": "S47", "title": "shadcn/ui repository", "usedFor": "Self-description and star count", "state": "measured", "confidence": "high" },
+    { "id": "S48", "title": "WorkOS announcement of the Modulz acquisition, June 2022", "usedFor": "Radix Primitives ownership", "state": "vendor-reported", "confidence": "high" },
+    { "id": "S49", "title": "Base UI v1.0.0 release information, December 2025", "usedFor": "The maintained primitives alternative", "state": "vendor-reported", "confidence": "medium" },
+    { "id": "S50", "title": "Apple Human Interface Guidelines and Material Design target size guidance", "usedFor": "44 pt and 48 dp minimums", "state": "specified", "confidence": "high" },
+    { "id": "S51", "title": "FIDO Alliance World Passkey Day 2026 report and Sapio Research surveys", "usedFor": "Passkey adoption figures", "state": "vendor-reported", "confidence": "low" },
+    { "id": "S52", "title": "Baymard Institute checkout usability research", "usedFor": "Form field failures and layout mistakes", "state": "secondary", "confidence": "medium" },
+    { "id": "S53", "title": "US accessibility litigation trackers (UsableNet, EcomBack, ADA Title III blog)", "usedFor": "2025 lawsuit counts, which disagree", "state": "secondary", "confidence": "low" },
+    { "id": "S54", "title": "Cookie consent research and enforcement reports", "usedFor": "Consent banner practice and rulings", "state": "secondary", "confidence": "low" },
+    { "id": "S55", "title": "Reports of FTC settlements with Amazon and Care.com", "usedFor": "Enforcement consequence figures", "state": "secondary", "confidence": "low" }
+  ],
+  "conflicts": [
+    { "conflict": "Radix ownership dated 2025 by a secondary article, 2022 by the primary announcement", "resolution": "Used 2022" },
+    { "conflict": "shadcn/ui reported at 75,000 stars by a secondary article, 121,100 in the repository", "resolution": "Used the repository figure with its read date" },
+    { "conflict": "US accessibility lawsuit counts for 2025: over 5,000, 3,117 federal, 8,667 across all courts", "resolution": "Reported the range and the methodological cause; no single figure adopted" },
+    { "conflict": "Web Almanac median desktop JavaScript given as 697 KB in a table and about 708 KB in the narrative", "resolution": "Reported both and noted that medians of different groupings need not agree" },
+    { "conflict": "CLS better on mobile (81% good) than desktop (72%), which is counter-intuitive", "resolution": "Reported as measured, without an explanation the source does not give" },
+    { "conflict": "WCAG 2.2 publication date: specification page carries 2024-12-12; the original Recommendation is widely dated to October 2023", "resolution": "Cited the revision date from the specification page only" }
+  ],
+  "exclusions": [
+    { "excluded": "Numeric claims that streaming cuts perceived wait 55% to 70%, or that skeletons feel 40% faster", "reason": "Vendor articles with no sample size, method, or underlying study" },
+    { "excluded": "Design system adoption percentages such as 70% growth in headless adoption", "reason": "No method or population given" },
+    { "excluded": "Tokens-per-second thresholds for AI interfaces", "reason": "Vendor blogs only, and dependent on content type and renderer" },
+    { "excluded": "Any product or tool ranking", "reason": "Out of scope by design" },
+    { "excluded": "Design tool feature comparisons", "reason": "Out of scope, and they change monthly" },
+    { "excluded": "A reported future Liquid Glass opacity slider in iOS 27", "reason": "Single secondary source; mentioned as reported, not as fact" },
+    { "excluded": "Private or client data", "reason": "None consulted; every figure is public" }
+  ],
+  "limitations": [
+    "Automated accessibility data detects roughly a third of real problems, so crawl figures understate the true failure rate",
+    "WebAIM measures home pages, so signed-in application screens are not represented",
+    "Browser availability moves monthly; every status is as of 2026-08-11",
+    "Survey figures (State of CSS, FIDO consumer surveys) are self-selected",
+    "Vendor research on its own design system is not independent",
+    "US litigation counts are not reconcilable across trackers",
+    "No usability testing was conducted for this report; it synthesises published evidence",
+    "Mobile app specifics are covered only where they set a numeric standard",
+    "Spatial, voice, and automotive interfaces are out of scope and would change several thresholds"
+  ]
+}

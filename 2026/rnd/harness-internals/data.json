@@ -1,0 +1,258 @@
+{
+  "schema_version": "1.0.0",
+  "report": {
+    "title": "Harness Internals: the home directory you never look at",
+    "slug": "harness-internals",
+    "created": "2026-08-11",
+    "timezone": "Europe/Lisbon",
+    "subject": "What Claude Code and OpenAI Codex CLI write into their home directories, and which of it is undocumented",
+    "evidence_boundary": "One macOS machine (Darwin 24.3.0, Apple silicon) measured on 2026-08-11 under heavy daily use of both tools, plus vendor documentation, vendor issue trackers, and published security research. Structure was recorded; file contents, credentials, and message text were not.",
+    "evidence_labels": {
+      "MEASURED": "Read directly off the sampled machine on 2026-08-11",
+      "DOCUMENTED": "Stated in vendor documentation",
+      "REPORTED": "Published by a third party; treated as weaker evidence"
+    }
+  },
+
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "vendor": "Anthropic",
+      "home": "~/.claude",
+      "implementation": "TypeScript on Node",
+      "total_bytes": 368590848,
+      "total_human": "352 MB",
+      "entries_present": 26,
+      "entries_documented": 14,
+      "documented_share_pct": 54,
+      "transcript_store": "~/.claude/projects/<path-slug>/<session-uuid>.jsonl",
+      "transcript_count": 207,
+      "transcript_bytes": 348680192,
+      "transcript_human": "325 MB",
+      "largest_transcript_bytes": 15833088,
+      "largest_transcript_human": "15.1 MB",
+      "structured_state": "single JSON file (~/.claude.json)",
+      "credential_storage": "macOS Keychain, item 'Claude Code-credentials'",
+      "credential_plaintext": false,
+      "retention_setting": "cleanupPeriodDays",
+      "retention_default_days": 30,
+      "retention_observed_days": 30,
+      "debug_log_store": "none observed",
+      "background_workers": "none observed"
+    },
+    {
+      "id": "codex-cli",
+      "name": "OpenAI Codex CLI",
+      "vendor": "OpenAI",
+      "home": "~/.codex",
+      "implementation": "Rust",
+      "total_bytes": 3956588544,
+      "total_human": "3.68 GB",
+      "entries_present": 63,
+      "entries_documented": 4,
+      "documented_share_pct": 6,
+      "transcript_store": "~/.codex/sessions/YYYY/MM/DD/rollout-<iso>-<uuid>.jsonl",
+      "transcript_count": 453,
+      "transcript_bytes": 1475600384,
+      "transcript_human": "1.37 GB",
+      "largest_transcript_bytes": 131097277,
+      "largest_transcript_human": "131 MB",
+      "structured_state": "four SQLite databases",
+      "credential_storage": "~/.codex/auth.json, plain JSON, mode 0600",
+      "credential_plaintext": true,
+      "retention_setting": "history.persistence",
+      "retention_default_days": null,
+      "retention_observed_days": 173,
+      "debug_log_store": "logs_2.sqlite, 395 MB",
+      "background_workers": "memory distillation pipeline in memories_1.sqlite"
+    }
+  ],
+
+  "disk_breakdown": [
+    { "path": "~/.codex/sessions/", "bytes": 1475600384, "human": "1.37 GB", "share_pct": 34.0, "class": "transcripts", "documented": "partly" },
+    { "path": "~/.codex/worktrees/", "bytes": 901017600, "human": "839 MB", "share_pct": 21.0, "class": "shadow-source", "documented": "no", "note": "single orphaned checkout; git worktree prune cannot reclaim" },
+    { "path": "~/.codex/logs_2.sqlite", "bytes": 414568448, "human": "395 MB", "share_pct": 10.0, "class": "leftovers", "documented": "no", "note": "326 MB is free pages" },
+    { "path": "~/.codex/plugins/", "bytes": 322961408, "human": "308 MB", "share_pct": 7.6, "class": "executable", "documented": "partly" },
+    { "path": "~/.codex/packages/", "bytes": 321912832, "human": "307 MB", "share_pct": 7.6, "class": "executable", "documented": "no" },
+    { "path": "~/.claude/projects/", "bytes": 348680192, "human": "325 MB", "share_pct": 8.1, "class": "transcripts", "documented": "partly" },
+    { "path": "~/.codex/.tmp/", "bytes": 252760064, "human": "241 MB", "share_pct": 6.0, "class": "leftovers", "documented": "no", "note": "plugin sync scratch not cleaned after success" },
+    { "path": "~/.codex/generated_images/", "bytes": 126877696, "human": "121 MB", "share_pct": 3.0, "class": "artifacts", "documented": "no" },
+    { "path": "~/.codex/computer-use/", "bytes": 66060288, "human": "63 MB", "share_pct": 1.6, "class": "executable", "documented": "no", "note": "complete macOS .app bundle" },
+    { "path": "other", "bytes": 68157440, "human": "65 MB", "share_pct": 1.6, "class": "mixed", "documented": "mixed" }
+  ],
+
+  "file_classes": [
+    {
+      "class": "A",
+      "name": "Complete record of your work",
+      "risk": "critical",
+      "examples": ["~/.claude/projects/<slug>/*.jsonl", "~/.codex/sessions/**/rollout-*.jsonl"],
+      "contains": "Every prompt, model reply, tool call, and full tool result, as plain text",
+      "bytes_measured": 1824280576,
+      "why_it_matters": "Any secret the agent ever read is stored here in plain text. .gitignore has no effect."
+    },
+    {
+      "class": "B",
+      "name": "Shadow copies of your source code",
+      "risk": "high",
+      "examples": ["~/.claude/file-history/", "~/.claude/projects/<slug>/<session>/tool-results/", "~/.codex/worktrees/", "~/.codex/attachments/"],
+      "contains": "Pre-edit file versions, oversized tool output, entire additional git checkouts",
+      "bytes_measured": 901017600,
+      "why_it_matters": "A repository you deleted is not gone if a worktree copy survives."
+    },
+    {
+      "class": "C",
+      "name": "Fingerprints of you and your machine",
+      "risk": "medium",
+      "examples": ["~/.claude/shell-snapshots/", "~/.claude.json", "~/.codex/config.toml", "~/.codex/state_5.sqlite", "~/.claude/history.jsonl"],
+      "contains": "Shell functions, PATH, every trusted directory path, git remotes, machine ID, prompt history",
+      "why_it_matters": "The trust list is a permanent dated record of every directory you have worked in."
+    },
+    {
+      "class": "D",
+      "name": "Credentials",
+      "risk": "critical",
+      "examples": ["~/.codex/auth.json", "macOS Keychain item 'Claude Code-credentials'"],
+      "contains": "OAuth id_token, access_token, refresh_token, account_id",
+      "why_it_matters": "0600 stops other users, not malware running as you. Actively targeted by the ChainDrop worm."
+    },
+    {
+      "class": "E",
+      "name": "State the vendor pushes to you",
+      "risk": "low",
+      "examples": ["~/.claude.json cachedGrowthBookFeatures", "~/.claude/policy-limits.json", "~/.claude/remote-settings.json"],
+      "contains": "487 cached feature flags, server-side restrictions, compliance taints, monitoring notice",
+      "why_it_matters": "Disabling telemetry also disables the remote kill-switch channel."
+    },
+    {
+      "class": "F",
+      "name": "Telemetry queued on disk",
+      "risk": "low",
+      "examples": ["~/.claude/telemetry/1p_failed_events.*.json"],
+      "contains": "Platform, Node version, terminal, model, session id, entry point. No prompt text in sample.",
+      "why_it_matters": "Codex exports tool results even when log_user_prompt is off, and tool results contain file contents."
+    },
+    {
+      "class": "G",
+      "name": "Leftovers",
+      "risk": "none",
+      "examples": ["~/.claude/session-env/", "~/.codex/..codex-global-state.json.tmp-*", "~/.codex/.tmp/plugins-*", "SQLite free pages"],
+      "contains": "Nothing useful",
+      "bytes_measured": 1131413504,
+      "why_it_matters": "About 1.08 GB, 27% of total, is pure reclaimable waste."
+    },
+    {
+      "class": "H",
+      "name": "Things that can execute",
+      "risk": "critical",
+      "examples": ["<project>/.claude/settings.json hooks", "~/.claude/hooks/", "~/.claude/plugins/", "~/.codex/plugins/", "~/.codex/computer-use/Codex Computer Use.app"],
+      "contains": "Shell commands run automatically, downloaded plugin bundles, a full macOS app",
+      "why_it_matters": "A hook committed to a repository runs when you start a session in it."
+    }
+  ],
+
+  "key_measurements": [
+    { "id": "M01", "label": "Combined disk usage of both harness homes", "value": 4032, "unit": "MB", "evidence": "MEASURED" },
+    { "id": "M02", "label": "Share of total that is conversation transcripts", "value": 42, "unit": "percent", "evidence": "MEASURED" },
+    { "id": "M03", "label": "Share of total that is reclaimable waste", "value": 27, "unit": "percent", "evidence": "MEASURED" },
+    { "id": "M04", "label": "Largest single Codex session transcript", "value": 131, "unit": "MB", "evidence": "MEASURED" },
+    { "id": "M05", "label": "Codex transcript retention observed", "value": 173, "unit": "days", "evidence": "MEASURED" },
+    { "id": "M06", "label": "Claude Code transcript retention default", "value": 30, "unit": "days", "evidence": "DOCUMENTED" },
+    { "id": "M07", "label": "Free pages inside logs_2.sqlite", "value": 82, "unit": "percent", "evidence": "MEASURED" },
+    { "id": "M08", "label": "Reclaimable by VACUUM on logs_2.sqlite", "value": 326, "unit": "MB", "evidence": "MEASURED" },
+    { "id": "M09", "label": "Orphaned git worktree size", "value": 839, "unit": "MB", "evidence": "MEASURED" },
+    { "id": "M10", "label": "Empty directories in ~/.claude/session-env", "value": 851, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M11", "label": "Cached feature flags in ~/.claude.json", "value": 487, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M12", "label": "Codex threads indexed in state_5.sqlite", "value": 455, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M13", "label": "Debug log rows over 9 days", "value": 43830, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M14", "label": "Abandoned atomic-write temp files in ~/.codex", "value": 11, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M15", "label": "Project directories tracked in ~/.claude.json", "value": 43, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M16", "label": "Repositories checked with .claude in .gitignore", "value": 0, "unit": "of 12", "evidence": "MEASURED" },
+    { "id": "M17", "label": "Shell functions captured per shell snapshot", "value": 127, "unit": "count", "evidence": "MEASURED" },
+    { "id": "M18", "label": "Environment exports in a shell snapshot", "value": 1, "unit": "count", "evidence": "MEASURED", "note": "PATH only; snapshots are not an environment dump" }
+  ],
+
+  "sqlite_databases": [
+    { "file": "~/.codex/state_5.sqlite", "bytes": 12435456, "human": "12 MB", "rows": 455, "primary_table": "threads", "holds": "cwd, git_sha, git_branch, git_origin_url, sandbox_policy, approval_mode, tokens_used, first_user_message, preview", "migrations": 46 },
+    { "file": "~/.codex/logs_2.sqlite", "bytes": 414568448, "human": "395 MB", "rows": 43830, "primary_table": "logs", "holds": "structured debug logs with thread_id and process_uuid; body column named feedback_log_body", "free_pages": 83412, "page_size": 4096, "reclaimable_mb": 326, "live_content_mb": 47, "span": "2026-08-02 to 2026-08-11" },
+    { "file": "~/.codex/memories_1.sqlite", "bytes": 40960, "human": "40 KB", "primary_table": "stage1_outputs", "holds": "background two-stage pipeline distilling finished sessions into stored memories, with a jobs table carrying leases, retries, and watermarks" },
+    { "file": "~/.codex/goals_1.sqlite", "bytes": 32768, "human": "32 KB", "primary_table": "thread_goals", "holds": "long-running objectives with token budgets; status includes usage_limited and budget_limited" }
+  ],
+
+  "transcript_formats": {
+    "claude-code": {
+      "format": "JSONL",
+      "record_types": ["assistant", "user", "attachment", "mode", "last-prompt", "custom-title", "queue-operation"],
+      "notable_fields": ["toolUseResult", "cwd", "gitBranch", "sessionId", "uuid", "parentUuid", "isSidechain", "promptSource", "requestId", "version"],
+      "leak_field": "toolUseResult"
+    },
+    "codex-cli": {
+      "format": "JSONL",
+      "record_type_counts": {
+        "event_msg/token_count": 754,
+        "turn_context": 378,
+        "response_item/reasoning": 321,
+        "event_msg/agent_reasoning": 299,
+        "response_item/function_call": 273,
+        "response_item/function_call_output": 273,
+        "response_item/custom_tool_call": 178,
+        "response_item/custom_tool_call_output": 178,
+        "response_item/message": 131,
+        "event_msg/agent_message": 93,
+        "event_msg/user_message": 21,
+        "session_meta": 1
+      },
+      "notable_fields": ["session_meta.base_instructions", "session_meta.cwd", "session_meta.git", "session_meta.cli_version"],
+      "leak_field": "response_item/function_call_output",
+      "note": "session_meta.base_instructions stores the full system prompt in every one of the 453 rollout files"
+    }
+  },
+
+  "risks": [
+    { "id": "R1", "name": ".gitignore does not stop secrets reaching disk", "likelihood": "near certain", "impact": "critical", "evidence": "REPORTED", "mechanism": "gitignore controls commits, not reads. Agent reads file, output lands in toolUseResult, transcript persists.", "fix": "Keep real secrets out of reachable files; use permissions deny rules; rotate anything already seen." },
+    { "id": "R2", "name": "A cloned repository can run code at session start", "likelihood": "low per repo", "impact": "critical", "evidence": "REPORTED", "mechanism": "Project .claude/settings.json can define a SessionStart hook. ChainDrop worm used this across 400+ npm packages.", "fix": "Inspect .claude/, .codex/, .vscode/ before opening an unfamiliar repository with an agent." },
+    { "id": "R3", "name": "Agent state gets committed to a shared repository", "likelihood": "moderate", "impact": "medium", "evidence": "MEASURED", "mechanism": "No .gitignore across 12 sampled repositories mentioned .claude at all.", "fix": "Global gitignore for settings.local.json and session-env; keep skills and rules committed." },
+    { "id": "R4", "name": "Directory layout is a permanent readable list", "likelihood": "certain", "impact": "varies", "evidence": "MEASURED", "mechanism": "Trust lists, project keys, and git_origin_url are never pruned, including for paths that no longer exist.", "fix": "No supported prune command exists; edit config.toml and ~/.claude/projects by hand." },
+    { "id": "R5", "name": "Telemetry, and the trap in switching it off", "likelihood": "certain", "impact": "low", "evidence": "DOCUMENTED", "mechanism": "DISABLE_TELEMETRY also stops feature flag fetching, which carries remote kill switches.", "fix": "Choose a posture deliberately; the middle position keeps the safety channel." }
+  ],
+
+  "traps": [
+    { "id": "T1", "setting": "cleanupPeriodDays", "harness": "claude-code", "reads_as": "0 means never clean up, keep forever", "actually_does": "0 stops transcripts being written to disk at all", "correct_usage": "Set 3650 to keep long history", "source": "https://github.com/anthropics/claude-code/issues/23710" },
+    { "id": "T2", "setting": "DISABLE_TELEMETRY", "harness": "claude-code", "reads_as": "Stops usage reporting", "actually_does": "Also stops feature flag fetching, so remote kill switches stop arriving", "correct_usage": "Accept the trade knowingly, or use the middle posture", "source": "https://github.com/anthropics/claude-code/issues/58383" },
+    { "id": "T3", "setting": "history.max_bytes", "harness": "codex-cli", "reads_as": "Caps history size", "actually_does": "Caps the prompt history file only, not sessions/, which held 1.37 GB", "correct_usage": "Prune sessions/ separately", "source": "https://learn.chatgpt.com/docs/config-file/config-reference" },
+    { "id": "T4", "setting": "CLAUDE.md prohibitions", "harness": "both", "reads_as": "Instructions the agent must obey", "actually_does": "A request to a model, not an enforced boundary; secrets have still been read", "correct_usage": "Use permissions deny rules, which the harness enforces", "source": "https://github.com/anthropics/claude-code/issues/44868" },
+    { "id": "T5", "setting": "rm -rf ~/.claude/projects/<slug>", "harness": "claude-code", "reads_as": "Deletes old transcripts", "actually_does": "Also deletes that project's agent memory at memory/MEMORY.md", "correct_usage": "Move memory/ out first", "source": "MEASURED" }
+  ],
+
+  "reclaimable": [
+    { "action": "sqlite3 ~/.codex/logs_2.sqlite 'VACUUM;'", "bytes": 341835776, "human": "326 MB", "safe": true, "loses": "nothing" },
+    { "action": "Delete orphaned worktrees after checking", "bytes": 901017600, "human": "839 MB", "safe": "with review", "loses": "uncommitted work inside them" },
+    { "action": "rm -rf ~/.codex/.tmp/plugins-backup-* plugins-clone-*", "bytes": 100000000, "human": "~95 MB", "safe": true, "loses": "nothing" },
+    { "action": "Delete ..codex-global-state.json.tmp-* files", "bytes": 5242880, "human": "5 MB", "safe": true, "loses": "nothing" },
+    { "action": "Delete empty ~/.claude/session-env dirs", "bytes": 0, "human": "0 B", "safe": true, "loses": "nothing", "note": "851 directories; tidiness not space" }
+  ],
+
+  "counts": {
+    "harnesses_measured": 2,
+    "total_bytes_measured": 4227858432,
+    "total_human": "4.03 GB",
+    "file_classes_defined": 8,
+    "key_measurements": 18,
+    "sqlite_databases_decoded": 4,
+    "risks_documented": 5,
+    "traps_documented": 5,
+    "sources_cited": 28,
+    "machines_sampled": 1,
+    "operating_systems_sampled": 1
+  },
+
+  "limits": [
+    "One machine, one operating system, one point in time. Numbers prove a file class exists; they do not establish typical size.",
+    "macOS only. Credential storage differs on Linux, which changes the risk picture.",
+    "Heavy usage skews absolute sizes upward. Proportions transfer better than absolutes.",
+    "No network capture was performed. Claims about transmission come from documentation and locally queued telemetry only.",
+    "Undocumented is a claim about documentation coverage, not about intent. Every file examined had an obvious engineering purpose.",
+    "Some Codex directories were identified by name and size only, such as pets/ and visualizations/, which were empty or nearly empty."
+  ]
+}

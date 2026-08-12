@@ -1,0 +1,371 @@
+{
+  "schemaVersion": "1.0",
+  "report": {
+    "id": "myers-briggs-001",
+    "title": "Myers-Briggs: A Working Reference",
+    "created": "2026-08-11",
+    "evidenceReadOn": "2026-08-11",
+    "language": "en",
+    "scope": "MBTI theory, instrument family 1943-2018, psychometric evidence, critiques and replies, alternatives, ethics and employment law",
+    "notInScope": [
+      "full account of Jung's psychology",
+      "clinical assessment",
+      "personnel selection science beyond one comparison",
+      "per-type descriptions of the 16 types"
+    ],
+    "evidenceStates": [
+      "observed",
+      "source-reported",
+      "cited-through",
+      "calculated",
+      "inferred",
+      "unavailable"
+    ]
+  },
+
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "The four MBTI scales are internally consistent",
+      "verdict": "holds",
+      "confidence": "high",
+      "keyEvidence": "Cronbach's alpha .91 to .92 on the US national representative sample of 3,009; .845 to .921 across 193 studies 1999-2024",
+      "caveat": "Forced-choice format can inflate internal consistency as an artifact",
+      "sources": ["S3", "S17", "S5"],
+      "evidenceState": "observed"
+    },
+    {
+      "id": "C2",
+      "claim": "The scales measure constructs also found in mainstream personality research",
+      "verdict": "holds",
+      "confidence": "moderate",
+      "keyEvidence": "Four MBTI indices map onto four of the five factors: extraversion, openness, agreeableness, conscientiousness. Neuroticism has no MBTI scale",
+      "caveat": "Erford et al. (2025) found most correlations below r = .20, which is normally read as discriminant rather than convergent evidence",
+      "sources": ["S18", "S17", "S1"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C3",
+      "claim": "The four-letter type is stable over time",
+      "verdict": "fails",
+      "confidence": "high",
+      "keyEvidence": "About 50% receive a different classification on one or more scales on retest; 35% had a different four-letter type after four weeks; about 47% identical after five weeks",
+      "caveat": "Scale-level correlations are better, .81 to .86 over 6 to 15 weeks",
+      "sources": ["S5", "S1", "S11", "S6"],
+      "evidenceState": "source-reported"
+    },
+    {
+      "id": "C4",
+      "claim": "Scores on each scale form two groups, as type theory predicts",
+      "verdict": "fails",
+      "confidence": "high",
+      "keyEvidence": "Distributions are single-peaked and centre-heavy across multiple studies; the 1998 item response theory rescoring did not produce two-humped distributions",
+      "caveat": "IRT theta estimates can look two-humped while preference scores look flat; this is a scoring transform, not evidence of natural groups",
+      "sources": ["S1", "S2"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C5",
+      "claim": "The 16 types exist as real underlying categories",
+      "verdict": "fails",
+      "confidence": "moderate-high",
+      "keyEvidence": "Taxometric analysis of several Jungian instruments including the MBTI found no support for underlying types (Arnau et al., 2003)",
+      "caveat": "Rests substantially on one study, cited through Stein and Swan (2019)",
+      "sources": ["S2", "S18"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C6",
+      "claim": "Type predicts job or leadership performance",
+      "verdict": "fails",
+      "confidence": "moderate",
+      "keyEvidence": "Four MBTI scales explained about 1% of variance in five leadership practices, R-squared = 0.01, n = 464",
+      "caveat": "One study, non-representative sample of Colombian business students, self-reported leadership practices",
+      "sources": ["S12", "S1"],
+      "evidenceState": "source-reported"
+    },
+    {
+      "id": "C7",
+      "claim": "Type is inborn and fixed by adulthood",
+      "verdict": "unsupported",
+      "confidence": "high",
+      "keyEvidence": "No mechanism offered for inheriting one of 16 preference-defined categories; retest instability points the other way",
+      "caveat": "Heritability of continuous traits is well established, but that is a different claim",
+      "sources": ["S2"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C8",
+      "claim": "Type dynamics produces measurable interactions between scales",
+      "verdict": "not demonstrated",
+      "confidence": "moderate",
+      "keyEvidence": "McCrae and Costa (1989) found no evidence for the interactions the dominant-function idea requires",
+      "caveat": "Absence of demonstration, not proof of absence",
+      "sources": ["S18", "S2"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C9",
+      "claim": "The instrument adds predictive value over a Big Five measure",
+      "verdict": "no evidence either way",
+      "confidence": "high that the gap exists",
+      "keyEvidence": "No published incremental validity study located; Pittenger noted the same gap in 2005",
+      "caveat": null,
+      "sources": ["S1"],
+      "evidenceState": "unavailable"
+    },
+    {
+      "id": "C10",
+      "claim": "The instrument is useful as a shared vocabulary for differences",
+      "verdict": "plausible, unproven",
+      "confidence": "low",
+      "keyEvidence": "Publisher satisfaction surveys report 82% to 96% positive; Pittenger concedes value as a non-threatening introduction to individual differences",
+      "caveat": "Satisfaction is not validity; no controlled trial shows it beats a cheaper framework",
+      "sources": ["S5", "S1"],
+      "evidenceState": "source-reported"
+    },
+    {
+      "id": "C11",
+      "claim": "Dichotomising the scales costs information",
+      "verdict": "holds",
+      "confidence": "high",
+      "keyEvidence": "26% to 32% information loss per scale under IRT analysis; dichotomising one variable cuts shared variance by about .64 of r-squared, both by about .40",
+      "caveat": null,
+      "sources": ["S1"],
+      "evidenceState": "cited-through"
+    },
+    {
+      "id": "C12",
+      "claim": "Adopting a type as an identity changes behaviour",
+      "verdict": "supported for one pathway",
+      "confidence": "low-moderate",
+      "keyEvidence": "Impression management mediated about 46.9% and ego identity about 45.2% of the indirect path from MBTI labelling to social anxiety, n = 469 Chinese adults aged 18-35",
+      "caveat": "Cross-sectional survey, single country, self-report",
+      "sources": ["S13"],
+      "evidenceState": "source-reported"
+    }
+  ],
+
+  "forms": [
+    { "form": "Form F", "released": 1962, "items": 166, "scoring": "prediction ratios, then continuous scores", "norms": "US, research use", "publisher": "Educational Testing Service", "itemCountEvidenceState": "source-reported" },
+    { "form": "Form G", "released": 1977, "items": 126, "itemsScored": 94, "scoring": "prediction ratios", "norms": "US", "publisher": "Consulting Psychologists Press", "itemCountEvidenceState": "source-reported" },
+    { "form": "Form J", "released": null, "items": 290, "scoring": "expanded analysis", "norms": "US, research use", "publisher": "Consulting Psychologists Press", "itemCountEvidenceState": "source-reported" },
+    { "form": "Form M (Step I)", "released": 1998, "items": 93, "scoring": "item response theory, Preference Clarity Index 0-30", "norms": "US national representative sample, n = 3009", "publisher": "Consulting Psychologists Press" },
+    { "form": "European Step I", "released": 1997, "items": null, "scoring": "European scoring", "norms": "European", "publisher": "OPP Ltd" },
+    { "form": "Form Q (Step II)", "released": 2001, "items": 144, "scoring": "Form M scoring plus 20 facet scores", "norms": "US", "publisher": "Consulting Psychologists Press" },
+    { "form": "Global Step I", "released": 2018, "items": 92, "scoring": "latent class analysis, Probability Index 50-100", "norms": "global sample, n = 16773", "publisher": "The Myers-Briggs Company" },
+    { "form": "Global Step II", "released": 2018, "items": 143, "scoring": "as Global Step I plus facets", "norms": "global", "publisher": "The Myers-Briggs Company" },
+    { "form": "Step III", "released": 2009, "items": null, "scoring": "interpreted in one-to-one work only", "norms": "limited", "publisher": "CPP / CAPT" }
+  ],
+
+  "formMItemsByScale": {
+    "note": "calculated from item codes printed in the publisher's Singapore technical brief factor table",
+    "evidenceState": "calculated",
+    "E-I": 21,
+    "S-N": 26,
+    "T-F": 24,
+    "J-P": 22,
+    "total": 93
+  },
+
+  "scoringIndices": [
+    {
+      "name": "Preference Clarity Index",
+      "introduced": 1998,
+      "method": "item response theory",
+      "range": "0 to 30",
+      "labels": ["Slight", "Moderate", "Clear", "Very Clear"],
+      "means": "how clearly the respondent favoured a side",
+      "doesNotMean": "skill with the preference, or how much of it the person has"
+    },
+    {
+      "name": "Probability Index",
+      "introduced": 2018,
+      "method": "latent class analysis",
+      "range": "50 to 100 percent",
+      "labels": ["Somewhat likely", "Likely", "Very likely"],
+      "means": "likelihood of getting the same preference on a retake",
+      "doesNotMean": "skill with the preference, or how much of it the person has"
+    }
+  ],
+
+  "facets": [
+    { "pair": "E-I", "facet": "Initiating - Receiving", "alphaUsNrs": 0.85, "alphaSingapore": 0.81 },
+    { "pair": "E-I", "facet": "Expressive - Contained", "alphaUsNrs": 0.79, "alphaSingapore": 0.79 },
+    { "pair": "E-I", "facet": "Gregarious - Intimate", "alphaUsNrs": 0.60, "alphaSingapore": 0.66 },
+    { "pair": "E-I", "facet": "Active - Reflective", "alphaUsNrs": 0.59, "alphaSingapore": 0.62 },
+    { "pair": "E-I", "facet": "Enthusiastic - Quiet", "alphaUsNrs": 0.72, "alphaSingapore": 0.75 },
+    { "pair": "S-N", "facet": "Concrete - Abstract", "alphaUsNrs": 0.81, "alphaSingapore": 0.71 },
+    { "pair": "S-N", "facet": "Realistic - Imaginative", "alphaUsNrs": 0.79, "alphaSingapore": 0.74 },
+    { "pair": "S-N", "facet": "Practical - Conceptual", "alphaUsNrs": 0.67, "alphaSingapore": 0.50 },
+    { "pair": "S-N", "facet": "Experiential - Theoretical", "alphaUsNrs": 0.83, "alphaSingapore": 0.69 },
+    { "pair": "S-N", "facet": "Traditional - Original", "alphaUsNrs": 0.76, "alphaSingapore": 0.71 },
+    { "pair": "T-F", "facet": "Logical - Empathetic", "alphaUsNrs": 0.80, "alphaSingapore": 0.78 },
+    { "pair": "T-F", "facet": "Reasonable - Compassionate", "alphaUsNrs": 0.77, "alphaSingapore": 0.71 },
+    { "pair": "T-F", "facet": "Questioning - Accommodating", "alphaUsNrs": 0.57, "alphaSingapore": 0.41 },
+    { "pair": "T-F", "facet": "Critical - Accepting", "alphaUsNrs": 0.60, "alphaSingapore": 0.47 },
+    { "pair": "T-F", "facet": "Tough - Tender", "alphaUsNrs": 0.81, "alphaSingapore": 0.76 },
+    { "pair": "J-P", "facet": "Systematic - Casual", "alphaUsNrs": 0.74, "alphaSingapore": 0.74 },
+    { "pair": "J-P", "facet": "Planful - Open-Ended", "alphaUsNrs": 0.82, "alphaSingapore": 0.76 },
+    { "pair": "J-P", "facet": "Early Starting - Pressure-Prompted", "alphaUsNrs": 0.70, "alphaSingapore": 0.66 },
+    { "pair": "J-P", "facet": "Scheduled - Spontaneous", "alphaUsNrs": 0.82, "alphaSingapore": 0.79 },
+    { "pair": "J-P", "facet": "Methodical - Emergent", "alphaUsNrs": 0.71, "alphaSingapore": 0.60 }
+  ],
+
+  "facetSamples": {
+    "usNrs": { "n": 3009, "description": "US national representative sample, MBTI Manual 1998" },
+    "singapore": { "n": 12838, "description": "Singapore convenience sample, Form Q in North American English; publisher states no population inference may be drawn" }
+  },
+
+  "internalConsistencyByPair": [
+    { "pair": "E-I", "alphaUsNrs": 0.91, "alphaSingapore": 0.91 },
+    { "pair": "S-N", "alphaUsNrs": 0.92, "alphaSingapore": 0.89 },
+    { "pair": "T-F", "alphaUsNrs": 0.91, "alphaSingapore": 0.88 },
+    { "pair": "J-P", "alphaUsNrs": 0.92, "alphaSingapore": 0.90 }
+  ],
+
+  "typeDynamics": {
+    "rules": [
+      "The J or P letter says which function faces outward: J means the judging function (T or F) is extraverted, P means the perceiving function (S or N) is extraverted",
+      "The E or I letter says whether the outward-facing function is dominant: for E types it is, for I types the dominant is the other function turned inward",
+      "The attitudes shown for tertiary and inferior follow the alternating convention; Myers did not settle the tertiary's attitude"
+    ],
+    "stacks": [
+      { "type": "ISTJ", "dominant": "Si", "auxiliary": "Te", "tertiary": "Fi", "inferior": "Ne" },
+      { "type": "ISFJ", "dominant": "Si", "auxiliary": "Fe", "tertiary": "Ti", "inferior": "Ne" },
+      { "type": "INFJ", "dominant": "Ni", "auxiliary": "Fe", "tertiary": "Ti", "inferior": "Se" },
+      { "type": "INTJ", "dominant": "Ni", "auxiliary": "Te", "tertiary": "Fi", "inferior": "Se" },
+      { "type": "ISTP", "dominant": "Ti", "auxiliary": "Se", "tertiary": "Ni", "inferior": "Fe" },
+      { "type": "ISFP", "dominant": "Fi", "auxiliary": "Se", "tertiary": "Ni", "inferior": "Te" },
+      { "type": "INFP", "dominant": "Fi", "auxiliary": "Ne", "tertiary": "Si", "inferior": "Te" },
+      { "type": "INTP", "dominant": "Ti", "auxiliary": "Ne", "tertiary": "Si", "inferior": "Fe" },
+      { "type": "ESTP", "dominant": "Se", "auxiliary": "Ti", "tertiary": "Fe", "inferior": "Ni" },
+      { "type": "ESFP", "dominant": "Se", "auxiliary": "Fi", "tertiary": "Te", "inferior": "Ni" },
+      { "type": "ENFP", "dominant": "Ne", "auxiliary": "Fi", "tertiary": "Te", "inferior": "Si" },
+      { "type": "ENTP", "dominant": "Ne", "auxiliary": "Ti", "tertiary": "Fe", "inferior": "Si" },
+      { "type": "ESTJ", "dominant": "Te", "auxiliary": "Si", "tertiary": "Ne", "inferior": "Fi" },
+      { "type": "ESFJ", "dominant": "Fe", "auxiliary": "Si", "tertiary": "Ne", "inferior": "Ti" },
+      { "type": "ENFJ", "dominant": "Fe", "auxiliary": "Ni", "tertiary": "Se", "inferior": "Ti" },
+      { "type": "ENTJ", "dominant": "Te", "auxiliary": "Ni", "tertiary": "Se", "inferior": "Fi" }
+    ]
+  },
+
+  "preferenceDistributionUsNrs": {
+    "sample": { "n": 3009, "description": "US national representative sample, MBTI Manual 1998, reproduced in publisher technical brief" },
+    "shares": {
+      "E": 49.3, "I": 50.7,
+      "S": 73.3, "N": 26.7,
+      "T": 40.2, "F": 59.8,
+      "J": 54.1, "P": 45.9
+    },
+    "unit": "percent"
+  },
+
+  "perTypeFrequencyConflict": {
+    "status": "unresolved",
+    "note": "Two tables circulate, both attributed to official manuals, and they disagree. This report endorses neither.",
+    "versionA": { "attribution": "commonly attributed to CAPT and the third-edition manual", "examples": { "ISFJ": 13.8, "ESFJ": 12.3, "ISTJ": 11.6 } },
+    "versionB": { "attribution": "commonly attributed to the 2018 manual", "examples": { "ISTJ": 20.9, "ISTP": 13.0, "ISFJ": 5.9, "ESFJ": 3.6 } },
+    "publisherConvenienceSample": { "sample": "Singapore, n = 12838", "ISTJ": 22.8, "caveat": "publisher states no population inference may be drawn" }
+  },
+
+  "reliabilityStudies": [
+    { "study": "Stricker & Ross (1962)", "interval": "14 months", "n": 38, "metric": "scale correlation", "result": ".48 on T-F to .73 on E-I", "via": "S1", "evidenceState": "cited-through" },
+    { "study": "Howes & Carskadon (1979)", "interval": "short, not stated", "n": null, "metric": "letter flips among mid-range initial scores", "result": "E-I 32%, S-N 25%, T-F 29%, J-P 30%", "via": "S1", "evidenceState": "cited-through" },
+    { "study": "McCarley & Carskadon (1983)", "interval": "5 weeks", "n": null, "metric": "share changing one or more scales", "result": "50%", "via": "S1", "evidenceState": "cited-through" },
+    { "study": "MBTI Manual (1998)", "interval": "4 weeks", "n": null, "metric": "share with a different four-letter type", "result": "35%", "via": "S1", "evidenceState": "cited-through" },
+    { "study": "MBTI Manual (2018), Global Step I", "interval": "6 to 15 weeks", "n": 1721, "metric": "scale correlation", "result": ".81 to .86 across all four scales", "via": "S6", "evidenceState": "source-reported" },
+    { "study": "Publisher MBTI Facts page", "interval": "not stated", "n": null, "metric": "share changing one or more scales", "result": "50%; 90% keep three or four letters", "via": "S5", "evidenceState": "source-reported" },
+    { "study": "Tshimula et al. (2026) literature review", "interval": "5 weeks", "n": null, "metric": "identical four-letter classification", "result": "about 47%", "via": "S11", "evidenceState": "source-reported" },
+    { "study": "Tshimula et al. (2026) literature review", "interval": "12 months", "n": null, "metric": "mean scale correlation", "result": "about .60", "via": "S11", "evidenceState": "source-reported" }
+  ],
+
+  "alternatives": [
+    { "instrument": "MBTI Step I / II / III", "measures": "four Jungian preference pairs, plus 20 facets at Step II", "access": "paid, practitioner required", "evidence": "reliable scales, unsupported typology, very weak prediction", "use": "coaching, shared vocabulary, self-reflection", "confidence": "high" },
+    { "instrument": "16Personalities (NERIS Type Explorer)", "measures": "four MBTI-letter scales plus Identity (Assertive/Turbulent)", "access": "free, paid reports", "evidence": "little independent peer-reviewed validation located", "use": "casual self-reflection only", "confidence": "low" },
+    { "instrument": "Keirsey Temperament Sorter", "measures": "four temperaments mapped onto MBTI-style letters", "access": "paid", "evidence": "thin independent evidence; a different theory from Jung's", "use": "team language, same caveats as MBTI", "confidence": "low" },
+    { "instrument": "Socionics", "measures": "16 types with information-metabolism theory and inter-type relations", "access": "mostly informal", "evidence": "essentially no peer-reviewed English-language validation", "use": "hobby interest, not decisions", "confidence": "low" },
+    { "instrument": "Big Five via NEO-PI-3", "measures": "five factors and 30 facets", "access": "paid", "evidence": "best-established model of normal personality", "use": "research, coaching, work-relevant prediction", "confidence": "high" },
+    { "instrument": "Big Five via BFI-2", "measures": "five factors and 15 facets", "access": "free for research", "evidence": "well validated, short", "use": "research, low-cost team work", "confidence": "high" },
+    { "instrument": "Big Five via IPIP-NEO", "measures": "five factors and 30 facets", "access": "public domain", "evidence": "validated against commercial measures", "use": "free alternative when budget is the blocker", "confidence": "moderate" },
+    { "instrument": "HEXACO-PI-R", "measures": "Big Five plus Honesty-Humility", "access": "free for research", "evidence": "explains more variance in workplace deviance and citizenship behaviour than the Big Five in meta-analysis", "use": "where integrity matters, and research", "confidence": "moderate" },
+    { "instrument": "Hogan (HPI, HDS, MVPI)", "measures": "work reputation, derailment risks, values", "access": "paid, certification required", "evidence": "built and validated for occupational prediction", "use": "selection and development", "confidence": "moderate" },
+    { "instrument": "DISC", "measures": "four behavioural styles at work", "access": "paid, many vendors", "evidence": "decent reported reliability, mostly vendor-generated; thin independent literature", "use": "communication workshops", "confidence": "low" },
+    { "instrument": "Enneagram", "measures": "nine types built on motivations and fears", "access": "paid and free", "evidence": "mixed; a 2021 systematic review found inconsistent reliability and validity", "use": "personal and spiritual development", "confidence": "low" },
+    { "instrument": "MMTIC", "measures": "MBTI framework adapted for children", "access": "paid, practitioner required", "evidence": "limited independent work", "use": "education settings, with care", "confidence": "low" },
+    { "instrument": "Golden, Majors PTI, Jung Type Indicator", "measures": "type instruments in the MBTI tradition", "access": "paid", "evidence": "own manuals; independent comparative work scarce", "use": "type framework without MBTI licensing", "confidence": "low" },
+    { "instrument": "Insights Discovery, Lumina Spark", "measures": "proprietary colour or facet models", "access": "paid, practitioner networks", "evidence": "vendor-validated; limited independent literature", "use": "facilitated team sessions", "confidence": "low" },
+    { "instrument": "Strong Interest Inventory", "measures": "occupational interests, not personality", "access": "paid, practitioner required", "evidence": "long research record for career exploration", "use": "career counselling", "confidence": "moderate" }
+  ],
+
+  "ethicsRules": {
+    "source": "S8",
+    "required": [
+      "participation is voluntary",
+      "results are confidential and belong to the respondent",
+      "purpose and use disclosed before administration",
+      "results explained by a certified practitioner with theory and discussion",
+      "respondent verifies best-fit type and may disagree",
+      "non-judgmental language: tendencies, preferences, inclinations"
+    ],
+    "forbidden": [
+      "screening job applicants",
+      "job placement, team assignment, task force selection",
+      "counselling toward or away from a career on type alone",
+      "implying all people of one type behave identically",
+      "implying type explains ability, intelligence, success, emotions, or normality",
+      "pressing a result on a respondent who disagrees"
+    ]
+  },
+
+  "sources": [
+    { "id": "S1", "citation": "Pittenger, D. J. (2005). Cautionary comments regarding the Myers-Briggs Type Indicator. Consulting Psychology Journal: Practice and Research, 57(3), 210-221", "type": "peer-reviewed", "access": "read in full" },
+    { "id": "S2", "citation": "Stein, R., & Swan, A. B. (2019). Evaluating the validity of Myers-Briggs Type Indicator theory. Social and Personality Psychology Compass, 13(2), e12434", "type": "peer-reviewed", "access": "read in full" },
+    { "id": "S3", "citation": "Schaubhut, N. A., & Thompson, R. C. (2017). Technical Brief for the MBTI Form M and Form Q Assessments: Singapore. CPP, Inc.", "type": "publisher technical", "access": "read in full" },
+    { "id": "S4", "citation": "The Myers-Briggs Company. MBTI Global Assessment: Frequently Asked Questions (two editions, one via Psychometrics Canada, 2022)", "type": "publisher", "access": "read in full" },
+    { "id": "S5", "citation": "The Myers-Briggs Company. MBTI Facts", "type": "publisher web", "access": "web page" },
+    { "id": "S6", "citation": "The Myers & Briggs Foundation. Reliability and Validity", "type": "publisher web", "access": "web page" },
+    { "id": "S7", "citation": "The Myers & Briggs Foundation. MBTI Basics", "type": "publisher web", "access": "web page" },
+    { "id": "S8", "citation": "The Myers & Briggs Foundation. MBTI Code of Ethics", "type": "publisher web", "access": "web page" },
+    { "id": "S9", "citation": "The Myers & Briggs Foundation. Three unique instruments (Step I, II, III)", "type": "publisher web", "access": "web page" },
+    { "id": "S10", "citation": "The Myers & Briggs Foundation. Type dynamics pages", "type": "publisher web", "access": "web page" },
+    { "id": "S11", "citation": "Tshimula, J. M., Galekwa, R. M., & Chikhaoui, B. (2026). A critical analysis of MBTI-based personality profiling with large language models. Frontiers in Computational Neuroscience, 20, 1800284", "type": "peer-reviewed", "access": "article summary" },
+    { "id": "S12", "citation": "Zarate-Torres, R., & Correa, J. C. (2023). How good is the Myers-Briggs Type Indicator for predicting leadership-related behaviors? Frontiers in Psychology, 14, 940961", "type": "peer-reviewed", "access": "article summary" },
+    { "id": "S13", "citation": "Wu, W., Hao, W., Zeng, G., & Du, W. (2024). From personality types to social labels. Frontiers in Psychology, 15, 1419492", "type": "peer-reviewed", "access": "article summary" },
+    { "id": "S14", "citation": "US Equal Employment Opportunity Commission. Employment Tests and Selection Procedures", "type": "regulator", "access": "web page" },
+    { "id": "S15", "citation": "Association for Psychological Type International, history page", "type": "association", "access": "web page" },
+    { "id": "S16", "citation": "Bloomberg Law and Alston & Bird commentary on pre-hire personality tests, February 2024", "type": "legal commentary", "access": "web summary" },
+    { "id": "S17", "citation": "Erford, B. T., et al. (2025). A 25-Year Review and Psychometric Synthesis of the Myers-Briggs Type Indicator Form M. Journal of Counseling & Development", "type": "peer-reviewed", "access": "abstract only, full text paywalled (HTTP 402)" },
+    { "id": "S18", "citation": "McCrae, R. R., & Costa, P. T. (1989). Reinterpreting the Myers-Briggs Type Indicator from the perspective of the five-factor model of personality. Journal of Personality, 57, 17-40", "type": "peer-reviewed", "access": "abstract plus quotation in S1 and S2" },
+    { "id": "S19", "citation": "Emre, M. (2018). The Personality Brokers", "type": "book", "access": "not read; used for general historical points only" },
+    { "id": "S20", "citation": "Furnham, A. (1996; 2020) on the MBTI and the NEO-PI", "type": "peer-reviewed and reference work", "access": "cited through S1 and search summaries" },
+    { "id": "S21", "citation": "Big Five and HEXACO job-performance meta-analytic figures, including a 2025 review in Current Opinion in Psychology", "type": "peer-reviewed", "access": "search summaries only" },
+    { "id": "S22", "citation": "16Personalities and the NERIS Type Explorer model", "type": "vendor and third-party", "access": "no technical manual located" },
+    { "id": "S23", "citation": "DISC and Enneagram evidence status", "type": "secondary reviews", "access": "search summaries only" },
+    { "id": "S24", "citation": "MBTI popularity in South Korea and China: CNN (2022), Tinder Korea data (2025), The World of Chinese (2023), a survey reporting 69% awareness in China", "type": "journalistic and single-survey", "access": "web summaries; directional only" },
+    { "id": "S25", "citation": "MBTI certification price of about US$2,995 for three days, 2026", "type": "third-party training market", "access": "not the publisher's price list" },
+    { "id": "S26", "citation": "Stromberg, J., & Caswell, E. (2015). Vox. Two million per year, 89 of the Fortune 100, US$20 million revenue", "type": "journalistic", "access": "cited through S2; dated" }
+  ],
+
+  "unobtainable": [
+    "MBTI Manual, any of the four editions (1962, 1985, 1998, 2018)",
+    "MBTI Step II Manual Supplement (HTTP 404)",
+    "Erford et al. (2025) full text (paywalled)",
+    "any independent test-retest study published since 1999",
+    "any independent structural validity study published since 1999",
+    "an authoritative per-type frequency table with a named sample",
+    "the 2018 Global manual's reliability and validity tables",
+    "peer-reviewed technical documentation for 16Personalities",
+    "any controlled trial of whether an MBTI intervention improves an outcome"
+  ],
+
+  "limitations": [
+    "English-language sources only; Korean, Chinese, Japanese and German literature not searched",
+    "publisher figures are mostly second-hand because the manuals are not public",
+    "predictive evidence rests on few studies, the clearest being 464 Colombian business students",
+    "the taxometric case rests substantially on one study, cited through S2",
+    "the legal section is US-focused, and the data protection reasoning is inferred, not a regulator decision",
+    "the alternatives table was surveyed, not audited, and is the weakest part of the bundle",
+    "no primary reading of Jung's Psychological Types"
+  ]
+}

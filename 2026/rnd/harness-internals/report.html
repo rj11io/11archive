@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="What Claude Code and OpenAI Codex CLI write into their home directories, and which of it is undocumented. Measured on one machine, 2026-08-11.">
+<title>Harness Internals: the home directory you never look at</title>
+<style>
+:root{
+  --bg:#0c0d10; --bg-2:#131519; --bg-3:#1a1d23;
+  --fg:#e8eaed; --fg-2:#a8adb8; --fg-3:#6f757f;
+  --line:#252932; --line-2:#333944;
+  --accent:#7aa2f7; --accent-dim:#3d5a8f;
+  --crit:#f7768e; --high:#ff9e64; --med:#e0af68; --low:#9ece6a; --none:#565f89;
+  --claude:#d7a87e; --codex:#7dcfff;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  --maxw:940px;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#fbfbfc; --bg-2:#f2f3f5; --bg-3:#e8eaed;
+    --fg:#16181d; --fg-2:#4a5058; --fg-3:#767d88;
+    --line:#e0e3e8; --line-2:#cdd2da;
+    --accent:#2f5fd0; --accent-dim:#9db4e8;
+    --crit:#c8394f; --high:#c96a1e; --med:#a67c1a; --low:#4f8b2b; --none:#767d88;
+    --claude:#9c6b3e; --codex:#1e7fa8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0d10; --bg-2:#131519; --bg-3:#1a1d23;
+  --fg:#e8eaed; --fg-2:#a8adb8; --fg-3:#6f757f;
+  --line:#252932; --line-2:#333944;
+  --accent:#7aa2f7; --accent-dim:#3d5a8f;
+  --crit:#f7768e; --high:#ff9e64; --med:#e0af68; --low:#9ece6a; --none:#565f89;
+  --claude:#d7a87e; --codex:#7dcfff;
+}
+:root[data-theme="light"]{
+  --bg:#fbfbfc; --bg-2:#f2f3f5; --bg-3:#e8eaed;
+  --fg:#16181d; --fg-2:#4a5058; --fg-3:#767d88;
+  --line:#e0e3e8; --line-2:#cdd2da;
+  --accent:#2f5fd0; --accent-dim:#9db4e8;
+  --crit:#c8394f; --high:#c96a1e; --med:#a67c1a; --low:#4f8b2b; --none:#767d88;
+  --claude:#9c6b3e; --codex:#1e7fa8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+a:hover{border-bottom-color:var(--accent)}
+code{font-family:var(--mono);font-size:.87em;background:var(--bg-3);
+  padding:.12em .38em;border-radius:4px;border:1px solid var(--line);
+  overflow-wrap:anywhere}
+h1,h2,h3{line-height:1.25;font-weight:650;letter-spacing:-.015em}
+h1{font-size:clamp(1.9rem,5vw,2.7rem);margin:0 0 .4em}
+h2{font-size:clamp(1.35rem,3.4vw,1.75rem);margin:2.6em 0 .7em;
+  padding-top:1.1em;border-top:1px solid var(--line)}
+h3{font-size:1.08rem;margin:1.9em 0 .5em}
+p{margin:0 0 1em;color:var(--fg-2)}
+p strong,li strong{color:var(--fg);font-weight:600}
+
+header{padding:60px 0 34px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--bg-2),var(--bg))}
+.eyebrow{font-family:var(--mono);font-size:.73rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--fg-3);margin-bottom:1.1em}
+.lede{font-size:1.14rem;color:var(--fg-2);max-width:62ch;margin-bottom:1.5em}
+.meta{font-family:var(--mono);font-size:.76rem;color:var(--fg-3);
+  display:flex;gap:1.3em;flex-wrap:wrap}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));
+  gap:11px;margin:30px 0}
+.tile{background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:15px 16px}
+.tile .n{font-family:var(--mono);font-size:1.72rem;font-weight:600;
+  line-height:1.1;letter-spacing:-.02em;display:block}
+.tile .u{font-family:var(--mono);font-size:.8rem;color:var(--fg-3);margin-left:.22em}
+.tile .l{font-size:.79rem;color:var(--fg-2);margin-top:.42em;line-height:1.4}
+
+.chart{background:var(--bg-2);border:1px solid var(--line);
+  border-radius:10px;padding:22px;margin:22px 0;overflow-x:auto}
+.chart h3{margin:0 0 .3em;font-size:.98rem}
+.chart .sub{font-size:.8rem;color:var(--fg-3);margin:0 0 1.3em}
+.bar-row{display:grid;grid-template-columns:minmax(150px,1.3fr) 1fr auto;
+  gap:12px;align-items:center;padding:5px 0;font-size:.82rem;min-width:430px}
+.bar-row .lbl{font-family:var(--mono);font-size:.76rem;color:var(--fg-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{background:var(--bg-3);border-radius:3px;height:19px;
+  position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .55s cubic-bezier(.3,.8,.4,1)}
+.bar-val{font-family:var(--mono);font-size:.76rem;color:var(--fg-2);
+  text-align:right;min-width:60px;white-space:nowrap}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:.75rem;
+  color:var(--fg-3);margin-top:16px;padding-top:13px;border-top:1px solid var(--line)}
+.legend span{display:flex;align-items:center;gap:6px}
+.swatch{width:10px;height:10px;border-radius:2px;flex:none}
+
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp-card{background:var(--bg-2);border:1px solid var(--line);
+  border-radius:10px;padding:18px;border-top:3px solid var(--c)}
+.cmp-card h3{margin:0 0 .1em;font-size:1.02rem;color:var(--c)}
+.cmp-card .impl{font-family:var(--mono);font-size:.73rem;color:var(--fg-3);margin-bottom:1.1em}
+.cmp-card dl{margin:0;font-size:.83rem}
+.cmp-card dt{color:var(--fg-3);font-size:.75rem;margin-top:.85em}
+.cmp-card dd{margin:.12em 0 0;font-family:var(--mono);font-size:.79rem;color:var(--fg)}
+
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 16px}
+.btn{background:var(--bg-2);border:1px solid var(--line-2);color:var(--fg-2);
+  font-family:var(--mono);font-size:.75rem;padding:6px 13px;border-radius:20px;
+  cursor:pointer;transition:.16s}
+.btn:hover{border-color:var(--accent);color:var(--fg)}
+.btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+
+.classes{display:grid;gap:11px}
+.cls{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;border-left:3px solid var(--r)}
+.cls-h{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin-bottom:.5em}
+.cls-id{font-family:var(--mono);font-size:.72rem;color:var(--bg);
+  background:var(--r);padding:1px 7px;border-radius:4px;font-weight:600}
+.cls-h h3{margin:0;font-size:1rem}
+.risk{font-family:var(--mono);font-size:.68rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--r);margin-left:auto}
+.cls p{margin:.4em 0;font-size:.87rem}
+.cls .why{color:var(--fg);font-size:.87rem;margin-top:.7em;
+  padding-top:.7em;border-top:1px solid var(--line)}
+.paths{font-family:var(--mono);font-size:.73rem;color:var(--fg-3);
+  margin-top:.6em;word-break:break-all;line-height:1.75}
+
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:18px 0}
+.tw{overflow-x:auto;margin:18px 0}
+.tw table{margin:0;min-width:540px}
+th{text-align:left;font-size:.71rem;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--fg-3);font-weight:600;padding:8px 11px;border-bottom:1px solid var(--line-2)}
+td{padding:10px 11px;border-bottom:1px solid var(--line);
+  color:var(--fg-2);vertical-align:top}
+tbody tr:hover{background:var(--bg-2)}
+td.m{font-family:var(--mono);font-size:.79rem}
+
+.callout{background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:0 9px 9px 0;padding:15px 18px;margin:20px 0}
+.callout.warn{border-left-color:var(--crit)}
+.callout .t{font-family:var(--mono);font-size:.71rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:.5em}
+.callout.warn .t{color:var(--crit)}
+.callout p:last-child{margin-bottom:0}
+
+pre{background:var(--bg-2);border:1px solid var(--line);border-radius:9px;
+  padding:15px 17px;overflow-x:auto;font-family:var(--mono);
+  font-size:.79rem;line-height:1.6;color:var(--fg-2);margin:16px 0}
+pre code{background:none;border:none;padding:0;font-size:inherit}
+
+.ev{font-family:var(--mono);font-size:.63rem;letter-spacing:.06em;padding:1px 5px;
+  border-radius:3px;border:1px solid currentColor;vertical-align:.12em;white-space:nowrap}
+.ev-m{color:var(--low)} .ev-d{color:var(--accent)} .ev-r{color:var(--med)}
+
+ul,ol{color:var(--fg-2);padding-left:1.35em;margin:0 0 1em}
+li{margin:.3em 0}
+footer{margin-top:60px;padding:26px 0 50px;border-top:1px solid var(--line);
+  font-size:.79rem;color:var(--fg-3)}
+.theme-btn{position:fixed;top:14px;right:14px;background:var(--bg-2);
+  border:1px solid var(--line-2);color:var(--fg-2);border-radius:7px;
+  width:34px;height:34px;cursor:pointer;font-size:14px;z-index:9;line-height:1}
+.theme-btn:hover{border-color:var(--accent)}
+@media print{.theme-btn,.controls{display:none}}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" id="tt" aria-label="Toggle light and dark theme">◐</button>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">11archive &middot; R&amp;D &middot; 2026-08-11</div>
+    <h1>The home directory you never look at</h1>
+    <p class="lede">Two AI coding tools on one working laptop had written <strong>4.0 GB</strong> into their home directories. The published documentation accounts for roughly a dozen of those files. This is what the rest of them are.</p>
+    <div class="meta">
+      <span>MEASURED &middot; 1 machine &middot; macOS 24.3.0</span>
+      <span>Claude Code + Codex CLI</span>
+      <span>28 sources</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="tiles">
+  <div class="tile"><span class="n">4.03<span class="u">GB</span></span><span class="l">Combined on disk, two tools</span></div>
+  <div class="tile"><span class="n">42<span class="u">%</span></span><span class="l">Is conversation transcripts</span></div>
+  <div class="tile"><span class="n">27<span class="u">%</span></span><span class="l">Is reclaimable waste</span></div>
+  <div class="tile"><span class="n">131<span class="u">MB</span></span><span class="l">Largest single transcript</span></div>
+  <div class="tile"><span class="n">851</span><span class="l">Empty directories, all of them</span></div>
+  <div class="tile"><span class="n">6<span class="u">%</span></span><span class="l">Of <code>~/.codex</code> entries are documented</span></div>
+</div>
+
+<h2>Where the 4 GB went</h2>
+
+<p>A <strong>harness</strong> is the program that wraps a language model and lets it act: it holds the conversation, gives the model tools, and runs them when asked. Claude Code and Codex CLI are harnesses. Everything below follows from what a harness has to write down in order to survive a crash, resume a session, and undo a bad edit.</p>
+
+<div class="chart">
+  <h3>Disk usage by location</h3>
+  <p class="sub">MEASURED on one macOS machine after heavy daily use of both tools</p>
+  <div id="disk"></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--crit)"></i>Transcripts</span>
+    <span><i class="swatch" style="background:var(--high)"></i>Shadow copies of source</span>
+    <span><i class="swatch" style="background:var(--none)"></i>Reclaimable waste</span>
+    <span><i class="swatch" style="background:var(--med)"></i>Executable bundles</span>
+    <span><i class="swatch" style="background:var(--low)"></i>Generated artifacts</span>
+  </div>
+</div>
+
+<p>Two lines carry the story. Conversation transcripts are 1.70 GB across both tools, <strong>42% of everything</strong>. And 1.08 GB, <strong>27%</strong>, is pure waste: an unvacuumed database, an orphaned git checkout, and plugin sync scratch that nothing cleans up.</p>
+
+<h2>Two tools, two engineering cultures</h2>
+
+<div class="cmp">
+  <div class="cmp-card" style="--c:var(--claude)">
+    <h3>Claude Code</h3>
+    <div class="impl">Anthropic &middot; TypeScript on Node &middot; ~/.claude</div>
+    <dl>
+      <dt>Total on disk</dt><dd>352 MB</dd>
+      <dt>Transcripts</dt><dd>325 MB &middot; 207 files</dd>
+      <dt>Largest single transcript</dt><dd>15.1 MB</dd>
+      <dt>Structured state</dt><dd>one JSON file</dd>
+      <dt>Retention default</dt><dd>30 days</dd>
+      <dt>Credentials</dt><dd>macOS Keychain</dd>
+      <dt>Debug logs kept</dt><dd>none observed</dd>
+      <dt>Entries documented</dt><dd>14 of 26 &middot; 54%</dd>
+    </dl>
+  </div>
+  <div class="cmp-card" style="--c:var(--codex)">
+    <h3>OpenAI Codex CLI</h3>
+    <div class="impl">OpenAI &middot; Rust &middot; ~/.codex</div>
+    <dl>
+      <dt>Total on disk</dt><dd>3.68 GB</dd>
+      <dt>Transcripts</dt><dd>1.37 GB &middot; 453 files</dd>
+      <dt>Largest single transcript</dt><dd>131 MB</dd>
+      <dt>Structured state</dt><dd>four SQLite databases</dd>
+      <dt>Retention default</dt><dd>indefinite</dd>
+      <dt>Credentials</dt><dd>auth.json, plain JSON, 0600</dd>
+      <dt>Debug logs kept</dt><dd>395 MB database</dd>
+      <dt>Entries documented</dt><dd>4 of 63 &middot; 6%</dd>
+    </dl>
+  </div>
+</div>
+
+<p>The Rust side reaches for databases and background workers. The Node side reaches for files and folders. Neither is wrong. They fail differently, and the failure modes are what fills the disk.</p>
+
+<h2>What is actually in these files</h2>
+
+<p>Eight classes, ordered by how much damage the contents could do. Filter by risk:</p>
+
+<div class="controls" role="group" aria-label="Filter file classes by risk">
+  <button class="btn" data-f="all" aria-pressed="true">All 8</button>
+  <button class="btn" data-f="critical" aria-pressed="false">Critical</button>
+  <button class="btn" data-f="high" aria-pressed="false">High</button>
+  <button class="btn" data-f="medium" aria-pressed="false">Medium</button>
+  <button class="btn" data-f="low" aria-pressed="false">Low</button>
+  <button class="btn" data-f="none" aria-pressed="false">No risk</button>
+</div>
+
+<div class="classes" id="classes"></div>
+
+<h2>The five ways this bites you</h2>
+
+<div class="callout warn">
+  <div class="t">The one that matters most</div>
+  <p><strong><code>.gitignore</code> does not protect you.</strong> It stops a file being committed. It does nothing to stop the agent <em>reading</em> that file and writing its contents into the transcript. If the agent runs <code>grep -rn "API_KEY" .</code> once, your keys are in plain text in your home directory, for 30 days on Claude Code and forever on Codex.</p>
+  <p>Nothing in that chain is a bug. Each step does its job. The composition is what fails.</p>
+</div>
+
+<div class="tw">
+<table>
+<thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>The fix</th></tr></thead>
+<tbody>
+<tr><td><strong>.gitignore does not stop secrets reaching disk</strong> <span class="ev ev-r">REPORTED</span></td><td class="m">near certain</td><td class="m">critical</td><td>Keep real secrets out of reachable files. Use permissions deny rules, not <code>CLAUDE.md</code> notes. Rotate anything already seen.</td></tr>
+<tr><td><strong>A cloned repo can run code at session start</strong> <span class="ev ev-r">REPORTED</span></td><td class="m">low per repo</td><td class="m">critical</td><td>Read <code>.claude/settings.json</code> before opening an unfamiliar repository with an agent.</td></tr>
+<tr><td><strong>Agent state gets committed to a shared repo</strong> <span class="ev ev-m">MEASURED</span></td><td class="m">moderate</td><td class="m">medium</td><td>Global gitignore for <code>settings.local.json</code>. Keep skills and rules committed.</td></tr>
+<tr><td><strong>Your directory layout is a permanent list</strong> <span class="ev ev-m">MEASURED</span></td><td class="m">certain</td><td class="m">varies</td><td>No prune command exists. Edit <code>config.toml</code> and <code>~/.claude/projects/</code> by hand.</td></tr>
+<tr><td><strong>Telemetry, and the trap in switching it off</strong> <span class="ev ev-d">DOCUMENTED</span></td><td class="m">certain</td><td class="m">low</td><td>Disabling it also disables remote kill switches. Choose a posture deliberately.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>The attack is real, not theoretical</h3>
+
+<p>A project's <code>.claude/settings.json</code> can define a <strong>hook</strong>: a shell command the harness runs by itself when a session starts. So a file committed to a repository can cause code to run on your machine the moment you point an agent at it. You never typed anything.</p>
+
+<p>The ChainDrop worm did exactly this across more than 400 compromised npm packages, planting a <code>SessionStart</code> hook that ran <code>node .claude/setup.mjs</code>. It hunted for credentials from Anthropic, Codex, Cursor, OpenAI, and Gemini, alongside AWS, GCP, Azure, GitHub, Vault, SSH, and Kubernetes.</p>
+
+<pre><code># thirty seconds, before opening any repo you did not write
+ls -la .claude/ .codex/ .vscode/ 2>/dev/null
+grep -rn '"hooks"\|"command"\|SessionStart' .claude/ .codex/ 2>/dev/null</code></pre>
+
+<h2>Five settings that do not mean what they say</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th>Setting</th><th>Reads as</th><th>Actually does</th></tr></thead>
+<tbody>
+<tr><td class="m">cleanupPeriodDays: 0</td><td>Never clean up, keep forever</td><td><strong>Stops transcripts being written at all.</strong> Set <code>3650</code> to keep long history.</td></tr>
+<tr><td class="m">DISABLE_TELEMETRY=1</td><td>Stops usage reporting</td><td>Also stops feature flag fetching, so <strong>remote kill switches stop arriving</strong>.</td></tr>
+<tr><td class="m">history.max_bytes</td><td>Caps history size</td><td>Caps the prompt history file only. Not <code>sessions/</code>, which held <strong>1.37 GB</strong>.</td></tr>
+<tr><td class="m">CLAUDE.md prohibitions</td><td>Rules the agent must obey</td><td>A request to a model, <strong>not an enforced boundary</strong>. Secrets have still been read.</td></tr>
+<tr><td class="m">rm -rf ~/.claude/projects/&lt;slug&gt;</td><td>Deletes old transcripts</td><td>Also deletes <strong>that project's agent memory</strong> at <code>memory/MEMORY.md</code>.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Reclaim about 1.1 GB</h2>
+
+<p>Ranked by return. Quit both tools first.</p>
+
+<div class="chart">
+  <h3>Safe to reclaim</h3>
+  <p class="sub">MEASURED on the sampled machine; your numbers will differ</p>
+  <div id="reclaim"></div>
+</div>
+
+<pre><code># 1. reclaim free pages in the Codex log database  ->  326 MB
+#    the file is 395 MB; 82% of it is free pages left by deleted rows
+sqlite3 ~/.codex/logs_2.sqlite 'VACUUM;'
+
+# 2. abandoned atomic-write temp files (11 of them, up to 512 KB each)
+find ~/.codex -maxdepth 1 -name '..codex-global-state.json.tmp-*' -delete
+
+# 3. plugin sync scratch, kept even after a successful sync
+rm -rf ~/.codex/.tmp/plugins-backup-* ~/.codex/.tmp/plugins-clone-*
+
+# 4. empty session directories (851 of them, zero files inside)
+find ~/.claude/session-env -mindepth 1 -maxdepth 1 -type d -empty -delete</code></pre>
+
+<div class="callout">
+  <div class="t">Handle worktrees by hand</div>
+  <p>839 MB sat in a single <strong>orphaned git worktree</strong>. A worktree is a second checkout of one repository. Background agents get their own so they do not disturb your files. This one's parent repository had been <em>moved</em>, so both ends of the git link were broken and <code>git worktree prune</code> could not see it.</p>
+  <p>Check each one, then delete. They can hold work that exists nowhere else.</p>
+</div>
+
+<pre><code>for w in ~/.codex/worktrees/*/*; do
+  printf '%s  ' "$(du -sh "$w" | cut -f1)"
+  git -C "$w" status --porcelain >/dev/null 2>&1 \
+    && echo "LIVE   $w" || echo "ORPHAN $w"
+done</code></pre>
+
+<h2>What the harness knows about you</h2>
+
+<p>MEASURED, from a single 95.5 KB file at <code>~/.claude.json</code>:</p>
+
+<ul>
+<li><strong>43 projects tracked</strong>, each with its own cost, token counts, and timing history</li>
+<li><strong>487 cached feature flags</strong>, which are remote switches that change behaviour without an update</li>
+<li>a stable <strong>64-character machine identifier</strong></li>
+<li>your account email, organisation name, role, and billing tier</li>
+<li>for each project, a <strong>sample of filenames</strong> read from your repository</li>
+</ul>
+
+<p>And from <code>~/.codex/config.toml</code>: <strong>every directory you have ever marked as trusted</strong>, listed by full absolute path, kept permanently. For a consultant, that is a client list. For anyone under a non-disclosure agreement, it is a list of things you were not supposed to name.</p>
+
+<p>Neither list is pruned when a project ends or when the directory stops existing. Both tools on the sampled machine still listed a repository that had been moved months earlier.</p>
+
+<h2>What is <em>not</em> a problem</h2>
+
+<p>Said plainly, so the rest of the list stays credible.</p>
+
+<ul>
+<li><strong>Shell snapshots are not an environment dump.</strong> MEASURED: one 4,501-line snapshot held 127 shell functions, 4 aliases, and exactly one <code>export</code>, for <code>PATH</code>. It captures shell definitions, not your environment variables.</li>
+<li><strong>File permissions are correctly applied.</strong> Both tools set <code>0600</code> on sensitive files. That part is done right.</li>
+<li><strong>Nothing observed was undisclosed data collection.</strong> Every file examined had an obvious engineering purpose: crash recovery, resume, undo, correct command execution.</li>
+</ul>
+
+<div class="callout">
+  <div class="t">The one-line version</div>
+  <p>These tools are not doing anything sneaky. They are doing ordinary engineering things, which happen to include writing your entire working life to plain text in a folder you never open. The problem is not that the files exist. It is that they outlive the task that created them, hold more than the task needed, and no part of the interface ever mentions them.</p>
+</div>
+
+<h2>Limits of this research</h2>
+
+<p>Read these before quoting any number.</p>
+
+<ul>
+<li><strong>One machine, one operating system, one point in time.</strong> Every measurement is a single sample. It proves a file class exists. It does not establish a typical size. Your <code>~/.codex</code> will not be 3.68 GB.</li>
+<li><strong>macOS only.</strong> Credential storage differs on Linux, which changes the risk picture materially.</li>
+<li><strong>Heavy usage skews the absolutes upward.</strong> The proportions transfer better than the raw sizes.</li>
+<li><strong>No network capture was done.</strong> Claims about what is transmitted come from documentation and locally queued telemetry, not from watching traffic.</li>
+<li><strong>Undocumented is a claim about documentation coverage, not intent.</strong></li>
+</ul>
+
+<h2>Sources</h2>
+
+<p>Every claim marked <span class="ev ev-m">MEASURED</span> rests on a command run against the sampled machine. <span class="ev ev-d">DOCUMENTED</span> cites a vendor page. <span class="ev ev-r">REPORTED</span> cites a third party and is treated as weaker.</p>
+
+<h3>Vendor documentation</h3>
+<ul>
+<li><a href="https://code.claude.com/docs/en/claude-directory">Explore the .claude directory</a>. Anthropic. The documented file tree used as the coverage baseline.</li>
+<li><a href="https://code.claude.com/docs/en/env-vars">Claude Code environment variables</a>. Anthropic.</li>
+<li><a href="https://learn.chatgpt.com/docs/config-file/config-reference">Codex configuration reference</a>. OpenAI. <code>CODEX_HOME</code>, <code>history.persistence</code>, <code>[otel]</code>, sandbox modes.</li>
+<li><a href="https://learn.chatgpt.com/docs/config-file/config-advanced">Codex advanced configuration</a>. OpenAI.</li>
+</ul>
+
+<h3>Issue trackers</h3>
+<ul>
+<li><a href="https://github.com/anthropics/claude-code/issues/23710">cleanupPeriodDays: 0 silently disables all transcript persistence</a>. The <code>0</code> trap.</li>
+<li><a href="https://github.com/anthropics/claude-code/issues/58383">DISABLE_TELEMETRY silently disables GrowthBook, which also gates remote killswitches</a>.</li>
+<li><a href="https://github.com/anthropics/claude-code/issues/44868">Claude Code exposes secrets from .env despite CLAUDE.md prohibitions</a>. Evidence that <code>CLAUDE.md</code> is not a control.</li>
+<li><a href="https://github.com/frederick-douglas-pearce/agentfluent/issues/72">Prevent .env / API-key leakage into Claude Code session transcripts</a>. Live keys found in <code>~/.claude/projects/</code>.</li>
+</ul>
+
+<h3>Security research</h3>
+<ul>
+<li><a href="https://www.pillar.security/blog/chaindrop-when-opening-a-repository-becomes-execution">ChainDrop: When Opening a Repository Becomes Execution</a>. Pillar Security. The <code>SessionStart</code> hook attack.</li>
+<li><a href="https://www.elastic.co/security-labs/shai-hulud-chaindrop-npm-supply-chain">CHAINDROP worm hits 400+ npm packages</a>. Elastic Security Labs. Credential targeting across agent tooling.</li>
+<li><a href="https://www.microsoft.com/en-us/security/blog/2026/08/04/chaindrop-supply-chain-compromise-anatomy-self-propagating-worm/">Anatomy of a self-propagating worm</a>. Microsoft.</li>
+<li><a href="https://unit42.paloaltonetworks.com/chaindrop-npm-worm-analysis/">Inside a Self-Propagating npm Worm</a>. Palo Alto Unit 42.</li>
+<li><a href="https://signoz.io/docs/codex-monitoring/">Codex Observability with OpenTelemetry</a>. SigNoz. Tool results are exported even when prompt logging is off.</li>
+</ul>
+
+<footer>
+  <p>Full chapter set, reproducible commands, and all 28 sources in the accompanying Markdown report. Structure was recorded throughout; file contents, credentials, and message text were not. No token, account identifier, or real path from the sampled machine appears in this document.</p>
+  <p>11archive &middot; R&amp;D &middot; measured 2026-08-11</p>
+</footer>
+
+</main>
+
+<script>
+const DISK=[
+ {p:"~/.codex/sessions/",mb:1406,c:"crit",n:"transcripts"},
+ {p:"~/.codex/worktrees/",mb:859,c:"high",n:"orphaned checkout"},
+ {p:"~/.codex/logs_2.sqlite",mb:395,c:"none",n:"326 MB is free pages"},
+ {p:"~/.claude/projects/",mb:333,c:"crit",n:"transcripts"},
+ {p:"~/.codex/plugins/",mb:308,c:"med",n:"plugin bundles"},
+ {p:"~/.codex/packages/",mb:307,c:"med",n:"runtime deps"},
+ {p:"~/.codex/.tmp/",mb:241,c:"none",n:"plugin sync scratch"},
+ {p:"~/.codex/generated_images/",mb:121,c:"low",n:"98 images"},
+ {p:"~/.codex/computer-use/",mb:63,c:"med",n:"a full macOS .app"},
+ {p:"everything else",mb:65,c:"low",n:""}
+];
+const RECLAIM=[
+ {a:"VACUUM the Codex log database",mb:326,safe:"safe"},
+ {a:"Delete orphaned worktrees",mb:859,safe:"review first"},
+ {a:"Clear plugin sync scratch",mb:95,safe:"safe"},
+ {a:"Delete abandoned temp files",mb:5,safe:"safe"}
+];
+const CLASSES=[
+ {id:"A",n:"Complete record of your work",r:"critical",
+  paths:"~/.claude/projects/&lt;slug&gt;/*.jsonl &middot; ~/.codex/sessions/**/rollout-*.jsonl",
+  has:"Every prompt, model reply, tool call, and full tool result, written to plain text as it happens. Not a summary. The Codex format also stores the model's internal reasoning, and a copy of the full system prompt in every one of its 453 files.",
+  why:"Any secret the agent ever read is stored here in plain text. <code>.gitignore</code> has no effect on this."},
+ {id:"B",n:"Shadow copies of your source code",r:"high",
+  paths:"~/.claude/file-history/ &middot; .../tool-results/ &middot; ~/.codex/worktrees/ &middot; ~/.codex/attachments/",
+  has:"Your files as they were before each edit, tool output too large for the conversation, and entire additional git checkouts made for background agents.",
+  why:"A repository you deleted is not gone if a worktree copy survives here. 839 MB in one."},
+ {id:"C",n:"Fingerprints of you and your machine",r:"medium",
+  paths:"~/.claude/shell-snapshots/ &middot; ~/.claude.json &middot; ~/.codex/config.toml &middot; ~/.codex/state_5.sqlite",
+  has:"Shell functions and PATH, every trusted directory by absolute path, git remote URLs for 455 threads, a stable machine ID, and every prompt string you typed.",
+  why:"The trust list is a permanent, dated record of every directory you have worked in."},
+ {id:"D",n:"Credentials",r:"critical",
+  paths:"~/.codex/auth.json &middot; macOS Keychain item 'Claude Code-credentials'",
+  has:"OAuth id_token, access_token, refresh_token, account_id. Claude Code encrypts these in the Keychain. Codex writes them as plain JSON at mode 0600.",
+  why:"0600 stops other users on the machine. It does not stop malware running as you, which is exactly what a bad npm package is."},
+ {id:"E",n:"State the vendor pushes to you",r:"low",
+  paths:"~/.claude.json cachedGrowthBookFeatures &middot; policy-limits.json &middot; remote-settings.json",
+  has:"487 cached feature flags, plus server-side keys named restrictions, compliance_taints, and monitoring_notice.",
+  why:"Disabling telemetry also disables this channel, and remote kill switches ride on it."},
+ {id:"F",n:"Telemetry queued on disk",r:"low",
+  paths:"~/.claude/telemetry/1p_failed_events.*.json",
+  has:"Events that failed to upload, kept for retry. Platform, Node version, terminal, model, session id, entry point. No prompt text in the sample.",
+  why:"Codex exports tool results even when prompt logging is off, and tool results contain file contents."},
+ {id:"G",n:"Leftovers",r:"none",
+  paths:"~/.claude/session-env/ &middot; ~/.codex/..codex-global-state.json.tmp-* &middot; SQLite free pages",
+  has:"851 empty directories. 11 abandoned temp files from interrupted writes. 326 MB of free pages inside a database. Migration markers that are permanent.",
+  why:"About 1.08 GB, 27% of the total, is pure reclaimable waste."},
+ {id:"H",n:"Things that can execute",r:"critical",
+  paths:"&lt;project&gt;/.claude/settings.json hooks &middot; ~/.claude/hooks/ &middot; plugins/ &middot; Codex Computer Use.app",
+  has:"Shell commands the harness runs on its own, downloaded plugin bundles totalling 324 MB, and a complete 63 MB macOS application bundle.",
+  why:"A hook committed to a repository runs when you start a session in it. None of the 12 repositories checked had <code>.claude/</code> in any <code>.gitignore</code>."}
+];
+const RC={critical:"var(--crit)",high:"var(--high)",medium:"var(--med)",low:"var(--low)",none:"var(--none)"};
+const CC={crit:"var(--crit)",high:"var(--high)",med:"var(--med)",low:"var(--low)",none:"var(--none)"};
+
+function bars(el,rows,max,color,fmt){
+  el.innerHTML=rows.map(r=>`<div class="bar-row">
+    <span class="lbl" title="${r.label}">${r.label}</span>
+    <span class="bar-track"><span class="bar-fill" style="width:0;background:${color(r)}"></span></span>
+    <span class="bar-val">${fmt(r)}</span></div>`).join("");
+  requestAnimationFrame(()=>{
+    el.querySelectorAll(".bar-fill").forEach((f,i)=>{
+      f.style.width=(rows[i].mb/max*100).toFixed(1)+"%";
+    });
+  });
+}
+bars(document.getElementById("disk"),
+  DISK.map(d=>({...d,label:d.p})),1406,
+  r=>CC[r.c], r=>r.mb>=1024?(r.mb/1024).toFixed(2)+" GB":r.mb+" MB");
+bars(document.getElementById("reclaim"),
+  RECLAIM.map(d=>({...d,label:d.a})),859,
+  r=>r.safe==="safe"?"var(--low)":"var(--med)",
+  r=>r.mb+" MB");
+
+const wrap=document.getElementById("classes");
+function render(f){
+  wrap.innerHTML=CLASSES.filter(c=>f==="all"||c.r===f).map(c=>`
+   <article class="cls" style="--r:${RC[c.r]}">
+     <div class="cls-h">
+       <span class="cls-id">${c.id}</span>
+       <h3>${c.n}</h3>
+       <span class="risk">${c.r==="none"?"no risk":c.r}</span>
+     </div>
+     <p>${c.has}</p>
+     <div class="paths">${c.paths}</div>
+     <p class="why">${c.why}</p>
+   </article>`).join("")
+   || `<p style="color:var(--fg-3)">Nothing in that category.</p>`;
+}
+render("all");
+document.querySelectorAll(".btn[data-f]").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".btn[data-f]").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    render(b.dataset.f);
+  });
+});
+
+const tt=document.getElementById("tt");
+tt.addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme")
+    || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  document.documentElement.setAttribute("data-theme",cur==="dark"?"light":"dark");
+});
+</script>
+</body>
+</html>

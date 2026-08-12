@@ -1,0 +1,2061 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "name": "ai-benchmarking-best-prac/build.mjs",
+    "derivedFrom": [
+      "README.md",
+      "00-executive-brief.md",
+      "01-what-a-benchmark-measures.md",
+      "02-benchmark-catalog.md",
+      "03-statistics-and-uncertainty.md",
+      "04-contamination-and-saturation.md",
+      "05-judges-and-human-evaluation.md",
+      "06-agentic-evaluation.md",
+      "07-safety-and-frontier-risk-evals.md",
+      "08-standards-and-regulation.md",
+      "09-build-your-own-eval-suite.md",
+      "10-anti-patterns-and-reading-a-leaderboard.md",
+      "11-glossary.md",
+      "12-methodology-and-sources.md"
+    ],
+    "note": "Every array below is parsed out of the Markdown tables, so data.json and the prose cannot disagree."
+  },
+  "generatedAt": "2026-08-11T22:18:30.960Z",
+  "title": "AI Benchmarking: A Working Reference",
+  "description": "What an AI benchmark can and cannot tell you, and the practices that make a score trustworthy.",
+  "researchDate": "2026-08-11",
+  "scope": {
+    "objective": "Explain what an AI benchmark can and cannot tell you, and set out the practices that make a score trustworthy.",
+    "covers": [
+      "benchmark design and construct validity",
+      "statistics and uncertainty",
+      "contamination and saturation",
+      "model and human judging",
+      "agent evaluation",
+      "safety and frontier-risk evaluation",
+      "standards and regulation",
+      "building an in-house suite"
+    ],
+    "excludes": [
+      "any ranking of current models",
+      "hardware and systems benchmarking beyond the MLPerf governance comparison",
+      "training methods"
+    ],
+    "evidenceBoundary": "Public papers, benchmark documentation, standards text, and vendor methodology pages read on 2026-08-11."
+  },
+  "evidenceStates": [
+    {
+      "state": "source-reported",
+      "meaning": "Stated by a named source; not independently checked",
+      "howItAppears": "The default for benchmark item counts and vendor methodology"
+    },
+    {
+      "state": "calculated",
+      "meaning": "Recomputed here from a disclosed formula and stated inputs",
+      "howItAppears": "The worked examples in section 03"
+    },
+    {
+      "state": "not verified (n/v)",
+      "meaning": "Expected but not confirmed against a source read for this report",
+      "howItAppears": "Written as n/v, never as zero or a guess"
+    },
+    {
+      "state": "inferred",
+      "meaning": "Reasoned from the sources rather than stated by any one of them",
+      "howItAppears": "Flagged in the text with wording such as \"the mechanism generalises\""
+    }
+  ],
+  "counts": {
+    "benchmarks": 37,
+    "suites": 10,
+    "rules": 10,
+    "failureModes": 26,
+    "glossaryTerms": 84,
+    "sources": 75,
+    "tables": 76,
+    "headings": 122,
+    "unverifiedCounts": 9,
+    "secondaryClaims": 17
+  },
+  "statisticalChecks": [
+    {
+      "id": "standard-error",
+      "description": "Standard error of 71.2% accuracy over 500 independent items",
+      "computed": "2.03",
+      "assertedInSection03": "2.03",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "interval",
+      "description": "Upper bound of the 95% interval for the same score",
+      "computed": "75.2",
+      "assertedInSection03": "75.2",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "sample-size",
+      "description": "Questions needed to detect a 3-point difference at 80% power, 5% significance, omega squared 1/9",
+      "computed": 969,
+      "assertedInSection03": "969",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "mde",
+      "description": "Minimum detectable effect for 500 items with per-item difference sd 0.5",
+      "computed": "6.3",
+      "assertedInSection03": "6.3",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "pass-at-5",
+      "description": "Unbiased pass@5 from 10 samples with 3 correct",
+      "computed": "0.9167",
+      "assertedInSection03": "0.9167",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "pass-at-1",
+      "description": "Unbiased pass@1 from 10 samples with 3 correct",
+      "computed": "0.30",
+      "assertedInSection03": "0.30",
+      "evidenceState": "calculated"
+    },
+    {
+      "id": "chance-normalisation",
+      "description": "50% raw on a 4-option benchmark, normalised so chance maps to 0",
+      "computed": "33.3",
+      "assertedInSection03": "33.3",
+      "evidenceState": "calculated"
+    }
+  ],
+  "rules": [
+    {
+      "id": "1",
+      "rule": "Name the construct before the task",
+      "why": "A benchmark that claims to measure \"reasoning\" but scores multiple-choice recall will be read as the former and used as the former",
+      "section": "01"
+    },
+    {
+      "id": "2",
+      "rule": "Publish the whole measurement chain",
+      "why": "Prompt, temperature, sampling count, answer extraction, and scoring code each change the number",
+      "section": "01, 03"
+    },
+    {
+      "id": "3",
+      "rule": "Put an error bar on every score",
+      "why": "Without one, a reader cannot tell a real gain from run-to-run variation",
+      "section": "03"
+    },
+    {
+      "id": "4",
+      "rule": "Compare models per question, not per average",
+      "why": "Paired differences are free precision, roughly a third less variance at a typical correlation",
+      "section": "03"
+    },
+    {
+      "id": "5",
+      "rule": "Assume the public test set leaked",
+      "why": "Then design around it: private splits, fresh items, and dated problems",
+      "section": "04"
+    },
+    {
+      "id": "6",
+      "rule": "Retire a benchmark when it saturates",
+      "why": "A score of 96% with a 6% label-error rate measures the labels, not the model",
+      "section": "04"
+    },
+    {
+      "id": "7",
+      "rule": "Calibrate every automated judge against humans",
+      "why": "A model grader has known, measurable biases; agreement with experts is the only defence",
+      "section": "05"
+    },
+    {
+      "id": "8",
+      "rule": "Report cost and reliability beside accuracy",
+      "why": "An agent that wins by calling the model 50 times is not better, it is more expensive",
+      "section": "06"
+    },
+    {
+      "id": "9",
+      "rule": "Verify the grader before trusting the task",
+      "why": "Most agent-benchmark inflation comes from the checker, not the tasks",
+      "section": "06"
+    },
+    {
+      "id": "10",
+      "rule": "Write down what the benchmark cannot tell you",
+      "why": "The limitation section is the part a decision-maker needs and the part usually missing",
+      "section": "10"
+    }
+  ],
+  "benchmarks": [
+    {
+      "name": "MMLU",
+      "year": "2020",
+      "items": "15,908 across 57 subjects",
+      "format": "4-option multiple choice",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "An audit found errors in 6.49% of questions, and 57% of the analysed virology questions (Gema et al. 2024)",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "MMLU-Redux",
+      "year": "2024",
+      "items": "5,700 re-annotated",
+      "format": "4-option multiple choice",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "The corrected subset of MMLU, across all 57 subjects",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "MMLU-Pro",
+      "year": "2024",
+      "items": "12,032",
+      "format": "10-option multiple choice",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Ten options lower the chance baseline from 25% to 10%",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "ARC (AI2 Reasoning Challenge)",
+      "year": "2018",
+      "items": "7,787 total, 2,590 in the Challenge set",
+      "format": "Multiple choice science",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "Was in the first Open LLM Leaderboard suite",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "HellaSwag",
+      "year": "2019",
+      "items": "about 10,000",
+      "format": "Sentence completion",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "Was in the first Open LLM Leaderboard suite",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "Winogrande",
+      "year": "2019",
+      "items": "about 44,000",
+      "format": "Pronoun resolution",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "Was in the first Open LLM Leaderboard suite",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "TruthfulQA",
+      "year": "2021",
+      "items": "817",
+      "format": "Short answer and multiple choice",
+      "grader": "Model or exact match",
+      "heldOut": "No",
+      "status": "superseded",
+      "notes": "Measures imitation of common falsehoods, not general truthfulness",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "BIG-bench",
+      "year": "2022",
+      "items": "204 tasks",
+      "format": "Mixed",
+      "grader": "Task-specific",
+      "heldOut": "No",
+      "status": "superseded",
+      "notes": "Introduced the canary string convention for contamination control",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "BIG-Bench Hard (BBH)",
+      "year": "2022",
+      "items": "23 tasks",
+      "format": "Mixed",
+      "grader": "Task-specific",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "The subset where models scored below the human rater average",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "GPQA",
+      "year": "2023",
+      "items": "448 total, 198 in the Diamond subset",
+      "format": "4-option multiple choice",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Expert-written; validated so that non-experts with web access and 30 minutes cannot solve them",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "MuSR",
+      "year": "2023",
+      "items": "n/v",
+      "format": "Multistep soft reasoning",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Added in the second Open LLM Leaderboard suite",
+      "category": "knowledge and reasoning",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "IFEval",
+      "year": "2023",
+      "items": "about 540",
+      "format": "Instruction following with checkable constraints",
+      "grader": "Programmatic check",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Constraints such as \"reply in exactly three bullet points\" are verified by code, not a judge",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "Humanity's Last Exam (HLE)",
+      "year": "2025",
+      "items": "2,500",
+      "format": "Short answer and multiple choice",
+      "grader": "Exact match and model check",
+      "heldOut": "Partly",
+      "status": "live",
+      "notes": "Questions were adversarially filtered against several frontier models, so those models should not be compared directly against later ones",
+      "category": "knowledge and reasoning",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "ARC-AGI-2",
+      "year": "2025",
+      "items": "n/v",
+      "format": "Abstract visual grid puzzles",
+      "grader": "Exact match",
+      "heldOut": "Yes",
+      "status": "live",
+      "notes": "Keeps a private evaluation set; targets composition and rule application rather than knowledge",
+      "category": "knowledge and reasoning",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "GSM8K",
+      "year": "2021",
+      "items": "8,500 total, 1,319 in the test split",
+      "format": "Grade-school word problems",
+      "grader": "Exact match on the final number",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "The canonical example of a benchmark that stopped discriminating",
+      "category": "mathematics",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "MATH",
+      "year": "2021",
+      "items": "12,500",
+      "format": "Competition problems, 5 difficulty levels",
+      "grader": "Answer equivalence check",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "The Level 5 subset and the MATH-500 subset are both still quoted",
+      "category": "mathematics",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "Mock AIME 2024-2025",
+      "year": "2025",
+      "items": "n/v",
+      "format": "Contest-style problems",
+      "grader": "Exact match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Built by Epoch AI as a harder replacement once MATH Level 5 saturated",
+      "category": "mathematics",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "FrontierMath",
+      "year": "2024",
+      "items": "338 (295 in Tiers 1 to 3, 43 in Tier 4), 12 published as samples",
+      "format": "Research-level problems with a single checkable answer",
+      "grader": "Programmatic check",
+      "heldOut": "Yes",
+      "status": "live",
+      "notes": "Version 2, released 12 June 2026, corrected 123 Tier 1 to 3 problems and 12 Tier 4 problems and removed 12 after an audit found errors affecting 42% of the original set. OpenAI funded the benchmark and holds access to a subset, disclosed on the benchmark page",
+      "category": "mathematics",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "HumanEval",
+      "year": "2021",
+      "items": "164",
+      "format": "Write a Python function from a docstring",
+      "grader": "Unit tests",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "Introduced the pass@k estimator used across the field",
+      "category": "code",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "MBPP",
+      "year": "2021",
+      "items": "974",
+      "format": "Short Python programming problems",
+      "grader": "Unit tests",
+      "heldOut": "No",
+      "status": "saturated",
+      "notes": "Often quoted alongside HumanEval",
+      "category": "code",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "SWE-bench",
+      "year": "2023",
+      "items": "2,294 issues from 12 Python repositories",
+      "format": "Resolve a real GitHub issue",
+      "grader": "Repository test suite",
+      "heldOut": "No",
+      "status": "superseded",
+      "notes": "Drawn from public repositories that model providers train on",
+      "category": "code",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "SWE-bench Verified",
+      "year": "2024",
+      "items": "500, selected from 1,699 reviewed",
+      "format": "Resolve a real GitHub issue",
+      "grader": "Repository test suite",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Human-validated by OpenAI to remove wrong grading, underspecified issues, and over-specific tests. OpenAI has since said it no longer measures frontier coding capability",
+      "category": "code",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "LiveCodeBench",
+      "year": "2024",
+      "items": "Grows continuously; a 2025 release covered 1,055 problems (n/v)",
+      "format": "Contest programming problems tagged with a publication date",
+      "grader": "Unit tests",
+      "heldOut": "By date",
+      "status": "live",
+      "notes": "Scores only problems published after a model's training cutoff, which is contamination control by timestamp",
+      "category": "code",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "Terminal-Bench",
+      "year": "2026",
+      "items": "about 89 core tasks in version 2 (n/v)",
+      "format": "Complete a job in a Linux shell",
+      "grader": "Programmatic check",
+      "heldOut": "Partly",
+      "status": "live",
+      "notes": "Carries a large weight in the Artificial Analysis coding category",
+      "category": "code",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "KernelBench",
+      "year": "2025",
+      "items": "n/v",
+      "format": "Write GPU kernels",
+      "grader": "Correctness plus speedup",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "One of the ten benchmarks audited for validity failures by the Agentic Benchmark Checklist",
+      "category": "code",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "SciCode",
+      "year": "2024",
+      "items": "n/v",
+      "format": "Scientific computing subproblems from papers",
+      "grader": "Unit tests",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Used in the Artificial Analysis coding category",
+      "category": "code",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "GAIA",
+      "year": "2023",
+      "items": "466",
+      "format": "Assistant questions needing browsing, files, and tools, in three difficulty levels",
+      "grader": "Exact match",
+      "heldOut": "Partly",
+      "status": "live",
+      "notes": "Answers for the test split are withheld and scored by submission",
+      "category": "agents and real work",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "WebArena",
+      "year": "2023",
+      "items": "812 tasks (n/v)",
+      "format": "Multi-step tasks on self-hosted clones of real websites",
+      "grader": "Programmatic outcome check",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Audited for validity failures by the Agentic Benchmark Checklist",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "OSWorld",
+      "year": "2024",
+      "items": "369",
+      "format": "Control a real desktop by mouse and keyboard",
+      "grader": "Programmatic outcome check",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Audited for validity failures by the Agentic Benchmark Checklist",
+      "category": "agents and real work",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "τ-bench",
+      "year": "2024",
+      "items": "165 tasks across retail and airline (n/v)",
+      "format": "Customer-service conversation with tools and a policy document",
+      "grader": "Database state check plus rules",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Introduced pass^k, the share of tasks solved in every one of k attempts. Reported that a leading model of the time solved under 50% of tasks and under 25% consistently across 8 attempts",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "τ²-bench",
+      "year": "2025",
+      "items": "n/v",
+      "format": "Same idea across airline, retail, and telecom, with the user also acting",
+      "grader": "Database state check",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Adds a second actor, so the agent must coordinate rather than just execute",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "MLE-bench",
+      "year": "2024",
+      "items": "75 Kaggle competitions",
+      "format": "Build a machine-learning solution end to end",
+      "grader": "The competition's own scoring function",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Grading is inherited from Kaggle, which removes grader design risk",
+      "category": "agents and real work",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "Cybench",
+      "year": "2024",
+      "items": "40 capture-the-flag tasks (n/v)",
+      "format": "Solve security challenges in a sandbox",
+      "grader": "Flag match",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Used as a safety-relevant capability eval, including on the Holistic Agent Leaderboard",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "CVE-Bench",
+      "year": "2025",
+      "items": "n/v",
+      "format": "Exploit real web vulnerabilities in a sandbox",
+      "grader": "Programmatic exploit check",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "The Agentic Benchmark Checklist cut its performance overestimate by 33%",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "CORE-bench",
+      "year": "2024",
+      "items": "270 tasks from 90 papers (n/v)",
+      "format": "Reproduce the computational results of a published paper",
+      "grader": "Output comparison",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "Measures reproducibility work rather than invention",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    },
+    {
+      "name": "GDPval",
+      "year": "2025",
+      "items": "1,320 tasks across 44 occupations and 9 industries",
+      "format": "Produce a real work deliverable, such as a legal brief or a nursing care plan",
+      "grader": "Blinded pairwise expert comparison against a human deliverable",
+      "heldOut": "Partly",
+      "status": "live",
+      "notes": "Task authors averaged about 14 years of professional experience. The grader is a human expert who does not know which deliverable is the model's",
+      "category": "agents and real work",
+      "itemsState": "source-reported"
+    },
+    {
+      "name": "AgentHarm",
+      "year": "2024",
+      "items": "n/v",
+      "format": "Harmful agent tasks with tools",
+      "grader": "Rubric and programmatic checks",
+      "heldOut": "No",
+      "status": "live",
+      "notes": "A refusal-and-capability eval rather than a capability-only one",
+      "category": "agents and real work",
+      "itemsState": "not verified"
+    }
+  ],
+  "suites": [
+    {
+      "name": "HELM",
+      "year": "2022",
+      "whatItIs": "A standardised multi-metric suite",
+      "composition": "42 scenarios, with 7 metrics measured on 16 core scenarios",
+      "grader": "Mixed",
+      "notes": "Raised the share of core scenarios that a typical model had been measured on from 17.9% to 96.0%, and publishes every prompt and completion"
+    },
+    {
+      "name": "Open LLM Leaderboard",
+      "year": "2023",
+      "whatItIs": "An open-model leaderboard",
+      "composition": "First suite: ARC, HellaSwag, MMLU, TruthfulQA, Winogrande, GSM8K. Second suite from June 2024: MMLU-Pro, GPQA, MuSR, IFEval, BBH, MATH Level 5",
+      "grader": "Automatic",
+      "notes": "The second suite normalises each score so that chance performance maps to 0 and perfect to 100 before averaging. The whole leaderboard was later archived"
+    },
+    {
+      "name": "Chatbot Arena (LMArena)",
+      "year": "2023",
+      "whatItIs": "Crowd preference voting between anonymous model pairs",
+      "composition": "Open-ended user prompts",
+      "grader": "Human votes, fitted with a Bradley-Terry model",
+      "notes": "Ratings come with bootstrap confidence intervals, and the top few models usually overlap"
+    },
+    {
+      "name": "MT-Bench",
+      "year": "2023",
+      "whatItIs": "A small multi-turn quality set",
+      "composition": "80 questions",
+      "grader": "A strong model as judge",
+      "notes": "The judge agreed with human raters more than 80% of the time, about the same as humans agreed with each other"
+    },
+    {
+      "name": "Arena-Hard",
+      "year": "2024",
+      "whatItIs": "Harder automatic prompts distilled from arena traffic",
+      "composition": "Prompts selected for difficulty",
+      "grader": "Model judge",
+      "notes": "Built to correlate with arena rankings at much lower cost"
+    },
+    {
+      "name": "AlpacaEval, length-controlled",
+      "year": "2024",
+      "whatItIs": "Automatic instruction-following comparison",
+      "composition": "Fixed prompt set",
+      "grader": "Model judge with a length correction",
+      "notes": "Exists because judges prefer longer answers, so the raw version rewarded verbosity"
+    },
+    {
+      "name": "Artificial Analysis Intelligence Index",
+      "year": "2024",
+      "whatItIs": "A weighted commercial index",
+      "composition": "Version 4.1.1 combines 9 evaluations in 4 categories: Agents 34%, Coding 24%, Scientific Reasoning 24%, General 18%",
+      "grader": "Mixed",
+      "notes": "Publishes repeat counts per evaluation (1 to 5), temperature settings, and cost and latency per task beside the score"
+    },
+    {
+      "name": "Holistic Agent Leaderboard (HAL)",
+      "year": "2025",
+      "whatItIs": "A third-party, cost-aware agent leaderboard with one shared harness",
+      "composition": "11 agent benchmarks",
+      "grader": "Benchmark-native",
+      "notes": "Validated with 21,730 agent attempts across 9 models and 9 benchmarks for about $40,000, with all logs published"
+    },
+    {
+      "name": "Epoch AI Benchmarking Hub",
+      "year": "2024",
+      "whatItIs": "An independent re-runner of selected benchmarks",
+      "composition": "Runs GPQA Diamond, MATH Level 5, Mock AIME, FrontierMath, SWE-bench Verified itself",
+      "grader": "Benchmark-native",
+      "notes": "Runs 16 samples per question on GPQA Diamond and Mock AIME, 8 on MATH Level 5, and shows plus or minus one standard error"
+    },
+    {
+      "name": "MLPerf",
+      "year": "2018",
+      "whatItIs": "Systems benchmarking for training and inference",
+      "composition": "Reference models and datasets",
+      "grader": "Reference implementations",
+      "notes": "Governance worth copying: a Closed division that fixes the model and optimiser, an Open division that must document every deviation, and up to two audited submissions per round"
+    }
+  ],
+  "failureModes": [
+    {
+      "id": "A1",
+      "area": "Reporting",
+      "failure": "Score with no uncertainty",
+      "symptom": "A percentage to one or two decimals, no interval, no n",
+      "fix": "Publish the standard error and n",
+      "section": "03"
+    },
+    {
+      "id": "A2",
+      "area": "Reporting",
+      "failure": "Ranking on gaps smaller than the noise",
+      "symptom": "\"Slightly ahead\", \"narrowly leads\", table sorted by a 0.4-point gap",
+      "fix": "Report the paired difference and its interval; call overlapping results indistinguishable",
+      "section": "03"
+    },
+    {
+      "id": "A3",
+      "area": "Reporting",
+      "failure": "Numbers from different harnesses in one table",
+      "symptom": "Footnotes citing several different papers for one column",
+      "fix": "Re-run every system yourself under one harness, or do not put them in one table",
+      "section": "03"
+    },
+    {
+      "id": "A4",
+      "area": "Reporting",
+      "failure": "No stated limitations",
+      "symptom": "The write-up has no section describing what the result cannot support",
+      "fix": "Write the limitation section; it is the part a decision-maker needs",
+      "section": "01"
+    },
+    {
+      "id": "A5",
+      "area": "Reporting",
+      "failure": "Undisclosed funding or early access",
+      "symptom": "A benchmark whose top scorer also paid for it, with no conflict statement",
+      "fix": "Disclose funding, access, and data-use terms at publication",
+      "section": "04"
+    },
+    {
+      "id": "A6",
+      "area": "Selection",
+      "failure": "Cherry-picked suite",
+      "symptom": "The benchmark set was chosen by the party making the claim, and no unfavourable benchmark appears",
+      "fix": "Ask who chose the suite; require a pre-registered set or a standard one",
+      "section": "01"
+    },
+    {
+      "id": "A7",
+      "area": "Selection",
+      "failure": "Best-of-many disclosure",
+      "symptom": "Only one variant's score is published, with no count of how many were tried",
+      "fix": "Disclose every run including withdrawn ones, or limit submissions per version",
+      "section": "05"
+    },
+    {
+      "id": "A8",
+      "area": "Selection",
+      "failure": "Tuning against the eval set",
+      "symptom": "The suite is also the development target, with no held-out split",
+      "fix": "Hold back a split you rarely look at; the gap is your overfitting estimate",
+      "section": "09"
+    },
+    {
+      "id": "A9",
+      "area": "Statistics",
+      "failure": "Clustering ignored",
+      "symptom": "A reading-comprehension or multilingual benchmark reporting a plain standard error",
+      "fix": "Cluster on the sampled unit; the correction reached 3x on a real eval",
+      "section": "03"
+    },
+    {
+      "id": "A10",
+      "area": "Statistics",
+      "failure": "Unpaired comparison",
+      "symptom": "Two averages with separate intervals, no per-question analysis",
+      "fix": "Take per-question differences; roughly a third less variance for free",
+      "section": "03"
+    },
+    {
+      "id": "A11",
+      "area": "Statistics",
+      "failure": "Underpowered eval",
+      "symptom": "A 200-item benchmark used to argue a 2-point improvement",
+      "fix": "Compute the minimum detectable effect first",
+      "section": "03"
+    },
+    {
+      "id": "A12",
+      "area": "Statistics",
+      "failure": "Temperature lowered to steady the numbers",
+      "symptom": "\"We used temperature 0 to reduce variance\"",
+      "fix": "Do not. It can triple the irreducible spread and shift the mean",
+      "section": "03"
+    },
+    {
+      "id": "A13",
+      "area": "Statistics",
+      "failure": "Standard error pooled over all samples",
+      "symptom": "An interval that shrinks when they resample the same questions more",
+      "fix": "Compute the error across question-level means",
+      "section": "03"
+    },
+    {
+      "id": "A14",
+      "area": "Aggregation",
+      "failure": "Averaging benchmarks with different chance baselines",
+      "symptom": "A mean of a 4-option multiple-choice score and a free-text score",
+      "fix": "Normalise chance to 0 and perfect to 100 before averaging",
+      "section": "03"
+    },
+    {
+      "id": "A15",
+      "area": "Aggregation",
+      "failure": "Totalling percentages or ratios",
+      "symptom": "A \"Total\" row under a column of rates",
+      "fix": "Total only additive, non-overlapping counts",
+      "section": "03"
+    },
+    {
+      "id": "A16",
+      "area": "Aggregation",
+      "failure": "Undisclosed index weights",
+      "symptom": "A single \"intelligence\" number with no published composition",
+      "fix": "Publish the components and their weights",
+      "section": "02"
+    },
+    {
+      "id": "A17",
+      "area": "Validity",
+      "failure": "Construct named broader than the task",
+      "symptom": "A multiple-choice set presented as measuring \"reasoning\"",
+      "fix": "State the construct and what it excludes; describe the task in the claim",
+      "section": "01"
+    },
+    {
+      "id": "A18",
+      "area": "Validity",
+      "failure": "Task solvable by a shortcut",
+      "symptom": "The answer is reachable from a file in the environment, or from the question's phrasing",
+      "fix": "Run the shortcut hunt; audits found up to 100% relative overstatement",
+      "section": "06"
+    },
+    {
+      "id": "A19",
+      "area": "Validity",
+      "failure": "Grader accepts non-answers",
+      "symptom": "An empty or truncated output scored as success",
+      "fix": "Negative controls: empty, wrong, and partial outputs must all fail",
+      "section": "06"
+    },
+    {
+      "id": "A20",
+      "area": "Validity",
+      "failure": "Answer-extraction failures counted as model failures",
+      "symptom": "A correct answer in an unexpected format scored wrong",
+      "fix": "Publish and test the extraction rule; report extraction failures separately",
+      "section": "01"
+    },
+    {
+      "id": "A21",
+      "area": "Validity",
+      "failure": "Human baseline missing or unexplained",
+      "symptom": "\"Above human level\" with no description of which humans, or how long they had",
+      "fix": "State who the humans were, their expertise, and their conditions",
+      "section": "06"
+    },
+    {
+      "id": "A22",
+      "area": "Contamination",
+      "failure": "Public test set treated as evidence of generalisation",
+      "symptom": "A claim about generalisation on a benchmark that has been on the open web for two years",
+      "fix": "Use a private split, dated items, or a fresh set",
+      "section": "04"
+    },
+    {
+      "id": "A23",
+      "area": "Contamination",
+      "failure": "Saturated benchmark still used to rank",
+      "symptom": "Top models within a point of each other, near the ceiling",
+      "fix": "Retire it, or report it as a floor check only",
+      "section": "04"
+    },
+    {
+      "id": "A24",
+      "area": "Judging",
+      "failure": "Model judge with no human calibration",
+      "symptom": "A model-graded score with no agreement rate reported",
+      "fix": "Hold out human labels, report agreement, re-check after any judge change",
+      "section": "05"
+    },
+    {
+      "id": "A25",
+      "area": "Judging",
+      "failure": "Judge shares lineage with a contestant, or order effects uncontrolled",
+      "symptom": "One provider's model both competes and grades; single-order comparisons",
+      "fix": "Use an independent judge family; swap positions and require the win to survive both",
+      "section": "05"
+    },
+    {
+      "id": "A26",
+      "area": "Agents",
+      "failure": "Accuracy without cost or reliability",
+      "symptom": "An agent leaderboard with one accuracy column",
+      "fix": "Report cost per task and pass^k, and plot accuracy against cost",
+      "section": "06"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Accuracy",
+      "definition": "The share of items scored correct. Only meaningful alongside the number of items and the chance baseline"
+    },
+    {
+      "term": "Agent",
+      "definition": "A system that takes several steps on its own: reading, calling tools, changing state, and deciding when to stop"
+    },
+    {
+      "term": "Agent harness",
+      "definition": "See scaffold"
+    },
+    {
+      "term": "Agentic benchmark",
+      "definition": "A benchmark whose items are multi-step jobs in an environment, graded on the outcome rather than a single answer"
+    },
+    {
+      "term": "Aggregation",
+      "definition": "Turning per-item scores into one number. The step where different chance baselines and unlike groups get illegally averaged"
+    },
+    {
+      "term": "Answer extraction",
+      "definition": "The rule that pulls a gradeable answer out of free-form model text. A frequent source of correct answers scored wrong"
+    },
+    {
+      "term": "ARC-AGI",
+      "definition": "A family of abstract visual puzzle benchmarks that keeps a private evaluation set"
+    },
+    {
+      "term": "Benchmark",
+      "definition": "A fixed set of tasks plus a fixed way of scoring them, used to compare systems"
+    },
+    {
+      "term": "Benchmark lottery",
+      "definition": "The observation that which method looks best depends heavily on which benchmarks the field happens to use"
+    },
+    {
+      "term": "Bradley-Terry model",
+      "definition": "A statistical model that estimates one strength number per competitor from pairwise win and loss records. Used to turn arena votes into ratings"
+    },
+    {
+      "term": "Canary string",
+      "definition": "A unique marker embedded in a benchmark so that anyone can search a training corpus for it, or ask a model to reproduce it, as a contamination check"
+    },
+    {
+      "term": "Capability evaluation",
+      "definition": "A test of whether a system can do something. Contrast with propensity evaluation"
+    },
+    {
+      "term": "Chance baseline",
+      "definition": "The score a system gets by guessing. 25% on a 4-option multiple-choice benchmark, 10% on a 10-option one, 0% on free text"
+    },
+    {
+      "term": "Closed division",
+      "definition": "In MLPerf, a submission category that fixes the model, optimiser, and data handling so that only the system underneath varies. Contrast with Open division"
+    },
+    {
+      "term": "Clustered standard error",
+      "definition": "An error bar corrected for items that arrive in groups, such as several questions about one passage. On real evals the correction has reached a factor of three"
+    },
+    {
+      "term": "Confidence interval",
+      "definition": "A range that would contain the true value a stated share of the time if the experiment were repeated. Usually quoted at 95%"
+    },
+    {
+      "term": "Construct",
+      "definition": "The ability or property a benchmark claims to measure, such as \"multi-step arithmetic reasoning\""
+    },
+    {
+      "term": "Construct validity",
+      "definition": "Whether the test measures the construct it claims to measure. Borrowed from psychometrics"
+    },
+    {
+      "term": "Contamination",
+      "definition": "Test material reaching a model during training, so its score partly reflects memorisation"
+    },
+    {
+      "term": "Coverage",
+      "definition": "Which parts of the construct, population, or risk taxonomy the benchmark actually touches, and which it does not"
+    },
+    {
+      "term": "Criterion validity",
+      "definition": "Whether the score predicts the real-world outcome you care about"
+    },
+    {
+      "term": "Dangerous capability evaluation",
+      "definition": "A test of whether a model can do something harmful, run to inform a deployment or safeguard decision"
+    },
+    {
+      "term": "Datasheet",
+      "definition": "Structured documentation for a dataset: motivation, composition, collection method, and recommended uses"
+    },
+    {
+      "term": "Decontamination",
+      "definition": "Removing or excluding test items from training data, or filtering results to items known to postdate training"
+    },
+    {
+      "term": "Elicitation",
+      "definition": "The effort spent getting a model to show a capability: prompting, tools, scaffolds, step budgets, and permitted fine-tuning. Central to safety evaluation"
+    },
+    {
+      "term": "Elo",
+      "definition": "A rating system for pairwise contests. Arena ratings are often called Elo but are usually fitted with a Bradley-Terry model"
+    },
+    {
+      "term": "Error analysis",
+      "definition": "Reading a sample of real outputs, writing down what went wrong in each, then grouping and counting. The standard first step in building an in-house suite"
+    },
+    {
+      "term": "Eval",
+      "definition": "One run of an evaluation against one system. Also used loosely for the evaluation itself"
+    },
+    {
+      "term": "Evaluation awareness",
+      "definition": "A model recognising that it is being tested, which weakens any test of how it behaves when it thinks nobody is watching"
+    },
+    {
+      "term": "Evaluation harness",
+      "definition": "The infrastructure that runs an evaluation end to end: supplies prompts and tools, runs items, records transcripts, grades, and aggregates"
+    },
+    {
+      "term": "Evaluation suite",
+      "definition": "A collection of tasks assembled to measure a specific set of capabilities or behaviours"
+    },
+    {
+      "term": "Few-shot",
+      "definition": "Showing the model worked examples in the prompt before the real item. The number, choice, and order of examples all move scores"
+    },
+    {
+      "term": "Gate",
+      "definition": "A threshold in continuous integration that blocks a release when an evaluation criterion regresses"
+    },
+    {
+      "term": "Goodhart's law",
+      "definition": "When a measure becomes a target, it stops being a good measure. The one-line summary of benchmark gaming"
+    },
+    {
+      "term": "Grader",
+      "definition": "The logic that scores an attempt. Code-based, model-based, or human"
+    },
+    {
+      "term": "Ground truth",
+      "definition": "The reference answer or outcome a grader compares against. Wrong ground truth caps a benchmark's usefulness"
+    },
+    {
+      "term": "Held-out split",
+      "definition": "Items withheld from public release, or from your own tuning, so that a score on them measures generalisation"
+    },
+    {
+      "term": "Holistic evaluation",
+      "definition": "Measuring several properties, such as accuracy, calibration, robustness, bias, and efficiency, on the same scenarios rather than accuracy alone"
+    },
+    {
+      "term": "Human baseline",
+      "definition": "How well people do on the same items, under stated conditions. Required for any \"human level\" claim"
+    },
+    {
+      "term": "Inter-annotator agreement",
+      "definition": "How often two human raters give the same verdict. Low agreement means the task is underspecified, not that the systems are similar"
+    },
+    {
+      "term": "Item",
+      "definition": "One scored unit of a benchmark: a question, a problem, or a task"
+    },
+    {
+      "term": "LLM-as-a-judge",
+      "definition": "Using a language model to grade open-ended outputs. Cheap, scalable, and biased in catalogued ways"
+    },
+    {
+      "term": "Label error",
+      "definition": "A benchmark item whose recorded correct answer is wrong. Sets the ceiling above which scores are meaningless"
+    },
+    {
+      "term": "Latency",
+      "definition": "Wall-clock time to complete an item. Report the median and a tail percentile, not the mean alone"
+    },
+    {
+      "term": "Leaderboard",
+      "definition": "A ranked table of systems. Its composition, harness, and submission policy matter more than its order"
+    },
+    {
+      "term": "Length control",
+      "definition": "Correcting a judge's preference for longer answers, either statistically or by capping length"
+    },
+    {
+      "term": "Live benchmark",
+      "definition": "A benchmark that adds fresh items over time to resist contamination. Needs version pinning to stay comparable"
+    },
+    {
+      "term": "Log-probability scoring",
+      "definition": "Scoring a multiple-choice item by the model's probability for each option token rather than by parsing generated text. Gives different numbers from generation, and the two are not comparable"
+    },
+    {
+      "term": "Minimum detectable effect",
+      "definition": "The smallest difference an evaluation can reliably detect at a given size and power. Compute it before drawing conclusions"
+    },
+    {
+      "term": "Model card",
+      "definition": "Short structured documentation for a trained model: intended use, evaluation conditions, and performance broken down by group and condition"
+    },
+    {
+      "term": "Normalisation",
+      "definition": "Rescaling scores so that chance maps to 0 and perfect to 100, so that benchmarks with different chance baselines can be averaged"
+    },
+    {
+      "term": "Open division",
+      "definition": "In MLPerf, a submission category that permits changes to the workload provided every deviation is documented"
+    },
+    {
+      "term": "Outcome validity",
+      "definition": "Whether the grader reports success exactly when the task was actually solved"
+    },
+    {
+      "term": "Paired comparison",
+      "definition": "Comparing two systems item by item and analysing the differences, rather than comparing two averages. Reduces variance for free"
+    },
+    {
+      "term": "pass@k",
+      "definition": "The probability that at least one of k attempts succeeds. Estimated without bias as 1 minus C(n-c, k) / C(n, k) from n samples with c correct"
+    },
+    {
+      "term": "pass^k",
+      "definition": "The share of tasks solved in every one of k attempts. The reliability metric for unattended deployment"
+    },
+    {
+      "term": "Position bias",
+      "definition": "A judge preferring whichever answer it sees first. Fixed by running both orders and requiring the win to survive both"
+    },
+    {
+      "term": "Power",
+      "definition": "The probability that an experiment detects a real difference of a given size. Conventionally set at 80%"
+    },
+    {
+      "term": "Private test set",
+      "definition": "Items the benchmark holder never publishes, so providers cannot train on them. The strongest contamination defence and the greatest concentration of trust"
+    },
+    {
+      "term": "Prompt sensitivity",
+      "definition": "Score changes caused by formatting choices that do not change meaning. Measured at up to 76 accuracy points on one open model"
+    },
+    {
+      "term": "Propensity evaluation",
+      "definition": "A test of whether a system will do something when it has the choice. Contrast with capability evaluation"
+    },
+    {
+      "term": "Protocol",
+      "definition": "Every setting that produces a score: prompt template, system prompt, examples, temperature, samples per item, tools, and step limits"
+    },
+    {
+      "term": "Red-teaming",
+      "definition": "Open-ended adversarial probing by people trying to break the system. Produces findings, not a score"
+    },
+    {
+      "term": "Reference solution",
+      "definition": "A known-good answer or outcome for an item. Proves the item is solvable and lets you test the grader"
+    },
+    {
+      "term": "Resampling",
+      "definition": "Answering each item K times and averaging the per-item scores, to reduce the model's own answer noise"
+    },
+    {
+      "term": "Retirement",
+      "definition": "Deliberately withdrawing a benchmark once it saturates, contaminates, or hits its label-error ceiling"
+    },
+    {
+      "term": "Robustness rate",
+      "definition": "The share of judging decisions that survive an irrelevant change to the input. Used to quantify judge bias"
+    },
+    {
+      "term": "Rubric",
+      "definition": "Explicit written criteria a grader applies. Best used one dimension at a time"
+    },
+    {
+      "term": "Sandbagging",
+      "definition": "A model performing worse than it can, which makes a capability evaluation understate risk"
+    },
+    {
+      "term": "Saturation",
+      "definition": "Frontier scores bunching near a benchmark's ceiling, so it no longer separates systems"
+    },
+    {
+      "term": "Scaffold",
+      "definition": "The code around a model that turns it into an agent: prompts, tool wiring, retries, and step limits. Two systems with the same model and different scaffolds are not comparable"
+    },
+    {
+      "term": "Self-enhancement bias",
+      "definition": "A model judge preferring text produced by its own model family"
+    },
+    {
+      "term": "Shortcut",
+      "definition": "A way to pass a task without the ability being tested. The main threat to task validity"
+    },
+    {
+      "term": "Standard error",
+      "definition": "The expected spread of an estimate. For accuracy p on n independent items, the square root of p times (1 minus p) divided by n"
+    },
+    {
+      "term": "Statistical significance",
+      "definition": "Whether an observed difference is larger than would be expected from noise alone, at a stated threshold"
+    },
+    {
+      "term": "Super-population",
+      "definition": "The imaginary larger pool of questions a benchmark's items are treated as a sample from. The assumption that makes error bars meaningful"
+    },
+    {
+      "term": "Task validity",
+      "definition": "Whether a task is solvable if and only if the system has the target ability"
+    },
+    {
+      "term": "Temperature",
+      "definition": "A sampling setting that controls output randomness. Do not change it to tidy up error bars"
+    },
+    {
+      "term": "TEVV",
+      "definition": "Testing, evaluation, verification, and validation. The term NIST uses for the measurement work in its risk framework"
+    },
+    {
+      "term": "Time horizon",
+      "definition": "The length of task, measured by how long a human expert takes, that a model completes with a stated success rate"
+    },
+    {
+      "term": "Transcript",
+      "definition": "The complete record of one attempt: outputs, tool calls, intermediate results, and reasoning. Also called a trace or trajectory"
+    },
+    {
+      "term": "Trial",
+      "definition": "One attempt at one task. Multiple trials per task are needed because behaviour varies between runs"
+    },
+    {
+      "term": "Verbosity bias",
+      "definition": "A judge preferring longer answers regardless of quality"
+    },
+    {
+      "term": "Zero-shot",
+      "definition": "Giving the model the task with no worked examples in the prompt"
+    }
+  ],
+  "unverifiedCounts": [
+    {
+      "item": "Terminal-Bench version 2",
+      "whatIsUnverified": "The \"about 89 core tasks\" figure comes from a secondary summary"
+    },
+    {
+      "item": "Cybench",
+      "whatIsUnverified": "The \"40 capture-the-flag tasks\" figure comes from a secondary summary"
+    },
+    {
+      "item": "WebArena",
+      "whatIsUnverified": "The \"812 tasks\" figure comes from a secondary summary"
+    },
+    {
+      "item": "τ-bench",
+      "whatIsUnverified": "The \"165 tasks\" split across retail and airline comes from a secondary summary"
+    },
+    {
+      "item": "CORE-bench",
+      "whatIsUnverified": "The \"270 tasks from 90 papers\" figure comes from a secondary summary"
+    },
+    {
+      "item": "LiveCodeBench",
+      "whatIsUnverified": "The \"1,055 problems\" figure is a snapshot from a secondary summary of a growing set"
+    },
+    {
+      "item": "MuSR, ARC-AGI-2, τ²-bench, KernelBench, SciCode, CVE-Bench, AgentHarm, Mock AIME",
+      "whatIsUnverified": "No item count read"
+    },
+    {
+      "item": "ARC-AGI-2 release year",
+      "whatIsUnverified": "Widely reported as 2025; no primary source read"
+    },
+    {
+      "item": "\"Why we no longer evaluate SWE-bench Verified\"",
+      "whatIsUnverified": "Publication date not read"
+    }
+  ],
+  "secondaryClaims": [
+    {
+      "claim": "A strong model judge agreed with human raters more than 80% of the time, about the human-human rate of 81%",
+      "sourceToCheck": "Zheng et al. 2023"
+    },
+    {
+      "claim": "Prompt formatting moved accuracy by up to 76 points on one open model",
+      "sourceToCheck": "Sclar et al. 2024"
+    },
+    {
+      "claim": "MMLU error rate of 6.49%, with 57% of analysed virology questions affected, from 5,700 re-annotated questions",
+      "sourceToCheck": "Gema et al. 2024"
+    },
+    {
+      "claim": "SWE-bench Verified: 500 tasks selected from 1,699 reviewed, and frontier models reproducing the reference fix",
+      "sourceToCheck": "OpenAI, Introducing SWE-bench Verified"
+    },
+    {
+      "claim": "HELM: 42 scenarios, 7 metrics on 16 core scenarios, coverage raised from 17.9% to 96.0%",
+      "sourceToCheck": "Liang et al. 2022"
+    },
+    {
+      "claim": "Codex pass@k sampling: n = 200 for k up to 100",
+      "sourceToCheck": "Chen et al. 2021"
+    },
+    {
+      "claim": "τ-bench: under 50% first-attempt success and under 25% across eight attempts for a leading model of the time",
+      "sourceToCheck": "Yao et al. 2024"
+    },
+    {
+      "claim": "HAL: 21,730 rollouts, 9 models, 9 benchmarks, about $40,000, 2.5B tokens of logs",
+      "sourceToCheck": "HAL 2025"
+    },
+    {
+      "claim": "Kapoor et al.: simple baselines matching complex architectures on HumanEval at lower cost",
+      "sourceToCheck": "Kapoor et al. 2024"
+    },
+    {
+      "claim": "Open LLM Leaderboard: the two suites, the normalisation rule, and the retirement rationale",
+      "sourceToCheck": "Hugging Face leaderboard documentation"
+    },
+    {
+      "claim": "EU AI Act Article 55(1) wording on model evaluation and adversarial testing; Code of Practice published 10 July 2025; obligations applied from 2 August 2025",
+      "sourceToCheck": "Article 55 text"
+    },
+    {
+      "claim": "NIST AI 600-1 publication date of 26 July 2024 and its risk-category list",
+      "sourceToCheck": "NIST AI RMF pages"
+    },
+    {
+      "claim": "ISO/IEC TS 4213 scope, page count, and 2025 confirmation; ISO/IEC 42001 publication date",
+      "sourceToCheck": "ISO catalogue entries"
+    },
+    {
+      "claim": "MLPerf division rules and the up-to-two-audited-submissions policy",
+      "sourceToCheck": "MLCommons policies"
+    },
+    {
+      "claim": "Evaluation awareness in versions of Claude, and the later model's situational awareness",
+      "sourceToCheck": "Apollo Research; developer system card reporting"
+    },
+    {
+      "claim": "The shared structure of frontier safety policies",
+      "sourceToCheck": "METR, Common Elements"
+    },
+    {
+      "claim": "GDPval: 1,320 tasks, 44 occupations, 9 industries, blinded pairwise expert grading, authors averaging about 14 years of experience",
+      "sourceToCheck": "OpenAI, GDPval"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations",
+      "by": "Evan Miller, Anthropic",
+      "date": "2024-11-04",
+      "url": "https://arxiv.org/abs/2411.00640",
+      "depth": "full text",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S02",
+      "title": "AI and the Everything in the Whole Wide World Benchmark",
+      "by": "Raji et al.",
+      "date": "2021",
+      "url": "https://arxiv.org/abs/2111.15366",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S03",
+      "title": "The Benchmark Lottery",
+      "by": "Dehghani et al.",
+      "date": "2021-07",
+      "url": "https://arxiv.org/abs/2107.07002",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S04",
+      "title": "BetterBench: Assessing AI Benchmarks, Uncovering Issues, and Establishing Best Practices",
+      "by": "Reuel et al., Stanford",
+      "date": "2024-11",
+      "url": "https://arxiv.org/abs/2411.12990",
+      "depth": "read",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S05",
+      "title": "Establishing Best Practices for Building Rigorous Agentic Benchmarks",
+      "by": "Zhu et al.",
+      "date": "2025-07",
+      "url": "https://arxiv.org/abs/2507.02825",
+      "depth": "read",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S06",
+      "title": "AI Agents That Matter",
+      "by": "Kapoor et al., Princeton",
+      "date": "2024-07",
+      "url": "https://arxiv.org/abs/2407.01502",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S07",
+      "title": "Holistic Agent Leaderboard: The Missing Infrastructure for AI Agent Evaluation",
+      "by": "Princeton",
+      "date": "2025-10",
+      "url": "https://arxiv.org/abs/2510.11977",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S08",
+      "title": "Lessons from the Trenches on Reproducible Evaluation of Language Models",
+      "by": "Biderman et al., EleutherAI",
+      "date": "2024-05",
+      "url": "https://arxiv.org/abs/2405.14782",
+      "depth": "read",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S09",
+      "title": "Quantifying Language Models' Sensitivity to Spurious Features in Prompt Design",
+      "by": "Sclar et al., ICLR 2024",
+      "date": "2023-10",
+      "url": "https://arxiv.org/abs/2310.11324",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S10",
+      "title": "Are We Done with MMLU?",
+      "by": "Gema et al., NAACL 2025",
+      "date": "2024-06",
+      "url": "https://arxiv.org/abs/2406.04127",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S11",
+      "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+      "by": "Lianmin Zheng et al.",
+      "date": "2023-06-09",
+      "url": "https://arxiv.org/abs/2306.05685",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S12",
+      "title": "Justice or Prejudice? Quantifying Biases in LLM-as-a-Judge (CALM)",
+      "by": "Jiayi Ye et al., ICLR 2025",
+      "date": "2024-10",
+      "url": "https://arxiv.org/abs/2410.02736",
+      "depth": "read",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S13",
+      "title": "Investigating Non-Transitivity in LLM-as-a-Judge",
+      "by": "2025",
+      "date": "2025-02",
+      "url": "https://arxiv.org/abs/2502.14074",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S14",
+      "title": "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference",
+      "by": "Chiang et al.",
+      "date": "2024-03",
+      "url": "https://arxiv.org/abs/2403.04132",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S15",
+      "title": "The Leaderboard Illusion",
+      "by": "Shivalika Singh et al., Cohere Labs and others",
+      "date": "2025-04",
+      "url": "https://arxiv.org/abs/2504.20879",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S16",
+      "title": "Response to \"The Leaderboard Illusion\"",
+      "by": "LMArena",
+      "date": "2025",
+      "url": "https://news.lmarena.ai/our-response/",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S17",
+      "title": "Holistic Evaluation of Language Models (HELM)",
+      "by": "Liang et al., Stanford",
+      "date": "2022-11",
+      "url": "https://arxiv.org/abs/2211.09110",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S18",
+      "title": "Model Cards for Model Reporting",
+      "by": "Mitchell et al.",
+      "date": "2019-01",
+      "url": "https://arxiv.org/abs/1810.03993",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S19",
+      "title": "A Safe Harbor for AI Evaluation and Red Teaming",
+      "by": "Longpre et al.",
+      "date": "2024-03-05",
+      "url": "https://arxiv.org/abs/2403.04893",
+      "depth": "secondary",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S20",
+      "title": "A Comprehensive Survey of Contamination Detection Methods in Large Language Models",
+      "by": "2024",
+      "date": "2024-04",
+      "url": "https://arxiv.org/abs/2404.00699",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S21",
+      "title": "Recent Advances in Large Language Model Benchmarks against Data Contamination",
+      "by": "2025",
+      "date": "2025-02",
+      "url": "https://arxiv.org/abs/2502.17521",
+      "depth": "metadata verified",
+      "group": "methodology and critique"
+    },
+    {
+      "id": "S22",
+      "title": "MMLU",
+      "by": "Dan Hendrycks",
+      "date": "2020-09-07",
+      "url": "https://arxiv.org/abs/2009.03300",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S23",
+      "title": "MMLU-Pro",
+      "by": "Yubo Wang",
+      "date": "2024-06-03",
+      "url": "https://arxiv.org/abs/2406.01574",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S24",
+      "title": "ARC (AI2 Reasoning Challenge)",
+      "by": "Peter Clark",
+      "date": "2018-03-14",
+      "url": "https://arxiv.org/abs/1803.05457",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S25",
+      "title": "HellaSwag",
+      "by": "Rowan Zellers",
+      "date": "2019-05-19",
+      "url": "https://arxiv.org/abs/1905.07830",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S26",
+      "title": "WinoGrande",
+      "by": "Keisuke Sakaguchi",
+      "date": "2019-07-24",
+      "url": "https://arxiv.org/abs/1907.10641",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S27",
+      "title": "TruthfulQA",
+      "by": "Stephanie Lin",
+      "date": "2021-09-08",
+      "url": "https://arxiv.org/abs/2109.07958",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S28",
+      "title": "BIG-bench",
+      "by": "Aarohi Srivastava",
+      "date": "2022-06-09",
+      "url": "https://arxiv.org/abs/2206.04615",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S29",
+      "title": "BIG-Bench Hard (BBH)",
+      "by": "Mirac Suzgun",
+      "date": "2022-10-17",
+      "url": "https://arxiv.org/abs/2210.09261",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S30",
+      "title": "GPQA",
+      "by": "David Rein",
+      "date": "2023-11-20",
+      "url": "https://arxiv.org/abs/2311.12022",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S31",
+      "title": "MuSR",
+      "by": "Zayne Sprague",
+      "date": "2023-10-24",
+      "url": "https://arxiv.org/abs/2310.16049",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S32",
+      "title": "IFEval",
+      "by": "Jeffrey Zhou",
+      "date": "2023-11-14",
+      "url": "https://arxiv.org/abs/2311.07911",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S33",
+      "title": "Humanity's Last Exam",
+      "by": "Long Phan",
+      "date": "2025-01-24",
+      "url": "https://arxiv.org/abs/2501.14249",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S34",
+      "title": "GSM8K",
+      "by": "Karl Cobbe",
+      "date": "2021-10-27",
+      "url": "https://arxiv.org/abs/2110.14168",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S35",
+      "title": "MATH",
+      "by": "Dan Hendrycks",
+      "date": "2021-03-05",
+      "url": "https://arxiv.org/abs/2103.03874",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S36",
+      "title": "HumanEval, and the pass@k estimator",
+      "by": "Mark Chen et al.",
+      "date": "2021-07",
+      "url": "https://arxiv.org/abs/2107.03374",
+      "depth": "secondary",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S37",
+      "title": "MBPP",
+      "by": "Jacob Austin",
+      "date": "2021-08-16",
+      "url": "https://arxiv.org/abs/2108.07732",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S38",
+      "title": "SWE-bench",
+      "by": "Carlos E. Jimenez",
+      "date": "2023-10-10",
+      "url": "https://arxiv.org/abs/2310.06770",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S39",
+      "title": "LiveCodeBench",
+      "by": "Naman Jain",
+      "date": "2024-03-12",
+      "url": "https://arxiv.org/abs/2403.07974",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S40",
+      "title": "Terminal-Bench",
+      "by": "Mike A. Merrill",
+      "date": "2026-01-17",
+      "url": "https://arxiv.org/abs/2601.11868",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S41",
+      "title": "KernelBench",
+      "by": "Anne Ouyang",
+      "date": "2025-02-14",
+      "url": "https://arxiv.org/abs/2502.10517",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S42",
+      "title": "SciCode",
+      "by": "Minyang Tian",
+      "date": "2024-07-18",
+      "url": "https://arxiv.org/abs/2407.13168",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S43",
+      "title": "GAIA",
+      "by": "2023",
+      "date": "2023-11",
+      "url": "https://arxiv.org/abs/2311.12983",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S44",
+      "title": "WebArena",
+      "by": "2023",
+      "date": "2023-07",
+      "url": "https://arxiv.org/abs/2307.13854",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S45",
+      "title": "OSWorld",
+      "by": "2024",
+      "date": "2024-04",
+      "url": "https://arxiv.org/abs/2404.07972",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S46",
+      "title": "τ-bench",
+      "by": "Shunyu Yao et al.",
+      "date": "2024-06",
+      "url": "https://arxiv.org/abs/2406.12045",
+      "depth": "secondary",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S47",
+      "title": "τ²-bench",
+      "by": "2025",
+      "date": "2025-06",
+      "url": "https://arxiv.org/abs/2506.07982",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S48",
+      "title": "MLE-bench",
+      "by": "OpenAI",
+      "date": "2024-10",
+      "url": "https://arxiv.org/abs/2410.07095",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S49",
+      "title": "Cybench",
+      "by": "Andy K. Zhang",
+      "date": "2024-08-15",
+      "url": "https://arxiv.org/abs/2408.08926",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S50",
+      "title": "CVE-Bench",
+      "by": "Yuxuan Zhu",
+      "date": "2025-03-21",
+      "url": "https://arxiv.org/abs/2503.17332",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S51",
+      "title": "CORE-bench",
+      "by": "2024",
+      "date": "2024-09",
+      "url": "https://arxiv.org/abs/2409.11363",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S52",
+      "title": "AgentHarm",
+      "by": "2024",
+      "date": "2024-10",
+      "url": "https://arxiv.org/abs/2410.09024",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S53",
+      "title": "GDPval",
+      "by": "OpenAI",
+      "date": "2025-10",
+      "url": "https://arxiv.org/abs/2510.04374",
+      "depth": "metadata verified",
+      "group": "benchmark paper"
+    },
+    {
+      "id": "S54",
+      "title": "Introducing SWE-bench Verified",
+      "by": "OpenAI",
+      "date": "2024-08",
+      "url": "https://openai.com/index/introducing-swe-bench-verified/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S55",
+      "title": "Why SWE-bench Verified no longer measures frontier coding capabilities",
+      "by": "OpenAI",
+      "date": "n/v",
+      "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S56",
+      "title": "Measuring the performance of our models on real-world tasks (GDPval)",
+      "by": "OpenAI",
+      "date": "2025-09",
+      "url": "https://openai.com/index/gdpval/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S57",
+      "title": "Benchmarking hub methodology",
+      "by": "Epoch AI",
+      "date": "2026 snapshot",
+      "url": "https://epoch.ai/benchmarks/about",
+      "depth": "read",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S58",
+      "title": "FrontierMath benchmark page, including the version 2 correction and the conflict-of-interest statement",
+      "by": "Epoch AI",
+      "date": "2026-06-12 update",
+      "url": "https://epoch.ai/benchmarks/frontiermath",
+      "depth": "read",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S59",
+      "title": "Measuring AI Ability to Complete Long Tasks",
+      "by": "METR",
+      "date": "2025-03-19",
+      "url": "https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/",
+      "depth": "read",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S60",
+      "title": "Common Elements of Frontier AI Safety Policies",
+      "by": "METR",
+      "date": "2025-12",
+      "url": "https://metr.org/common-elements",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S61",
+      "title": "Claude Sonnet 3.7 (often) knows when it's in alignment evaluations",
+      "by": "Apollo Research",
+      "date": "2025",
+      "url": "https://www.apolloresearch.ai/science/claude-sonnet-37-often-knows-when-its-in-alignment-evaluations",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S62",
+      "title": "Demystifying evals for AI agents",
+      "by": "Anthropic",
+      "date": "2025",
+      "url": "https://anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "depth": "read",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S63",
+      "title": "Create strong empirical evaluations",
+      "by": "Anthropic documentation",
+      "date": "current",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/develop-tests",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S64",
+      "title": "Your AI Product Needs Evals",
+      "by": "Hamel Husain",
+      "date": "2024",
+      "url": "https://hamel.dev/blog/posts/evals/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S65",
+      "title": "Inspect, an open-source evaluation framework",
+      "by": "UK AI Security Institute",
+      "date": "current",
+      "url": "https://inspect.aisi.org.uk/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S66",
+      "title": "Announcing Inspect Evals",
+      "by": "UK AI Security Institute",
+      "date": "2025",
+      "url": "https://www.aisi.gov.uk/blog/inspect-evals",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S67",
+      "title": "Intelligence benchmarking methodology, index version 4.1.1",
+      "by": "Artificial Analysis",
+      "date": "2026 snapshot",
+      "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "depth": "read",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S68",
+      "title": "Open LLM Leaderboard normalisation documentation",
+      "by": "Hugging Face",
+      "date": "current",
+      "url": "https://github.com/huggingface/leaderboards/blob/main/docs/source/en/open_llm_leaderboard/normalization.md",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S69",
+      "title": "AI benchmarking organization criticized for waiting to disclose funding from OpenAI",
+      "by": "TechCrunch",
+      "date": "2025-01-19",
+      "url": "https://techcrunch.com/2025/01/19/ai-benchmarking-organization-criticized-for-waiting-to-disclose-funding-from-openai/",
+      "depth": "secondary",
+      "group": "institutional and vendor"
+    },
+    {
+      "id": "S70",
+      "title": "EU AI Act, Article 55: obligations for providers of general-purpose AI models with systemic risk",
+      "by": "European Union",
+      "date": "in force",
+      "url": "https://artificialintelligenceact.eu/article/55/",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    },
+    {
+      "id": "S71",
+      "title": "AI Risk Management Framework, and the Generative AI Profile (AI 600-1)",
+      "by": "NIST",
+      "date": "2023, profile 2024-07-26",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    },
+    {
+      "id": "S72",
+      "title": "ISO/IEC TS 4213:2022, Assessment of machine learning classification performance",
+      "by": "ISO/IEC JTC 1/SC 42",
+      "date": "2022-10",
+      "url": "https://www.iso.org/standard/79799.html",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    },
+    {
+      "id": "S73",
+      "title": "ISO/IEC 42001:2023, AI management systems",
+      "by": "ISO/IEC",
+      "date": "2023-12",
+      "url": "https://www.iso.org/standard/42001",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    },
+    {
+      "id": "S74",
+      "title": "MLPerf Training benchmark",
+      "by": "MLCommons",
+      "date": "current",
+      "url": "https://mlcommons.org/benchmarks/training/",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    },
+    {
+      "id": "S75",
+      "title": "MLPerf Inference rules",
+      "by": "MLCommons",
+      "date": "current",
+      "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+      "depth": "secondary",
+      "group": "standards and regulation"
+    }
+  ],
+  "limitations": [
+    "No benchmark was run for this report; every quantitative claim about a model or benchmark is source-reported.",
+    "Benchmark composition, leaderboard rules, and index weights change monthly; version-specific statements are a snapshot of 2026-08-11.",
+    "Coverage skews to language and agent models, and to English-language work.",
+    "The regulatory section summarises and links to primary text; it is not legal advice.",
+    "Seventeen quotable claims rest on a secondary reading, listed in secondaryClaims."
+  ]
+}

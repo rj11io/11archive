@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "title": "Code analytics: what you can measure locally and from GitHub",
+  "generatedAt": "2026-08-11T22:00:00Z",
+  "timezone": "UTC",
+  "observationDate": "2026-08-11",
+  "generator": {
+    "method": "manual research session, every value produced by running the recorded command",
+    "environment": {
+      "os": "macOS Darwin 24.3.0 arm64",
+      "git": "2.49.0",
+      "gh": "2.89.0",
+      "node": "24.16.0",
+      "awk": "BWK awk (macOS system), no strftime",
+      "tokenScopes": ["gist", "read:org", "repo", "workflow"],
+      "tokenScopesAbsent": ["security_events", "admin:org", "enterprise"]
+    }
+  },
+  "scope": {
+    "inScope": "measurements available to one engineer with a local checkout, git, gh and a personal access token",
+    "outOfScope": ["paid analytics platforms", "GitHub Enterprise Server differences", "endpoints requiring an enterprise account"],
+    "subjects": [
+      {"id": "local-primary", "kind": "local git repository", "identity": "redacted private working repository", "commits": 287, "trackedFiles": 1390, "rawIdentities": 4, "firstCommit": "2026-03-31"},
+      {"id": "gh-small", "kind": "github repository", "identity": "rj11io/11reports", "commits": 25, "visibility": "public", "note": "owned by the token holder, so write-access endpoints were testable"},
+      {"id": "gh-large", "kind": "github repository", "identity": "cli/cli", "commits": ">10000", "mergedPullRequests": 3132, "workflowRuns": 31382, "stars": 45798, "note": "used to trigger caps and limits"}
+    ]
+  },
+  "evidenceStates": {
+    "observed": "directly measured by running the command shown",
+    "source-reported": "stated by documentation, not independently measured",
+    "calculated": "derived from observed values by a disclosed formula",
+    "unavailable": "expected but not obtainable, reason recorded"
+  },
+  "localGit": {
+    "subject": "local-primary",
+    "scale": {
+      "commits": {"value": 287, "state": "observed", "command": "git rev-list --count HEAD"},
+      "mergeCommits": {"value": 14, "state": "observed", "command": "git rev-list --count --merges HEAD"},
+      "mergeSharePct": {"value": 4.87, "state": "calculated", "formula": "100 * merges / commits"},
+      "packedSizeMiB": {"value": 3.04, "state": "observed", "command": "git count-objects -vH"},
+      "objectsInPack": {"value": 10452, "state": "observed"},
+      "trackedFiles": {"value": 1390, "state": "observed", "command": "git ls-files | wc -l"}
+    },
+    "churn": {
+      "linesAdded": {"value": 136813, "state": "observed", "unit": "lines"},
+      "linesDeleted": {"value": 41041, "state": "observed", "unit": "lines"},
+      "fileTouchesIncludingMerges": {"value": 6286, "state": "observed"},
+      "fileTouchRowsNoMerges": {"value": 5074, "state": "observed", "note": "no rename detection"},
+      "fileTouchRowsWithRenameDetection": {"value": 4988, "state": "observed", "note": "-M -C -C"},
+      "renameEventsDetected": {"value": 1212, "state": "observed", "command": "git log -M --diff-filter=R --name-status"},
+      "command": "git log --no-merges -M -C --pretty=tformat: --numstat"
+    },
+    "identities": {
+      "rawIdentityCount": {"value": 4, "state": "observed"},
+      "rows": [
+        {"label": "author A, display name 1", "commits": 187, "kind": "human", "state": "observed"},
+        {"label": "author A, display name 2", "commits": 26, "kind": "human", "note": "same email address as display name 1", "state": "observed"},
+        {"label": "release bot", "commits": 59, "kind": "automation", "state": "observed"},
+        {"label": "author A, GitHub noreply address", "commits": 1, "kind": "human", "note": "web edit", "state": "observed"}
+      ],
+      "afterMailmapMerge": {"value": 213, "state": "observed", "formula": "187 + 26", "command": "git -c mailmap.file=FILE shortlog -sn --no-merges HEAD"},
+      "shortlogTrap": {"withoutRevision": 0, "withExplicitHEAD": 4, "state": "observed", "note": "git shortlog reads stdin when no revision is given"}
+    },
+    "authorChurn": [
+      {"label": "author A, display name 1", "added": 125138, "deleted": 38037, "fileTouches": 3252, "state": "observed"},
+      {"label": "author A, display name 2", "added": 7046, "deleted": 129, "fileTouches": 60, "state": "observed"},
+      {"label": "release bot", "added": 2393, "deleted": 1703, "fileTouches": 1745, "state": "observed"},
+      {"label": "author A, GitHub noreply address", "added": 203, "deleted": 0, "fileTouches": 2, "state": "observed"}
+    ],
+    "conventionalCommits": {
+      "conforming": {"value": 265, "state": "observed"},
+      "nonconforming": {"value": 8, "state": "observed"},
+      "checksum": {"value": 273, "state": "calculated", "formula": "287 total commits - 14 merges = 273 = 265 + 8"},
+      "byType": [
+        {"type": "feat", "commits": 88, "sharePct": 33.2},
+        {"type": "chore", "commits": 76, "sharePct": 28.7},
+        {"type": "fix", "commits": 73, "sharePct": 27.5},
+        {"type": "refactor", "commits": 16, "sharePct": 6.0},
+        {"type": "docs", "commits": 10, "sharePct": 3.8},
+        {"type": "style", "commits": 2, "sharePct": 0.8}
+      ],
+      "shareDenominator": 265,
+      "state": "observed, shares calculated"
+    },
+    "followFlag": {
+      "plainLogCommits": {"value": 1, "state": "observed"},
+      "followCommits": {"value": 7, "state": "observed"},
+      "note": "same renamed file, git log -- PATH versus git log --follow -- PATH"
+    },
+    "timings": [
+      {"query": "churn with rename detection", "seconds": 0.61, "state": "observed", "method": "shell time builtin, warm cache, single run"},
+      {"query": "file co-change pass (--name-only)", "seconds": 0.13, "state": "observed"},
+      {"query": "blame across 110 source files", "seconds": 2.19, "state": "observed"}
+    ]
+  },
+  "localStructure": {
+    "subject": "local-primary",
+    "linesByExtension": {
+      "coverage": {"filesCounted": 1376, "filesTracked": 1390, "binaryExcluded": 14},
+      "totalLines": 95770,
+      "rows": [
+        {"extension": "md", "files": 665, "lines": 53276, "sharePct": 55.6},
+        {"extension": "json", "files": 107, "lines": 17427, "sharePct": 18.2},
+        {"extension": "mjs", "files": 27, "lines": 11171, "sharePct": 11.7},
+        {"extension": "tsx", "files": 78, "lines": 8781, "sharePct": 9.2},
+        {"extension": "yaml", "files": 465, "lines": 1860, "sharePct": 1.9},
+        {"extension": "py", "files": 3, "lines": 933, "sharePct": 1.0},
+        {"extension": "ts", "files": 5, "lines": 675, "sharePct": 0.7},
+        {"extension": "css", "files": 4, "lines": 436, "sharePct": 0.5},
+        {"extension": "sh", "files": 5, "lines": 431, "sharePct": 0.4},
+        {"extension": "html", "files": 1, "lines": 224, "sharePct": 0.2},
+        {"extension": "noext", "files": 1, "lines": 201, "sharePct": 0.2},
+        {"extension": "cjs", "files": 2, "lines": 132, "sharePct": 0.1},
+        {"extension": "yml", "files": 2, "lines": 103, "sharePct": 0.1},
+        {"extension": "gitignore", "files": 2, "lines": 46, "sharePct": 0.0},
+        {"extension": "js", "files": 2, "lines": 43, "sharePct": 0.0},
+        {"extension": "conf", "files": 1, "lines": 14, "sharePct": 0.0},
+        {"extension": "prettierrc", "files": 1, "lines": 11, "sharePct": 0.0},
+        {"extension": "prettierignore", "files": 1, "lines": 6, "sharePct": 0.0},
+        {"extension": "gitkeep", "files": 4, "lines": 0, "sharePct": 0.0}
+      ],
+      "state": "observed, shares calculated"
+    },
+    "commentRatioMjs": {
+      "totalLines": 11171, "codeLines": 10472, "commentLines": 137, "blankLines": 562,
+      "commentPct": 1.2, "blankPct": 5.0,
+      "state": "observed", "method": "line-start regex only, undercounts trailing comments"
+    },
+    "fileLengthDistribution": {
+      "population": "110 .mjs .ts .tsx files",
+      "median": 84, "p90": 392, "max": 1388, "unit": "lines", "state": "observed"
+    },
+    "indentationComplexity": {
+      "file": "largest source file, 1388 lines",
+      "logicalLines": 1308, "meanIndent": 3.42, "stdevIndent": 2.25, "maxIndent": 12,
+      "state": "observed"
+    },
+    "duplication": {
+      "identicalBlobGroups": {"value": 14, "state": "observed"},
+      "filesInThoseGroups": {"value": 37, "state": "observed"},
+      "largestRealGroup": {"copies": 3, "linesEach": 1388, "blobPrefix": "555674e9", "state": "observed"},
+      "method": "git ls-files -s, group by blob hash",
+      "limitation": "finds byte-identical files only, not near-duplicates"
+    },
+    "dependencies": {
+      "declaredRuntime": {"value": 23, "state": "observed"},
+      "declaredDev": {"value": 10, "state": "observed"},
+      "resolvedInLockfile": {"value": 753, "state": "observed"},
+      "amplificationFactor": {"value": 22.8, "state": "calculated", "formula": "753 / 33"}
+    },
+    "testsAndMarkers": {
+      "testFiles": {"value": 5, "state": "observed"},
+      "sourceFiles": {"value": 110, "state": "observed"},
+      "todoMarkers": {"value": 0, "state": "observed", "note": "a real measured zero"}
+    }
+  },
+  "evolutionary": {
+    "subject": "local-primary",
+    "hotspots": {
+      "deadAtHead": {"value": 40, "of": 50, "state": "observed", "note": "of the 50 highest-churn files, 40 no longer exist at HEAD"},
+      "topLiveRows": [
+        {"churn": 1448, "commits": 10, "path": "variant-a/scripts/benchmarks-core.mjs", "note": "one of three identical copies"},
+        {"churn": 1448, "commits": 10, "path": "variant-b/scripts/benchmarks-core.mjs", "note": "identical copy"},
+        {"churn": 1448, "commits": 10, "path": "variant-c/scripts/benchmarks-core.mjs", "note": "identical copy"},
+        {"churn": 1394, "commits": 10, "path": "variant-a/scripts/analyze-cost-global.mjs", "note": "near-identical sibling"},
+        {"churn": 1366, "commits": 10, "path": "variant-b/scripts/analyze-cost-project.mjs", "note": "near-identical sibling"},
+        {"churn": 1344, "commits": 10, "path": "variant-c/scripts/analyze-cost-single.mjs", "note": "near-identical sibling"},
+        {"churn": 943, "commits": 57, "path": "README.md", "note": "documentation, not code"},
+        {"churn": 667, "commits": 6, "path": "generated/marketplace.json", "note": "generated manifest"}
+      ],
+      "state": "observed"
+    },
+    "temporalCoupling": {
+      "threshold": 6,
+      "topPairs": [
+        {"coChanges": 30, "a": "plugin-a/.claude-plugin/plugin.json", "b": "plugin-a/.codex-plugin/plugin.json", "reading": "real: two manifests kept in sync by hand"},
+        {"coChanges": 27, "a": "plugin-b/.claude-plugin/plugin.json", "b": "plugin-b/.codex-plugin/plugin.json", "reading": "real: same pattern"},
+        {"coChanges": 27, "a": "plugin-c/.claude-plugin/plugin.json", "b": "plugin-d/.claude-plugin/plugin.json", "reading": "artefact: release bot bumps every manifest in one commit"},
+        {"coChanges": 27, "a": "plugin-e/.claude-plugin/plugin.json", "b": "plugin-d/.claude-plugin/plugin.json", "reading": "artefact: same cause"}
+      ],
+      "state": "observed",
+      "corrections": ["exclude bot authors", "normalise by min(revisions_a, revisions_b)", "drop commits touching more than about 30 files"]
+    },
+    "ownership": {
+      "filesExamined": {"value": 110, "state": "observed"},
+      "filesWithSingleOwnerAbove80Pct": {"value": 110, "state": "observed"},
+      "sharePct": {"value": 100.0, "state": "calculated"},
+      "busFactor": {"value": 1, "state": "inferred", "note": "expected for a single-maintainer project"},
+      "command": "git blame --line-porcelain -w -M -C"
+    }
+  },
+  "githubRateLimits": {
+    "state": "source-reported",
+    "source": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api",
+    "primary": [
+      {"credential": "unauthenticated", "limit": 60, "unit": "requests/hour"},
+      {"credential": "personal access token", "limit": 5000, "unit": "requests/hour"},
+      {"credential": "GitHub App installation", "limit": 5000, "unit": "requests/hour", "note": "up to 12500 with scale bonuses"},
+      {"credential": "GitHub App on Enterprise Cloud", "limit": 15000, "unit": "requests/hour"},
+      {"credential": "GITHUB_TOKEN in Actions", "limit": 1000, "unit": "requests/hour per repository"},
+      {"credential": "GraphQL, user token", "limit": 5000, "unit": "points/hour"},
+      {"credential": "search", "limit": 30, "unit": "requests/minute"},
+      {"credential": "code search", "limit": 10, "unit": "requests/minute"}
+    ],
+    "secondary": [
+      {"rule": "concurrent requests across REST and GraphQL", "limit": 100},
+      {"rule": "REST points per minute", "limit": 900, "note": "read costs 1 point, write costs 5"},
+      {"rule": "processing time", "limit": "90 seconds per 60 seconds of wall clock"},
+      {"rule": "content-generating requests", "limit": "80/minute, 500/hour"}
+    ],
+    "observedAtSessionStart": {"core": 5000, "graphql": 5000, "search": 30, "codeSearch": 10, "state": "observed"}
+  },
+  "restVersusGraphql": {
+    "task": "merged pull requests with reviews and commit counts",
+    "rows": [
+      {"pullRequests": 5, "restRequests": 11, "graphqlRequests": 1, "graphqlCost": 1, "graphqlNodes": 115},
+      {"pullRequests": 50, "restRequests": 101, "graphqlRequests": 1, "graphqlCost": 2, "graphqlNodes": 1150},
+      {"pullRequests": 100, "restRequests": 201, "graphqlRequests": 1, "graphqlCost": 3, "graphqlNodes": 2300}
+    ],
+    "restMethod": "calculated: 1 list call plus one /reviews and one /commits call per pull request",
+    "graphqlMethod": "observed: rateLimit block returned inside each response",
+    "state": "mixed, per row above"
+  },
+  "githubEndpoints": [
+    {"endpoint": "GET /repos/{o}/{r}", "category": "facts", "observedStatus": 200, "note": "size, language, stars, forks, watchers, timestamps, topics"},
+    {"endpoint": "GET /repos/{o}/{r}/languages", "category": "facts", "observedStatus": 200, "note": "bytes per language, not lines"},
+    {"endpoint": "GET /repos/{o}/{r}/community/profile", "category": "facts", "observedStatus": 200, "observedValue": "health 42%, only readme present"},
+    {"endpoint": "GET /repos/{o}/{r}/codeowners/errors", "category": "facts", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/contributors", "category": "people", "observedStatus": 200, "note": "382 default, 686 with anon=1, on cli/cli"},
+    {"endpoint": "GET /repos/{o}/{r}/collaborators", "category": "people", "observedStatus": 403, "note": "needs push access"},
+    {"endpoint": "GET /repos/{o}/{r}/stargazers", "category": "people", "observedStatus": 200, "observedStatusOther": 404, "note": "200 on an owned repo, 404 on two third-party public repos; cause not established"},
+    {"endpoint": "GET /repos/{o}/{r}/stats/contributors", "category": "statistics", "observedStatus": 202, "observedStatusOther": 200, "note": "202 then 200 on retry; 500-row cap observed; adds and dels are 0 above 10000 commits"},
+    {"endpoint": "GET /repos/{o}/{r}/stats/commit_activity", "category": "statistics", "observedStatus": 202, "note": "still 202 after 3 attempts over 10 seconds"},
+    {"endpoint": "GET /repos/{o}/{r}/stats/code_frequency", "category": "statistics", "observedStatus": 202, "observedStatusOther": 422, "note": "422 'repository must have fewer than 10000 commits' on cli/cli"},
+    {"endpoint": "GET /repos/{o}/{r}/stats/participation", "category": "statistics", "observedStatus": 200, "note": "52 weekly buckets, UTC midnight boundaries"},
+    {"endpoint": "GET /repos/{o}/{r}/stats/punch_card", "category": "statistics", "observedStatus": 200, "note": "168 cells, uses each commit's own timezone"},
+    {"endpoint": "GET /repos/{o}/{r}/traffic/views", "category": "traffic", "observedStatus": 200, "observedValue": "count 6, uniques 1, 14 daily buckets", "note": "14-day retention, needs write access"},
+    {"endpoint": "GET /repos/{o}/{r}/traffic/clones", "category": "traffic", "observedStatus": 200, "observedValue": "count 106, uniques 47"},
+    {"endpoint": "GET /repos/{o}/{r}/traffic/popular/paths", "category": "traffic", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/traffic/popular/referrers", "category": "traffic", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/actions/workflows", "category": "actions", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/actions/runs", "category": "actions", "observedStatus": 200, "note": "filterable by status, event, branch, actor, created"},
+    {"endpoint": "GET /repos/{o}/{r}/actions/runs/{id}/timing", "category": "actions", "observedStatus": 200, "observedValue": "run_duration_ms 11000, billable UBUNTU total_ms 0"},
+    {"endpoint": "GET /repos/{o}/{r}/actions/runs/{id}/jobs", "category": "actions", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/actions/cache/usage", "category": "actions", "observedStatus": 200, "observedValue": "275878831 bytes across 2 caches"},
+    {"endpoint": "GET /repos/{o}/{r}/commits/{ref}/check-runs", "category": "actions", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/deployments", "category": "delivery", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/environments", "category": "delivery", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/releases", "category": "delivery", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/issues/events", "category": "delivery", "observedStatus": 200},
+    {"endpoint": "GET /repos/{o}/{r}/code-scanning/alerts", "category": "security", "observedStatus": 404, "observedStatusOther": 403, "note": "404 'no analysis found' on own repo; 403 without security_events"},
+    {"endpoint": "GET /repos/{o}/{r}/secret-scanning/alerts", "category": "security", "observedStatus": 200, "observedStatusOther": 404, "note": "200 with [] on own repo, a real zero; 404 elsewhere"},
+    {"endpoint": "GET /repos/{o}/{r}/dependabot/alerts", "category": "security", "observedStatus": 403, "note": "own repo returns an explicit 'Dependabot alerts are disabled' message"},
+    {"endpoint": "GET /repos/{o}/{r}/vulnerability-alerts", "category": "security", "observedStatus": 404, "note": "204 would mean enabled"},
+    {"endpoint": "GET /repos/{o}/{r}/dependency-graph/sbom", "category": "security", "observedStatus": 404, "observedStatusOther": 200, "note": "404 on all four owned repos, 200 on cli/cli"},
+    {"endpoint": "GET /repos/{o}/{r}/security-advisories", "category": "security", "observedStatus": 200},
+    {"endpoint": "GET /advisories", "category": "security", "observedStatus": 200, "note": "global database, public, no special scope"},
+    {"endpoint": "GET /repos/{o}/{r}/attestations/{digest}", "category": "security", "observedStatus": 200, "observedValue": "{\"attestations\": []}"},
+    {"endpoint": "GET /repos/{o}/{r}/rulesets", "category": "config", "observedStatus": 200, "observedValue": "[]"},
+    {"endpoint": "GET /repos/{o}/{r}/branches/{b}/protection", "category": "config", "observedStatus": 404, "observedValue": "Branch not protected"},
+    {"endpoint": "GET /orgs/{org}/settings/billing/usage", "category": "org", "observedStatus": 200, "observedValue": "11 usage items"},
+    {"endpoint": "GET /orgs/{org}/settings/billing/actions", "category": "org", "observedStatus": 410, "note": "retired"},
+    {"endpoint": "GET /orgs/{org}/audit-log", "category": "org", "observedStatus": 404, "note": "needs Enterprise Cloud"},
+    {"endpoint": "GET /orgs/{org}/insights/api/summary-stats", "category": "org", "observedStatus": 404, "note": "needs Enterprise Cloud"},
+    {"endpoint": "GET /orgs/{org}/copilot/metrics", "category": "org", "observedStatus": 404, "note": "needs Copilot Business or Enterprise"},
+    {"endpoint": "GET /search/commits", "category": "search", "observedStatus": 200, "observedValue": "total_count 1767 for repo:cli/cli fix", "note": "30/minute, 1000-result cap"},
+    {"endpoint": "GET /search/code", "category": "search", "observedStatus": 200, "observedValue": "total_count 90 for repo:cli/cli extension", "note": "10/minute, 1000-result cap"}
+  ],
+  "commitCountParity": {
+    "subject": "gh-small",
+    "localRevListHead": 25,
+    "localOriginMain": 25,
+    "apiCommitsPaginated": 25,
+    "statsContributorsTotal": 23,
+    "mergeCommits": 2,
+    "explanation": "stats/contributors excludes merge commits: 25 - 2 = 23",
+    "state": "observed, explanation calculated"
+  },
+  "sbom": {
+    "subject": "gh-large",
+    "spdxVersion": "SPDX-2.3",
+    "dataLicense": "CC0-1.0",
+    "packages": 221,
+    "relationships": 1189,
+    "packagesWithVersion": 221,
+    "packagesWithConcludedLicense": 181,
+    "licenseCoveragePct": 81.9,
+    "creators": ["protobom", "GitHub.com-Dependency-Graph", "dependabot"],
+    "note": "creationInfo.created equals request time, so it is generated on demand",
+    "state": "observed, coverage calculated"
+  },
+  "pullRequestMetrics": {
+    "subject": "gh-large",
+    "sample": {"n": 100, "selection": "most recently updated merged pull requests", "createdWindow": "2026-07-06 to 2026-08-10 for 93 of 100", "outOfWindow": 7},
+    "percentileMethod": "linear interpolation between adjacent order statistics",
+    "rows": [
+      {"metric": "open to merge", "unit": "hours", "n": 100, "p50": 20.09, "p75": 101.58, "p90": 191.15, "max": 1247.38},
+      {"metric": "open to first review, bounded by mergedAt", "unit": "hours", "n": 98, "p50": 2.07, "p75": null, "p90": 132.31, "max": 262.51},
+      {"metric": "changed lines", "unit": "lines", "n": 100, "p50": 18, "p75": 154.75, "p90": 501.30, "max": 13075},
+      {"metric": "changed files", "unit": "files", "n": 100, "p50": 2, "p75": 4, "p90": 7.10, "max": 86},
+      {"metric": "review submissions", "unit": "count", "n": 100, "p50": 1.5, "p75": 3, "p90": 5, "max": 65}
+    ],
+    "pullRequestsWithZeroReviews": 1,
+    "reviewFilterEffect": {
+      "unfiltered": {"n": 99, "p50": 2.75, "p90": 143.73, "max": 56035.49},
+      "boundedByMergedAt": {"n": 98, "p50": 2.07, "p90": 132.31, "max": 262.51},
+      "pullRequestsLosingTheirFirstReview": 1,
+      "cause": "a pull request opened and merged in 2020 received a review comment in 2026"
+    },
+    "state": "observed, percentiles calculated"
+  },
+  "workflowRunMetrics": {
+    "subject": "gh-large",
+    "unfiltered": {
+      "totalRunsInRepo": 31382, "sampled": 100, "windowHours": 24,
+      "conclusions": {"success": 88, "action_required": 9, "skipped": 3, "failure": 0},
+      "events": {"schedule": 54, "pull_request": 15, "issue_comment": 7, "pull_request_target": 7, "dynamic": 7, "issues": 6, "push": 4},
+      "wallClockSeconds": {"p50": 18, "p90": 245, "max": 573},
+      "failureRatePct": 0.0
+    },
+    "eventPullRequestOnly": {
+      "matchingRuns": 5085, "sampled": 100, "windowDays": 4,
+      "conclusions": {"success": 87, "action_required": 12, "failure": 1},
+      "wallClockSeconds": {"p50": 170, "p90": 584, "max": 788},
+      "failureRatePct": 1.1, "failureRateDenominator": 88
+    },
+    "note": "the two samples cover different windows because the sample size is fixed at 100 in both; the comparison is of shape, not a like-for-like rate",
+    "state": "observed, percentiles and rates calculated"
+  },
+  "toolAvailabilityOnResearchMachine": {
+    "present": ["git 2.49.0", "gh 2.89.0", "jq", "node 24.16.0", "python3", "ruby", "semgrep"],
+    "absent": ["scc", "tokei", "cloc", "lizard", "gitleaks", "trivy", "osv-scanner", "hyperfine", "go", "cargo"],
+    "note": "nothing was installed for this report; every measurement uses only the present set",
+    "state": "observed"
+  },
+  "externalTools": [
+    {"tool": "scc", "language": "Go", "measures": ["lines", "code", "comments", "blanks", "complexity estimate", "COCOMO", "ULOC"], "formats": ["tabular", "JSON", "CSV", "HTML", "SQL", "OpenMetrics"], "state": "source-reported", "source": "https://github.com/boyter/scc"},
+    {"tool": "tokei", "language": "Rust", "measures": ["lines", "code", "comments", "blanks"], "state": "source-reported"},
+    {"tool": "cloc", "language": "Perl", "measures": ["lines", "code", "comments", "blanks", "language-aware diff between trees"], "state": "source-reported"},
+    {"tool": "lizard", "language": "Python", "measures": ["cyclomatic complexity", "NLOC", "token count", "parameter count"], "languages": "29+", "defaults": {"ccnWarning": 15, "maxFunctionLines": 1000}, "state": "source-reported", "source": "https://github.com/terryyin/lizard"},
+    {"tool": "code-maat", "language": "Clojure", "measures": ["revisions", "temporal coupling", "sum of coupling", "code age", "entity ownership", "main developer"], "state": "source-reported", "source": "https://github.com/adamtornhill/code-maat"},
+    {"tool": "hercules", "language": "Go", "measures": ["burndown", "couples", "devs", "shotness"], "formats": ["YAML", "Protocol Buffers", "JSON"], "limitation": "Linux kernel couples analysis produced 1.5 GB and needed over 180 GB RAM to parse; depends on the unmaintained Babelfish", "state": "source-reported", "source": "https://github.com/src-d/hercules"},
+    {"tool": "git-of-theseus", "language": "Python", "measures": ["code survival with Kaplan-Meier", "cohorts by year", "survival by author and extension"], "state": "source-reported", "source": "https://github.com/erikbern/git-of-theseus"},
+    {"tool": "jscpd", "language": "Node", "measures": ["token-level near-duplicate blocks"], "languages": "150+", "state": "source-reported"},
+    {"tool": "gitleaks", "measures": ["secrets in the working tree and in full history"], "state": "source-reported"},
+    {"tool": "OpenSSF Scorecard", "measures": ["19 to 23 repository posture checks, 0 to 10 each"], "weighting": {"critical": 10, "high": 7.5, "medium": 5, "low": 2.5}, "state": "source-reported", "source": "https://github.com/ossf/scorecard"}
+  ],
+  "doraMetrics": {
+    "state": "source-reported",
+    "source": "https://dora.dev/guides/dora-metrics-four-keys/",
+    "count": 5,
+    "metrics": [
+      {"name": "deployment frequency", "type": "throughput", "derivableFromGitHubAlone": true},
+      {"name": "change lead time", "type": "throughput", "derivableFromGitHubAlone": true, "note": "needs the commit time joined to a deployment record"},
+      {"name": "change fail rate", "type": "stability", "derivableFromGitHubAlone": false},
+      {"name": "failed deployment recovery time", "type": "stability", "derivableFromGitHubAlone": false, "note": "replaced mean time to restore"},
+      {"name": "deployment rework rate", "type": "stability", "derivableFromGitHubAlone": false}
+    ]
+  },
+  "collectorBudget": {
+    "unit": "per repository per day",
+    "restRequests": {"low": 12, "high": 15, "state": "calculated"},
+    "graphqlPoints": {"value": 3, "state": "calculated"},
+    "repositoriesPerHourAtRestLimit": {"value": 333, "state": "calculated", "formula": "5000 requests/hour divided by 15 requests"},
+    "note": "the rate limit is not the binding constraint at this scale"
+  },
+  "limitations": [
+    "All observations come from a single day, 2026-08-11. Rate limits, endpoint behaviour and cached statistics change.",
+    "The primary local subject has 287 commits, enough for mechanics and too small for stable evolutionary statistics.",
+    "All caps and limits were confirmed against one large repository, cli/cli, only.",
+    "The pull request percentiles describe one 100-item sample and are an illustration of method, not a benchmark.",
+    "Ten external tools are described from their documentation and were not run; none were installed.",
+    "Enterprise endpoints returned 404 with the available token, so their behaviour is source-reported only.",
+    "The stargazers 200-versus-404 difference between owned and third-party repositories was observed but its cause was not established.",
+    "All commands were run on macOS; other platforms may differ beyond the documented awk strftime issue.",
+    "No statistical significance testing was performed on any distribution.",
+    "Author identities and email addresses from the private subject are redacted by design."
+  ],
+  "sources": [
+    {"id": "gh-stats", "title": "GitHub REST API: repository statistics", "url": "https://docs.github.com/en/rest/metrics/statistics", "retrieved": "2026-08-11"},
+    {"id": "gh-rate", "title": "GitHub REST API: rate limits", "url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api", "retrieved": "2026-08-11"},
+    {"id": "gh-graphql", "title": "GitHub GraphQL: resource limitations", "url": "https://docs.github.com/en/graphql/overview/resource-limitations", "retrieved": "2026-08-11"},
+    {"id": "gh-traffic", "title": "GitHub REST API: traffic", "url": "https://docs.github.com/en/rest/metrics/traffic", "retrieved": "2026-08-11"},
+    {"id": "gh-copilot", "title": "GitHub REST API: Copilot metrics", "url": "https://docs.github.com/en/rest/copilot/copilot-metrics", "retrieved": "2026-08-11"},
+    {"id": "scorecard", "title": "OpenSSF Scorecard", "url": "https://github.com/ossf/scorecard", "retrieved": "2026-08-11"},
+    {"id": "scc", "title": "scc", "url": "https://github.com/boyter/scc", "retrieved": "2026-08-11"},
+    {"id": "lizard", "title": "lizard", "url": "https://github.com/terryyin/lizard", "retrieved": "2026-08-11"},
+    {"id": "hercules", "title": "hercules", "url": "https://github.com/src-d/hercules", "retrieved": "2026-08-11"},
+    {"id": "theseus", "title": "git-of-theseus", "url": "https://github.com/erikbern/git-of-theseus", "retrieved": "2026-08-11"},
+    {"id": "codemaat", "title": "code-maat", "url": "https://github.com/adamtornhill/code-maat", "retrieved": "2026-08-11"},
+    {"id": "dora", "title": "DORA software delivery metrics", "url": "https://dora.dev/guides/dora-metrics-four-keys/", "retrieved": "2026-08-11"}
+  ]
+}

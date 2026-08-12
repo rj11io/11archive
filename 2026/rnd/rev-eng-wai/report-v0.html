@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reverse engineering WhichAI.dev</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f7f7f5;
+    --surface-1: #fcfcfb;
+    --surface-2: #f1f1ee;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #6f6e69;
+    --rule: #dedcd6;
+    --rule-strong: #c6c4bc;
+    --series-1: #2a78d6;
+    --series-track: #e2ecf9;
+    --flag-high: #b3261e;
+    --flag-med: #8a5a00;
+    --flag-low: #4a5a52;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-0: #141413;
+      --surface-1: #1a1a19;
+      --surface-2: #232322;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #9a9990;
+      --rule: #34342f;
+      --rule-strong: #4a4a43;
+      --series-1: #3987e5;
+      --series-track: #23303e;
+      --flag-high: #f28f88;
+      --flag-med: #e0b063;
+      --flag-low: #a8bdb2;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #141413;
+    --surface-1: #1a1a19;
+    --surface-2: #232322;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #9a9990;
+    --rule: #34342f;
+    --rule-strong: #4a4a43;
+    --series-1: #3987e5;
+    --series-track: #23303e;
+    --flag-high: #f28f88;
+    --flag-med: #e0b063;
+    --flag-low: #a8bdb2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--surface-0);
+    color: var(--text-secondary);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 60rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  @media (min-width: 48rem) { .wrap { padding: 4.5rem 2rem 6rem; } }
+
+  h1, h2, h3, h4 { color: var(--text-primary); font-weight: 600; letter-spacing: -0.015em; line-height: 1.18; }
+  h1 { font-size: clamp(1.75rem, 4.5vw, 2.5rem); margin: 0 0 0.6rem; }
+  h2 { font-size: clamp(1.25rem, 2.6vw, 1.6rem); margin: 3.5rem 0 0.5rem; padding-top: 1.75rem; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.06rem; margin: 2.1rem 0 0.4rem; }
+  h4 { font-size: 0.94rem; margin: 1.5rem 0 0.3rem; }
+  p { margin: 0.75rem 0; }
+  a { color: var(--series-1); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--series-1) 35%, transparent); }
+  a:hover { border-bottom-color: var(--series-1); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86em; background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 4px; }
+  pre { background: var(--surface-2); border: 1px solid var(--rule); border-radius: 8px; padding: 0.9rem 1rem; overflow-x: auto; font-size: 0.84rem; line-height: 1.55; }
+  pre code { background: none; padding: 0; }
+  ul, ol { padding-left: 1.3rem; margin: 0.75rem 0; }
+  li { margin: 0.3rem 0; }
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  .kicker { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.9rem; font-weight: 600; }
+  .lede { font-size: 1.08rem; color: var(--text-secondary); max-width: 42rem; }
+  .meta { margin-top: 1.6rem; font-size: 0.84rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 0.75rem; margin: 2.25rem 0 0; }
+  .tile { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 10px; padding: 0.9rem 1rem; }
+  .tile .v { display: block; font-size: 1.65rem; font-weight: 600; color: var(--text-primary); line-height: 1.1; }
+  .tile .l { display: block; font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+  .callout { background: var(--surface-1); border: 1px solid var(--rule-strong); border-radius: 10px; padding: 1.1rem 1.25rem; margin: 1.75rem 0; }
+  .callout p:first-child { margin-top: 0; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .scroll { overflow-x: auto; margin: 1.25rem 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface-1); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { color: var(--text-primary); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.01em; background: var(--surface-2); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.c, th.c { text-align: center; }
+  td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; white-space: nowrap; }
+  /* Text wears ink tokens, never the series colour. */
+  .yes { color: var(--text-primary); font-weight: 600; }
+  .no { color: var(--text-muted); }
+  /* Marks, not text: the series colour carries identity here. */
+  td.c.on { color: var(--series-1); }
+  td.c.off { color: var(--rule-strong); }
+
+  .bars { margin: 1.4rem 0 0.5rem; }
+  .bar-row { display: grid; grid-template-columns: minmax(6rem, 10rem) 1fr auto; align-items: center; gap: 0.75rem; padding: 0.28rem 0; }
+  .bar-row .k { font-size: 0.85rem; color: var(--text-secondary); }
+  .bar-track { display: block; background: var(--series-track); border-radius: 4px; height: 12px; }
+  .bar-fill { display: block; background: var(--series-1); height: 12px; border-radius: 0 4px 4px 0; }
+  .bar-row .v { font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--text-primary); font-weight: 600; min-width: 2ch; text-align: right; }
+  .caption { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+  .flag { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+  .flag.high { color: var(--flag-high); }
+  .flag.med { color: var(--flag-med); }
+  .flag.low { color: var(--flag-low); }
+
+  .toc { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem 1.25rem; margin: 2.25rem 0 0; }
+  .toc ol { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.9rem; }
+  .toc li { margin: 0.18rem 0; }
+
+  footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: 0.84rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="kicker">Reverse engineering report &middot; 11 August 2026</p>
+<h1>WhichAI.dev / ui&#8209;design&#8209;bench</h1>
+<p class="lede">
+  A teardown of a design benchmark that holds 325 AI-generated landing pages as running code and
+  refuses to score any of them. The architecture is worth copying. The comparison it invites is
+  confounded in one specific, fixable way.
+</p>
+
+<div class="meta">
+  <span>Repository: <a href="https://github.com/SunkenInTime/ui-design-bench">SunkenInTime/ui-design-bench</a></span>
+  <span>Site: <a href="https://www.whichai.dev/">whichai.dev</a></span>
+  <span>Commit examined: <code>3bdd0cb</code></span>
+</div>
+
+<div class="tiles">
+  <div class="tile"><span class="v">25</span><span class="l">models</span></div>
+  <div class="tile"><span class="v">65</span><span class="l">runs</span></div>
+  <div class="tile"><span class="v">325</span><span class="l">generated pages</span></div>
+  <div class="tile"><span class="v">1</span><span class="l">prompt</span></div>
+  <div class="tile"><span class="v">0</span><span class="l">numeric scores</span></div>
+  <div class="tile"><span class="v">4</span><span class="l">skill versions in one group</span></div>
+</div>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#what">What the project is</a></li>
+    <li><a href="#measures">What it measures, and what it never records</a></li>
+    <li><a href="#drift">The headline finding: skill version drift</a></li>
+    <li><a href="#arch">Architecture: 325 hostile stylesheets in one document</a></li>
+    <li><a href="#method">Methodology findings</a></li>
+    <li><a href="#eng">Engineering findings</a></li>
+    <li><a href="#facts">Project facts</a></li>
+    <li><a href="#read">How to read this benchmark</a></li>
+  </ol>
+</div>
+
+<h2 id="what">What the project is</h2>
+
+<p>
+  WhichAI.dev is a picture gallery, not a scoreboard. One person, Dara Adedeji, gave the same short
+  brief to 25 AI models: design the landing page for a note-taking app that works like a second
+  brain, five separate attempts, each on its own page. He then rebuilt every generated app inside a
+  single website so a visitor can look at them side by side.
+</p>
+
+<p>
+  Every page in the gallery is <strong>live code, not a screenshot</strong>. Click a card and you
+  are running that model's actual Next.js output inside the gallery shell.
+</p>
+
+<p>
+  The prompt, stored as a plain string at <code>src/app/page.tsx:21</code> and shown to visitors
+  with a copy button, reads like dictation rather than a specification:
+</p>
+
+<div class="callout">
+  <p>
+    &ldquo;I want you to design the landing page for a note-taking application as essentially a
+    second brain. You should design five iterations and each of them should be accessible within the
+    slash one, slash two, slash three like pages directory. And then you should add a little button
+    that lets me switch between them easily.&rdquo;
+  </p>
+</div>
+
+<p>
+  It sets no constraints at all: no brand, no colour, no content, no length. Every model invents the
+  product name and the copy. That looseness is the point. The project measures
+  <strong>what a model reaches for when nobody tells it anything</strong>, which is close to how
+  most people actually prompt.
+</p>
+
+<h2 id="measures">What it measures, and what it never records</h2>
+
+<h3>Five treatments</h3>
+
+<p>
+  A <strong>skill</strong> here means a text file of design instructions installed into a coding
+  agent, which the agent reads before writing code. A <strong>treatment</strong> is the condition a
+  run was carried out under. The project calls them groups.
+</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Group</th><th>Site label</th><th class="n">Runs</th><th>Skill installed</th><th>Identified?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>with-design-skill</code></td><td>With Design Skill</td><td class="n">25</td><td><code>frontend-design</code> (anthropics/skills)</td><td class="yes">yes, linked</td></tr>
+    <tr><td><code>without-design-skill</code></td><td>Without Design Skill</td><td class="n">25</td><td>nothing</td><td class="yes">yes</td></tr>
+    <tr><td><code>with-taste-skill</code></td><td>With Taste Skill</td><td class="n">10</td><td><code>design-taste-frontend</code> (Leonxlnx/taste-skill)</td><td class="yes">yes, from lockfiles</td></tr>
+    <tr><td><code>with-ui-sh-skill</code></td><td>With UI SH Skill</td><td class="n">4</td><td>not stated anywhere</td><td class="no">no</td></tr>
+    <tr><td><code>miscellaneous</code></td><td>With Uncodexify skill</td><td class="n">1</td><td><code>uncodixfy</code> (cyxzdev)</td><td class="yes">yes, linked</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="bars" role="img" aria-label="Runs per treatment: design skill 25, no skill 25, taste skill 10, UI SH 4, Uncodexify 1.">
+  <div class="bar-row"><span class="k">Design skill</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="v">25</span></div>
+  <div class="bar-row"><span class="k">No skill</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="v">25</span></div>
+  <div class="bar-row"><span class="k">Taste skill</span><span class="bar-track"><span class="bar-fill" style="width:40%"></span></span><span class="v">10</span></div>
+  <div class="bar-row"><span class="k">UI SH skill</span><span class="bar-track"><span class="bar-fill" style="width:16%"></span></span><span class="v">4</span></div>
+  <div class="bar-row"><span class="k">Uncodexify skill</span><span class="bar-track"><span class="bar-fill" style="width:4%"></span></span><span class="v">1</span></div>
+  <p class="caption">Runs per treatment. Every model has both a design-skill run and a no-skill run; the other three axes are sparse.</p>
+</div>
+
+<h3>The coverage grid</h3>
+
+<p>
+  Complete on the main axis, sparse everywhere else. The with-skill versus without-skill pairing,
+  which is the comparison the whole site is built around, holds for all 25 models.
+</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Model</th><th>Lab</th><th class="c">Design</th><th class="c">Taste</th><th class="c">UI SH</th><th class="c">No skill</th><th class="c">Misc</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Fable 5</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Opus 5</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Opus 4.8</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Opus 4.7</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Opus 4.6</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Sonnet 5</td><td>Anthropic</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT-5.6 Sol</td><td>GPT</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT-5.6 Luna</td><td>GPT</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT-5.6 Terra</td><td>GPT</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT 5.5 high</td><td>GPT</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT 5.5 low</td><td>GPT</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GPT-5.4</td><td>GPT</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td></tr>
+    <tr><td>Gemini 3.5 Flash</td><td>Google</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Gemini 3.1 Pro</td><td>Google</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Grok 4.5</td><td>X AI</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Muse Spark 1.2</td><td>Meta</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GLM 5.2</td><td>Z.ai</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GLM 5.1</td><td>Z.ai</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>GLM 5 Turbo</td><td>Z.ai</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Kimi K3</td><td>Moonshot</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Kimi K 2.6</td><td>Moonshot</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Kimi K 2.5</td><td>Moonshot</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Composer 2.5</td><td>Cursor</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Composer 2.0</td><td>Cursor</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+    <tr><td>Composer 1.5</td><td>Cursor</td><td class="c on">&#9679;</td><td class="c off">&middot;</td><td class="c off">&middot;</td><td class="c on">&#9679;</td><td class="c off">&middot;</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>What the data model cannot hold</h3>
+
+<p>
+  A run is described by eight fields, and none of them is a date. The gaps are not oversights in
+  the writing, they are missing fields:
+</p>
+
+<ul>
+  <li><strong>When the run happened.</strong> Nothing is date-stamped. The gallery spans March to August 2026 and two cards in one row can be five months apart.</li>
+  <li><strong>Which agent ran it.</strong> Cursor, Claude Code, Codex and a raw API call all look identical here. Folder names hint (<code>opus-cc-test</code>) and hints are all you get.</li>
+  <li><strong>The exact model build.</strong> &ldquo;Opus 5&rdquo; is a display label, not an API model string.</li>
+  <li><strong>Reasoning effort, retries, and cost.</strong> One backup folder in git history shows at least one run was redone. Nothing marks it.</li>
+  <li><strong>Any score.</strong> No rubric, no rater, no numeric field. That is a deliberate choice and a good one.</li>
+</ul>
+
+<p>
+  One more precision worth stating: the five <em>iterations</em> in each run are five
+  <strong>different designs the model was asked to produce in one sitting</strong>, not five repeats
+  of the same design. They measure range within one attempt. Nothing in the project measures
+  run-to-run consistency.
+</p>
+
+<h2 id="drift">The headline finding: skill version drift</h2>
+
+<div class="callout">
+  <p>
+    <strong>The design-skill group is not one treatment.</strong> Eighteen of the 65 runs carry a
+    lockfile recording the exact skill file installed for that run. Those lockfiles point at
+    <strong>four different versions</strong> of Anthropic's <code>frontend-design</code> skill and
+    <strong>two different versions</strong> of the taste skill.
+  </p>
+</div>
+
+<p>
+  The evidence is mechanical, not interpretive: <code>skills-lock.json</code> inside each run's
+  source records a content hash, which is a fingerprint of the skill file's exact bytes. Different
+  hashes mean a different file.
+</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Run</th><th>Skill</th><th>Content hash (first 12)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>with-design-skill / composer-2.5</td><td><code>frontend-design</code></td><td class="mono">063a0e644812</td></tr>
+    <tr><td>with-design-skill / gemini-3.5-flash</td><td><code>frontend-design</code></td><td class="mono">516bd2154eb8</td></tr>
+    <tr><td>with-design-skill / gpt-5.5-high</td><td><code>frontend-design</code></td><td class="mono">516bd2154eb8</td></tr>
+    <tr><td>with-design-skill / gpt-5.5-low</td><td><code>frontend-design</code></td><td class="mono">516bd2154eb8</td></tr>
+    <tr><td>with-design-skill / fable</td><td><code>frontend-design</code></td><td class="mono">4eabc6618376</td></tr>
+    <tr><td>with-design-skill / grok-4.5</td><td><code>frontend-design</code></td><td class="mono">4eabc6618376</td></tr>
+    <tr><td>with-design-skill / kimi-k3</td><td><code>frontend-design</code></td><td class="mono">4eabc6618376</td></tr>
+    <tr><td>with-design-skill / glm-5.2</td><td><code>frontend-design</code></td><td class="mono">93f53fd1c035</td></tr>
+    <tr><td>with-design-skill / muse-spark-1.2</td><td><code>frontend-design</code></td><td class="mono">93f53fd1c035</td></tr>
+    <tr><td>with-design-skill / opus-5</td><td><code>frontend-design</code></td><td class="mono">93f53fd1c035</td></tr>
+    <tr><td>with-design-skill / sonnet-5</td><td><code>frontend-design</code></td><td class="mono">93f53fd1c035</td></tr>
+    <tr><td>with-taste-skill / fable</td><td><code>design-taste-frontend</code></td><td class="mono">6d838b246d0e</td></tr>
+    <tr><td>with-taste-skill / grok-4.5</td><td><code>design-taste-frontend</code></td><td class="mono">6d838b246d0e</td></tr>
+    <tr><td>with-taste-skill / kimi-k3</td><td><code>design-taste-frontend</code></td><td class="mono">6d838b246d0e</td></tr>
+    <tr><td>with-taste-skill / glm-5.2</td><td><code>design-taste-frontend</code></td><td class="mono">899b84384f74</td></tr>
+    <tr><td>with-taste-skill / muse-spark-1.2</td><td><code>design-taste-frontend</code></td><td class="mono">899b84384f74</td></tr>
+    <tr><td>with-taste-skill / opus-5</td><td><code>design-taste-frontend</code></td><td class="mono">899b84384f74</td></tr>
+    <tr><td>with-taste-skill / sonnet-5</td><td><code>design-taste-frontend</code></td><td class="mono">899b84384f74</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The hashes group by time, which fits a maintainer who reinstalled the current skill whenever a new
+  model shipped. The skill itself changed underneath: its published page describes a substantial
+  2026 rewrite with a stricter rule set, under the same install name.
+</p>
+
+<h4>What this costs, precisely</h4>
+
+<p>
+  Comparing two cards <em>across</em> models inside the &ldquo;With Design Skill&rdquo; section
+  compares two instruction files as well as two models. But the comparison the site is actually
+  built around, <strong>one model with the skill against the same model without it</strong>, is not
+  affected, because both halves of that pair were run together. That pairing is the site's strongest
+  claim and it survives intact.
+</p>
+
+<p>Two related findings:</p>
+
+<ul>
+  <li><strong>One taste run had 13 skills installed, not one.</strong> The GLM 5.2 taste run's
+  lockfile lists <code>brandkit</code>, <code>gpt-taste</code>, <code>minimalist-ui</code>,
+  <code>industrial-brutalist-ui</code>, <code>image-to-code</code> and eight more. Every other taste
+  run lists exactly one. That card's output cannot be attributed to the taste skill alone.</li>
+  <li><strong>47 of 65 runs record nothing.</strong> Their treatment is asserted by folder name.
+  There is no reason to doubt the labels, but they are testimony rather than evidence.</li>
+</ul>
+
+<h2 id="arch">Architecture: 325 hostile stylesheets in one document</h2>
+
+<p>
+  The engineering problem is worth stating plainly. Each of the 65 runs arrived as a complete
+  Next.js project with its own global stylesheet that sets the page background, its own
+  <code>@keyframes</code> animations, and its own floating switcher pinned to the top-right corner.
+  All of them now render inside one site with one shared navigation bar.
+</p>
+
+<p>
+  Think of it as mounting 325 paintings in one hall: every painting keeps its own frame and lighting,
+  and none of them may repaint the walls.
+</p>
+
+<h3>The chain from data to pixels</h3>
+
+<pre><code>gallery-manifest.ts  --&gt;  gallery-registry.ts  --&gt;  src/variants/{group}/{model}/index.tsx
+   (the list)               (the lookup)                    (the adapter)
+                                                                 |
+                                                                 v
+                                       the model's own page components, imported directly
+                                                                 |
+                                                                 v
+                                    src/generated/scoped-variant-css/... (rewritten CSS)</code></pre>
+
+<p>
+  <strong>One manifest is the single source of truth.</strong> A hand-maintained array of 65
+  entries. Every route, thumbnail, dropdown option, test case and guessing-game round derives from
+  it. Nothing else holds a list of models.
+</p>
+
+<h3>The idea worth copying</h3>
+
+<p>
+  A build script rewrites every variant stylesheet so its rules can only reach its own container.
+  A rule written as <code>.hero { }</code> in the Opus 5 design-skill run becomes:
+</p>
+
+<pre><code>:where(.gallery-generation[data-gallery-group="with-design-skill"][data-gallery-model="opus-5"]) .hero { }</code></pre>
+
+<p>
+  The <code>:where()</code> wrapper is the clever part. It contributes <strong>zero
+  specificity</strong>, so the model's own rule ordering survives untouched. Without it, every rule
+  would gain the weight of three extra selectors and the original cascade would scramble.
+</p>
+
+<p>Three more transformations in the same pass:</p>
+
+<ul>
+  <li><strong>Page-level selectors become the scope itself.</strong> <code>html</code>,
+  <code>body</code> and <code>:root</code> are replaced rather than prefixed, so a model's
+  <code>body { background: #0a0a0a }</code> styles only its own container.</li>
+  <li><strong>Animations get namespaced.</strong> <code>@keyframes float</code> becomes
+  <code>@keyframes gallery-with-design-skill-opus-5-...-float</code>, with every
+  <code>animation</code> declaration rewritten to match. Without this, two models that both named an
+  animation <code>float</code> would silently overwrite each other.</li>
+  <li><strong>The global Tailwind entry is stripped</strong> from each variant copy, because the
+  shell sets Tailwind up once.</li>
+</ul>
+
+<p>
+  Stage two gives each run its own Tailwind bundle: a literal route folder per run whose four-line
+  stylesheet switches off automatic file scanning and points at exactly one variant folder. So a
+  visitor to one generation downloads only that generation's utility classes. Three of the 65 runs
+  are missing theirs, which is finding E4.
+</p>
+
+<p>
+  The whole site is prerendered: 325 gallery pages plus 325 switcher-free preview pages, all static
+  files. The compare page holds its full state in six URL parameters and renders two generations as
+  iframes, which is the only way two apps with conflicting global styles can share a screen.
+</p>
+
+<h2 id="method">Methodology findings</h2>
+
+<p>
+  The project is honest about being subjective. Its README says so directly. This table sorts which
+  claims the evidence supports from which it does not.
+</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>ID</th><th>Finding</th><th>Cost</th><th>Fix effort</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="mono">A1</td><td>Four skill versions inside one group</td><td><span class="flag high">high</span></td><td>medium</td></tr>
+    <tr><td class="mono">A2</td><td>One taste run had 13 skills installed</td><td><span class="flag med">medium</span></td><td>low</td></tr>
+    <tr><td class="mono">A3</td><td>47 of 65 runs have no treatment evidence</td><td><span class="flag med">medium</span></td><td>medium</td></tr>
+    <tr><td class="mono">A4</td><td>The UI SH treatment is unidentified</td><td><span class="flag low">low</span></td><td>low</td></tr>
+    <tr><td class="mono">A5</td><td>No date, agent, model build, retries or cost recorded</td><td><span class="flag high">high</span></td><td>medium</td></tr>
+    <tr><td class="mono">A6</td><td>The switcher deliverable is deleted at ingestion</td><td><span class="flag med">medium</span></td><td>low</td></tr>
+    <tr><td class="mono">A7</td><td>Rankings stale, partial, and hidden by default</td><td><span class="flag high">high</span></td><td>low</td></tr>
+    <tr><td class="mono">A8</td><td>Two disagreeing model-recency tables</td><td><span class="flag low">low</span></td><td>low</td></tr>
+    <tr><td class="mono">A9</td><td>Thumbnails contain site chrome and a dev badge</td><td><span class="flag med">medium</span></td><td>low</td></tr>
+    <tr><td class="mono">A10</td><td>Chance baseline unmarked in the guessing game</td><td><span class="flag low">low</span></td><td>low</td></tr>
+    <tr><td class="mono">A11</td><td>One prompt, one product, one page type</td><td><span class="flag med">medium</span></td><td>high</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>A7 in detail, because it is the one a visitor meets first</h3>
+
+<p>
+  &ldquo;Rankings&rdquo; is a top-level navigation item and reads as current. It ranks 8 of 25
+  models, and <strong>the home page hides every one of them by default</strong>, either as
+  force-archived or as superseded by a newer model in the same family. The rank-8 note is still a
+  placeholder that says to update it after the run is reviewed.
+</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th class="n">Rank</th><th>Model</th><th>Hidden on the home page by default?</th></tr></thead>
+  <tbody>
+    <tr><td class="n">1</td><td>Claude Opus 4.7</td><td>yes, force-archived</td></tr>
+    <tr><td class="n">2</td><td>Claude Opus 4.6</td><td>yes, superseded by Opus 5</td></tr>
+    <tr><td class="n">3</td><td>Gemini 3.1 Pro</td><td>yes, superseded by Gemini 3.5 Flash</td></tr>
+    <tr><td class="n">4</td><td>Composer 2.0</td><td>yes, force-archived</td></tr>
+    <tr><td class="n">5</td><td>GPT-5.4</td><td>yes, superseded by the GPT-5.6 runs</td></tr>
+    <tr><td class="n">6</td><td>Kimi K 2.5</td><td>yes, superseded by Kimi K3</td></tr>
+    <tr><td class="n">7</td><td>Composer 1.5</td><td>yes, superseded by Composer 2.5</td></tr>
+    <tr><td class="n">8</td><td>Kimi K 2.6</td><td>yes, force-archived</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The writing on that page is the best in the project, specific and clearly done by someone who
+  looked closely: rank 1's note praises &ldquo;card icons that look like proper SVG marks instead of
+  the random emoji some Opus runs lean on&rdquo;; rank 4 names &ldquo;Composer sickness: it does the
+  bare minimum&rdquo;. The problem is not the writing, it is the date. Two honest options: retitle it
+  as an April 2026 snapshot, or rank today's models.
+</p>
+
+<h2 id="eng">Engineering findings</h2>
+
+<p>
+  Eleven defects found by reading the code and probing the live site. The project was never built or
+  run, so items marked below as inferred are code-reading conclusions.
+</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>ID</th><th>Finding</th><th>Severity</th><th>Fix</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="mono">E1</td>
+      <td><strong>643 KB stylesheet on every page.</strong> The shell's stylesheet asks Tailwind to scan the whole repository, so it holds utility classes from all 65 generated apps. Home page HTML is another 235 KB. <em>Cause inferred, size measured.</em></td>
+      <td><span class="flag high">high</span></td>
+      <td>Add <code>source(none)</code> plus explicit <code>@source</code> lines to <code>globals.css</code></td>
+    </tr>
+    <tr>
+      <td class="mono">E4</td>
+      <td><strong>Three runs missing their per-run CSS route.</strong> 56 literal routes for 65 runs. <code>kimi-k3</code>, <code>muse-spark-1.2</code> and <code>opus-5</code> fall through to the shared route and rely on the oversized global bundle. The bug and the safety net are the same missing line as E1.</td>
+      <td><span class="flag med">medium</span></td>
+      <td>Generate route folders from the manifest in <code>prebuild</code>; fix before E1</td>
+    </tr>
+    <tr>
+      <td class="mono">E3</td>
+      <td><strong>All 320 auto-captured thumbnails contain the site's own switcher and the Next.js dev badge.</strong> The capture script visits the switcher-bearing route with a <code>?preview=1</code> parameter nothing reads, and runs against <code>npm run dev</code>. Confirmed by opening two images.</td>
+      <td><span class="flag med">medium</span></td>
+      <td>Point it at <code>/preview/...</code>, run against <code>npm run start</code>, re-capture</td>
+    </tr>
+    <tr>
+      <td class="mono">E5</td>
+      <td><strong>No license.</strong> The repository redistributes 325 generated applications and eight companies' brand logos with no license file and no notice.</td>
+      <td><span class="flag high">high</span></td>
+      <td>Three statements: site code, corpus, trademarks</td>
+    </tr>
+    <tr>
+      <td class="mono">E2</td>
+      <td><strong>Dark mode never reaches native controls.</strong> <code>:root { color-scheme: light !important }</code> beats both the <code>.dark</code> rule and the inline value the theme script sets, so browser widgets stay light. <em>Standard cascade behaviour, not observed in a browser.</em></td>
+      <td><span class="flag med">medium</span></td>
+      <td>Delete one <code>!important</code></td>
+    </tr>
+    <tr>
+      <td class="mono">E8</td>
+      <td><strong>No robots.txt, no sitemap, 325 indexable duplicate preview pages.</strong> Both files return 404 on the live site, and no Open Graph tags exist, so shared links render bare.</td>
+      <td><span class="flag med">medium</span></td>
+      <td>Add <code>app/robots.ts</code> and <code>app/sitemap.ts</code> from the manifest</td>
+    </tr>
+    <tr>
+      <td class="mono">E7</td>
+      <td><strong>179 MB repository, mostly ingested scaffolding.</strong> 41 <code>package.json</code> and 33 <code>package-lock.json</code> files inside the corpus, plus three accidentally committed JPEG paste artifacts and a second copy of 24 runs in root folders.</td>
+      <td><span class="flag med">medium</span></td>
+      <td>Strip Node scaffolding at ingestion; move 93 MB of previews off git</td>
+    </tr>
+    <tr>
+      <td class="mono">E6</td>
+      <td><strong>The design document contradicts the code.</strong> <code>DESIGN.md</code> says &ldquo;Light mode only&rdquo; and forbids branching for dark. Dark mode shipped in May, and the design token file is stamped eleven days before it merged.</td>
+      <td><span class="flag low">low</span></td>
+      <td>Update three sections and regenerate the token file</td>
+    </tr>
+    <tr>
+      <td class="mono">E9</td>
+      <td><strong>An unfinished exploration page is live and theme-broken.</strong> <code>/experiments</code> returns 200, says of itself &ldquo;not implemented yet&rdquo;, and styles its mockups with hardcoded light colours instead of theme tokens.</td>
+      <td><span class="flag low">low</span></td>
+      <td>Gate it behind a flag, or convert it to a document</td>
+    </tr>
+    <tr>
+      <td class="mono">E10</td>
+      <td><strong>Duplicate libraries.</strong> <code>framer-motion</code> and <code>motion</code> are the same animation library under two names, both installed, alongside <code>gsap</code>. Two icon sets as well.</td>
+      <td><span class="flag low">low</span></td>
+      <td>Consolidate, or add a comment saying why not</td>
+    </tr>
+    <tr>
+      <td class="mono">E11</td>
+      <td><strong>Test route coverage is a hand-maintained list.</strong> 24 hardcoded routes, an archived-model list that has drifted from the source of truth (four entries against seven), and a rankings count assertion that locks in A7.</td>
+      <td><span class="flag low">low</span></td>
+      <td>Derive both lists from the manifest and the archive module</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Fix order: E4 then E1 together, because either alone breaks something and together they are the
+  biggest win for every visitor. Then E3, which is two lines and repairs the first thing anyone
+  sees. Then E5, because legal exposure does not improve with age.
+</p>
+
+<h2 id="facts">Project facts</h2>
+
+<div class="scroll">
+<table>
+  <tbody>
+    <tr><th>Repository</th><td>SunkenInTime/ui-design-bench, default branch <code>master</code></td></tr>
+    <tr><th>Author</th><td>Dara Adedeji. One human, two git identities, two bots. No second contributor.</td></tr>
+    <tr><th>Created</th><td>21 March 2026</td></tr>
+    <tr><th>Last push</th><td>9 August 2026</td></tr>
+    <tr><th>Commits</th><td>101</td></tr>
+    <tr><th>Stars / forks</th><td>77 / 8</td></tr>
+    <tr><th>Pull requests</th><td>18 total, 14 merged, 4 open. The only outside contribution, keyboard navigation, has been open since June.</td></tr>
+    <tr><th>License</th><td>none</td></tr>
+    <tr><th>On disk</th><td>179 MB (78 MB source, 93 MB images)</td></tr>
+    <tr><th>Stack</th><td>Next.js 16.2.0, React 19.2.4, Tailwind CSS 4, Playwright, on Vercel, fully prerendered</td></tr>
+    <tr><th>Package name</th><td><code>composer-bench-gallery</code>, a fossil from when the project compared only Cursor Composer versions</td></tr>
+    <tr><th>Funding</th><td>Buy Me a Coffee for model runs; Greptile provides code review; OpenAI's Codex for Open Source provides credits. All three disclosed on the site.</td></tr>
+    <tr><th>Analytics</th><td>none live; two bot pull requests propose it, both unmerged</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="bars" role="img" aria-label="Commits per month: March 25, April 27, May 14, June 11, July 14, August 10.">
+  <div class="bar-row"><span class="k">2026-03</span><span class="bar-track"><span class="bar-fill" style="width:93%"></span></span><span class="v">25</span></div>
+  <div class="bar-row"><span class="k">2026-04</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="v">27</span></div>
+  <div class="bar-row"><span class="k">2026-05</span><span class="bar-track"><span class="bar-fill" style="width:52%"></span></span><span class="v">14</span></div>
+  <div class="bar-row"><span class="k">2026-06</span><span class="bar-track"><span class="bar-fill" style="width:41%"></span></span><span class="v">11</span></div>
+  <div class="bar-row"><span class="k">2026-07</span><span class="bar-track"><span class="bar-fill" style="width:52%"></span></span><span class="v">14</span></div>
+  <div class="bar-row"><span class="k">2026-08</span><span class="bar-track"><span class="bar-fill" style="width:37%"></span></span><span class="v">10</span></div>
+  <p class="caption">Commits per month, 21 March to 9 August 2026. The drop after April is not a slowdown in models added, it is the ingestion skill doing the work in fewer commits.</p>
+</div>
+
+<p>
+  <strong>The branch names are an agent log.</strong> Twelve surviving remote branches carry the
+  prefix of the tool that opened them: <code>cursor/</code>, <code>codex/</code>,
+  <code>agent/</code>, <code>posthog/</code>, <code>vercel/</code>. Recent model additions land as
+  a single agent-authored pull request, opened and merged within minutes, which is the ingestion
+  skill paying off.
+</p>
+
+<h3>Where it sits among neighbours</h3>
+
+<p>
+  Design Arena, DesignArena and the academic UI-Bench all produce scores, through crowd votes or
+  automated rubrics. WhichAI.dev produces no score and hands you the artifacts instead. Its README
+  states the position directly: other leaderboards prove &ldquo;Model A is 2.3% better than Model
+  B&rdquo; and none of them answer &ldquo;if I ask this thing to build a landing page, will it look
+  good?&rdquo;
+</p>
+
+<p>
+  Its distinctive asset is the corpus. 325 preserved, running, side-by-side generated applications
+  from 25 models under labelled conditions appears to be unique. No leaderboard lets you open the
+  code.
+</p>
+
+<h2 id="read">How to read this benchmark</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Question</th><th>Does the site answer it?</th></tr></thead>
+  <tbody>
+    <tr><td>What does this model produce from a blank brief?</td><td><span class="yes">Yes, directly, five ways.</span></td></tr>
+    <tr><td>Does installing a design skill change that, for this model?</td><td><span class="yes">Yes. Paired, one click, one shareable URL.</span></td></tr>
+    <tr><td>What visual tics does this model have?</td><td><span class="yes">Yes, and the guessing game teaches you to spot them.</span></td></tr>
+    <tr><td>Which model is best at design?</td><td><span class="no">No. No score exists, and the one ranked list covers eight superseded models.</span></td></tr>
+    <tr><td>Is the design skill worth installing, in general?</td><td><span class="no">No. Four skill versions inside one group confound it.</span></td></tr>
+    <tr><td>How consistent is this model?</td><td><span class="no">No. Nothing repeats a run.</span></td></tr>
+    <tr><td>Did the model follow the brief?</td><td><span class="no">No. The switcher it asked for is deleted at ingestion.</span></td></tr>
+    <tr><td>When, with what agent, on which skill version?</td><td><span class="no">No. None of it is recorded.</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Closing the last two gaps needs a data-model change of a few hours and one extra sweep. Neither
+  requires a rubric, a crowd, or a scoring model, which means the project can fix them without
+  becoming the kind of leaderboard its own product document says it must never become.
+</p>
+
+<footer>
+  <p>
+    Evidence boundary: the local checkout at commit <code>3bdd0cb</code>, the live site as served on
+    11 August 2026, and the GitHub API on the same day. The project was not built or run, no
+    generated page was re-graded, and no model was re-run. Full method, confidence grades and
+    sources are in the accompanying markdown view.
+  </p>
+  <p>
+    Criticism here is aimed at how the artifact should be read, not at the work. The architecture is
+    genuinely good, the ingestion skill is genuinely reusable, and the decision not to invent a score
+    is better judgement than most benchmarks show.
+  </p>
+</footer>
+
+</div>
+</body>
+</html>

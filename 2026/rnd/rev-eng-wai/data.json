@@ -1,0 +1,1433 @@
+{
+  "report": {
+    "title": "Reverse engineering WhichAI.dev (ui-design-bench)",
+    "generatedAt": "2026-08-11",
+    "subject": {
+      "commit": "3bdd0cbfe82183d3601abfbadcd0ab45cf856600",
+      "repository": "https://github.com/SunkenInTime/ui-design-bench",
+      "site": "https://www.whichai.dev/"
+    },
+    "evidenceBoundary": "Checkout at 3bdd0cb, live site and GitHub API on 2026-08-11. Project was not built or run."
+  },
+  "prompt": "I want you to design the landing page for a note-taking application as essentially a second brain. You should design five iterations and each of them should be accessible within the slash one, slash two, slash three like pages directory. And then you should add a little button that lets me switch between them easily.",
+  "promptLocation": "src/app/page.tsx:21",
+  "counts": {
+    "runs": 65,
+    "models": 25,
+    "labs": 8,
+    "generations": 325,
+    "thumbnailImages": 321,
+    "runsPerGroup": {
+      "with-design-skill": 25,
+      "with-taste-skill": 10,
+      "with-ui-sh-skill": 4,
+      "without-design-skill": 25,
+      "miscellaneous": 1
+    },
+    "sourceAppTypes": {
+      "next": 64,
+      "vite": 1
+    },
+    "variantTsxFiles": 683,
+    "variantCssFiles": 122,
+    "literalRoutesNonPreview": 56,
+    "literalRoutesPreview": 59,
+    "nestedPackageJson": 41,
+    "nestedPackageLock": 33,
+    "nestedAgentFiles": 77,
+    "skillLockFiles": 18
+  },
+  "treatments": [
+    {
+      "slug": "with-design-skill",
+      "siteLabel": "With Design Skill",
+      "runs": 25,
+      "skill": "frontend-design",
+      "skillSource": "anthropics/skills",
+      "skillUrl": "https://skills.sh/anthropics/skills/frontend-design",
+      "identified": true
+    },
+    {
+      "slug": "without-design-skill",
+      "siteLabel": "Without Design Skill",
+      "runs": 25,
+      "skill": null,
+      "skillSource": null,
+      "skillUrl": null,
+      "identified": true
+    },
+    {
+      "slug": "with-taste-skill",
+      "siteLabel": "With Taste Skill",
+      "runs": 10,
+      "skill": "design-taste-frontend",
+      "skillSource": "Leonxlnx/taste-skill",
+      "skillUrl": "https://www.tasteskill.dev/",
+      "identified": true
+    },
+    {
+      "slug": "with-ui-sh-skill",
+      "siteLabel": "With UI SH Skill",
+      "runs": 4,
+      "skill": null,
+      "skillSource": null,
+      "skillUrl": null,
+      "identified": false,
+      "note": "No link, no lockfile, no definition anywhere in the repo or site."
+    },
+    {
+      "slug": "miscellaneous",
+      "siteLabel": "With Uncodexify skill",
+      "runs": 1,
+      "skill": "uncodixfy",
+      "skillSource": "cyxzdev",
+      "skillUrl": "https://skills.sh/cyxzdev/uncodixfy/uncodixfy",
+      "identified": true
+    }
+  ],
+  "models": [
+    {
+      "model": "composer-1.5",
+      "label": "Composer 1.5",
+      "lab": "cursor",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "composer-2.0",
+      "label": "Composer 2.0",
+      "lab": "cursor",
+      "groups": [
+        "with-design-skill",
+        "with-ui-sh-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "composer-2.5",
+      "label": "Composer 2.5",
+      "lab": "cursor",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "fable",
+      "label": "Fable 5",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "gemini",
+      "label": "Gemini 3.1 Pro",
+      "lab": "google",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "gemini-3.5-flash",
+      "label": "Gemini 3.5 Flash",
+      "lab": "google",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "grok-4.5",
+      "label": "Grok 4.5",
+      "lab": "x-ai",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "label": "GPT-5.4",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill",
+        "miscellaneous"
+      ]
+    },
+    {
+      "model": "gpt-5.5-low",
+      "label": "GPT 5.5 low",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "with-ui-sh-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "gpt-5.5-high",
+      "label": "GPT 5.5 high",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "with-ui-sh-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "kimi-k-2.5",
+      "label": "Kimi K 2.5",
+      "lab": "moonshot",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "kimi-k-2.6",
+      "label": "Kimi K 2.6",
+      "lab": "moonshot",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "kimi-k3",
+      "label": "Kimi K3",
+      "lab": "moonshot",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "opus-4.6",
+      "label": "Opus 4.6",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "opus-4.7",
+      "label": "Opus 4.7",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "with-ui-sh-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "opus-4.8",
+      "label": "Opus 4.8",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "glm-5-turbo",
+      "label": "GLM 5 Turbo",
+      "lab": "z-ai",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "glm-5.1",
+      "label": "GLM 5.1",
+      "lab": "z-ai",
+      "groups": [
+        "with-design-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "glm-5.2",
+      "label": "GLM 5.2",
+      "lab": "z-ai",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "sonnet-5",
+      "label": "Sonnet 5",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "sol",
+      "label": "GPT-5.6 Sol",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "luna",
+      "label": "GPT-5.6 Luna",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "terra",
+      "label": "GPT-5.6 Terra",
+      "lab": "gpt",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "muse-spark-1.2",
+      "label": "Muse Spark 1.2",
+      "lab": "meta",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    },
+    {
+      "model": "opus-5",
+      "label": "Opus 5",
+      "lab": "anthropic",
+      "groups": [
+        "with-design-skill",
+        "with-taste-skill",
+        "without-design-skill"
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "composer-1.5",
+      "modelLabel": "Composer 1.5",
+      "sourceDir": "with-frontend-design-skill/composer-1.5",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "composer-2.0",
+      "modelLabel": "Composer 2.0",
+      "sourceDir": "with-frontend-design-skill/composer-2.0",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "composer-2.5",
+      "modelLabel": "Composer 2.5",
+      "sourceDir": "composer-2.5-bench/with-frontend-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "fable",
+      "modelLabel": "Fable 5",
+      "sourceDir": "fable-with-skill-run",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "gemini",
+      "modelLabel": "Gemini 3.1 Pro",
+      "sourceDir": "with-frontend-design-skill/gemini",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "gemini-3.5-flash",
+      "modelLabel": "Gemini 3.5 Flash",
+      "sourceDir": "gemini-part-dou/next-with-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "grok-4.5",
+      "modelLabel": "Grok 4.5",
+      "sourceDir": "grok-4-5-test/nextjs-with-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "gpt-5.4",
+      "modelLabel": "GPT-5.4",
+      "sourceDir": "with-frontend-design-skill/gpt-5.4",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "gpt-5.5-low",
+      "modelLabel": "GPT 5.5 low",
+      "sourceDir": "with-frontend-design-skill/gpt-5.5-low",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "gpt-5.5-high",
+      "modelLabel": "GPT 5.5 high",
+      "sourceDir": "with-frontend-design-skill/gpt-5.5-high",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "kimi-k-2.5",
+      "modelLabel": "Kimi K 2.5",
+      "sourceDir": "with-frontend-design-skill/kimi-k-2.5",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "kimi-k-2.6",
+      "modelLabel": "Kimi K 2.6",
+      "sourceDir": "with-frontend-design-skill/kimi-k-2.6",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "kimi-k3",
+      "modelLabel": "Kimi K3",
+      "sourceDir": "kimi-k3/anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "opus-4.6",
+      "modelLabel": "Opus 4.6",
+      "sourceDir": "with-frontend-design-skill/opus-4.6/second-brain",
+      "sourceAppType": "vite",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "opus-4.7",
+      "modelLabel": "Opus 4.7",
+      "sourceDir": "with-frontend-design-skill/opus-4.7",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "opus-4.8",
+      "modelLabel": "Opus 4.8",
+      "sourceDir": "opus-4.8-test/with-anthropic-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "glm-5-turbo",
+      "modelLabel": "GLM 5 Turbo",
+      "sourceDir": "with-frontend-design-skill/glm-5-turbo",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "glm-5.1",
+      "modelLabel": "GLM 5.1",
+      "sourceDir": "with-frontend-design-skill/glm-5.1",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "glm-5.2",
+      "modelLabel": "GLM 5.2",
+      "sourceDir": "glm5-2/glm-anthropic-frontend-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "sonnet-5",
+      "modelLabel": "Sonnet 5",
+      "sourceDir": "sonnet-bench/nextjs-anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "fable",
+      "modelLabel": "Fable 5",
+      "sourceDir": "fable-test-taste-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "grok-4.5",
+      "modelLabel": "Grok 4.5",
+      "sourceDir": "grok-4-5-test/nextjs-with-taste-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "kimi-k3",
+      "modelLabel": "Kimi K3",
+      "sourceDir": "kimi-k3/design-taste-frontend",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "glm-5.2",
+      "modelLabel": "GLM 5.2",
+      "sourceDir": "glm5-2/glm-design-taste-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "sonnet-5",
+      "modelLabel": "Sonnet 5",
+      "sourceDir": "sonnet-bench/nextjs-taste-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-ui-sh-skill",
+      "groupLabel": "With UI SH Skill",
+      "model": "composer-2.0",
+      "modelLabel": "Composer 2.0",
+      "sourceDir": "ui-sh-test/composer-2",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-ui-sh-skill",
+      "groupLabel": "With UI SH Skill",
+      "model": "gpt-5.5-low",
+      "modelLabel": "GPT 5.5 low",
+      "sourceDir": "ui-sh-test/gpt-5.5",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-ui-sh-skill",
+      "groupLabel": "With UI SH Skill",
+      "model": "gpt-5.5-high",
+      "modelLabel": "GPT 5.5 high",
+      "sourceDir": "ui-sh-test/gpt-5.5-high",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-ui-sh-skill",
+      "groupLabel": "With UI SH Skill",
+      "model": "opus-4.7",
+      "modelLabel": "Opus 4.7",
+      "sourceDir": "ui-sh-test/opus-4.7",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "composer-1.5",
+      "modelLabel": "Composer 1.5",
+      "sourceDir": "without-frontend-design-skill/composer-1.5",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "composer-2.0",
+      "modelLabel": "Composer 2.0",
+      "sourceDir": "without-frontend-design-skill/composer-2.0",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "composer-2.5",
+      "modelLabel": "Composer 2.5",
+      "sourceDir": "composer-2.5-bench/without-frontend-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "fable",
+      "modelLabel": "Fable 5",
+      "sourceDir": "fable-test-run",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "gemini",
+      "modelLabel": "Gemini 3.1 Pro",
+      "sourceDir": "without-frontend-design-skill/gemini",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "gemini-3.5-flash",
+      "modelLabel": "Gemini 3.5 Flash",
+      "sourceDir": "gemini-part-dou/next-without-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "grok-4.5",
+      "modelLabel": "Grok 4.5",
+      "sourceDir": "grok-4-5-test/nextjs-without-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "gpt-5.4",
+      "modelLabel": "GPT-5.4",
+      "sourceDir": "without-frontend-design-skill/gpt-5.4",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "gpt-5.5-low",
+      "modelLabel": "GPT 5.5 low",
+      "sourceDir": "without-frontend-design-skill/gpt-5.5-low",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "gpt-5.5-high",
+      "modelLabel": "GPT 5.5 high",
+      "sourceDir": "without-frontend-design-skill/gpt-5.5-high",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "kimi-k-2.5",
+      "modelLabel": "Kimi K 2.5",
+      "sourceDir": "without-frontend-design-skill/kimi-k-2.5",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "kimi-k-2.6",
+      "modelLabel": "Kimi K 2.6",
+      "sourceDir": "without-frontend-design-skill/kimi-k-2.6",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "kimi-k3",
+      "modelLabel": "Kimi K3",
+      "sourceDir": "kimi-k3/no-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "opus-4.6",
+      "modelLabel": "Opus 4.6",
+      "sourceDir": "without-frontend-design-skill/opus-4.6",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "opus-4.7",
+      "modelLabel": "Opus 4.7",
+      "sourceDir": "without-frontend-design-skill/opus-4.7",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "opus-4.8",
+      "modelLabel": "Opus 4.8",
+      "sourceDir": "opus-4.8-test/without-anthropic-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "glm-5-turbo",
+      "modelLabel": "GLM 5 Turbo",
+      "sourceDir": "without-frontend-design-skill/glm-5-turbo",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "glm-5.1",
+      "modelLabel": "GLM 5.1",
+      "sourceDir": "without-frontend-design-skill/glm-5.1",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "glm-5.2",
+      "modelLabel": "GLM 5.2",
+      "sourceDir": "glm5-2/glm-no-frontend-design-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "sonnet-5",
+      "modelLabel": "Sonnet 5",
+      "sourceDir": "sonnet-bench/nextjs-no-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "sol",
+      "modelLabel": "GPT-5.6 Sol",
+      "sourceDir": "gpt-5-6-test/sol/anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "sol",
+      "modelLabel": "GPT-5.6 Sol",
+      "sourceDir": "gpt-5-6-test/sol/design-taste",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "sol",
+      "modelLabel": "GPT-5.6 Sol",
+      "sourceDir": "gpt-5-6-test/sol/no-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "luna",
+      "modelLabel": "GPT-5.6 Luna",
+      "sourceDir": "gpt-5-6-test/luna/anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "luna",
+      "modelLabel": "GPT-5.6 Luna",
+      "sourceDir": "gpt-5-6-test/luna/design-taste",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "luna",
+      "modelLabel": "GPT-5.6 Luna",
+      "sourceDir": "gpt-5-6-test/luna/no-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "terra",
+      "modelLabel": "GPT-5.6 Terra",
+      "sourceDir": "gpt-5-6-test/terra/anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "terra",
+      "modelLabel": "GPT-5.6 Terra",
+      "sourceDir": "gpt-5-6-test/terra/design-taste",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "terra",
+      "modelLabel": "GPT-5.6 Terra",
+      "sourceDir": "gpt-5-6-test/terra/no-skill",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "muse-spark-1.2",
+      "modelLabel": "Muse Spark 1.2",
+      "sourceDir": "muse-spark-test/next-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "muse-spark-1.2",
+      "modelLabel": "Muse Spark 1.2",
+      "sourceDir": "muse-spark-test/next-design-taste",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "muse-spark-1.2",
+      "modelLabel": "Muse Spark 1.2",
+      "sourceDir": "muse-spark-test/next-no-skills",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-design-skill",
+      "groupLabel": "With Design Skill",
+      "model": "opus-5",
+      "modelLabel": "Opus 5",
+      "sourceDir": "opus-cc-test/next-anthropic-frontend-design",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "with-taste-skill",
+      "groupLabel": "With Taste Skill",
+      "model": "opus-5",
+      "modelLabel": "Opus 5",
+      "sourceDir": "opus-cc-test/next-design-taste-frontend",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "without-design-skill",
+      "groupLabel": "Without Design Skill",
+      "model": "opus-5",
+      "modelLabel": "Opus 5",
+      "sourceDir": "opus-cc-test/next-no-skills",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    },
+    {
+      "group": "miscellaneous",
+      "groupLabel": "With Uncodexify skill",
+      "model": "gpt-5.4",
+      "modelLabel": "GPT-5.4",
+      "sourceDir": "with-uncodexify-skill/gpt-5.4",
+      "sourceAppType": "next",
+      "defaultIteration": "1"
+    }
+  ],
+  "skillProvenance": {
+    "lockfilesFound": 18,
+    "runsWithoutEvidence": 47,
+    "distinctFrontendDesignHashes": [
+      "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67",
+      "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336",
+      "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84",
+      "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+    ],
+    "distinctTasteHashes": [
+      "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e",
+      "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+    ],
+    "records": [
+      {
+        "group": "with-design-skill",
+        "model": "composer-2.5",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "fable",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "gemini-3.5-flash",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "glm-5.2",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "gpt-5.5-high",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": null,
+        "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "gpt-5.5-low",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": null,
+        "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "grok-4.5",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "kimi-k3",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "muse-spark-1.2",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "opus-5",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+      },
+      {
+        "group": "with-design-skill",
+        "model": "sonnet-5",
+        "skill": "frontend-design",
+        "source": "anthropics/skills",
+        "skillPath": "skills/frontend-design/SKILL.md",
+        "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "fable",
+        "skill": "design-taste-frontend",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "brandkit",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/brandkit/SKILL.md",
+        "computedHash": "735007879f5110aeae1e981a53fe74a12afde70347f9773dacd50e4697a091bf"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "design-taste-frontend",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "design-taste-frontend-v1",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill-v1/SKILL.md",
+        "computedHash": "0a226c13d69639553cf8a7c40aa5527b026820f8ddaf7a6b263988e32ab44a27"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "full-output-enforcement",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/output-skill/SKILL.md",
+        "computedHash": "524f7c7950c3fde726101613f630140411c7d080e63be718687f4b38f919be81"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "gpt-taste",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/gpt-tasteskill/SKILL.md",
+        "computedHash": "7bd1bfdda0e51016ca222693401a65fc0dd9bf9487e0bd5b1740ba510f6f963a"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "high-end-visual-design",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/soft-skill/SKILL.md",
+        "computedHash": "f730e4132775f13eea19e3dc39afc6bb453cfc0498872b127ad8f0d47cfd802d"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "image-to-code",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/image-to-code-skill/SKILL.md",
+        "computedHash": "3d2ac14d956fdafc5500d2108b90895e134d847f9f199e7f1d18bf1f814cf7c8"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "imagegen-frontend-mobile",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+        "computedHash": "7c1d1dc59cd0df4063b8621af543bf5dea1d576b261507e17b0323c69680b048"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "imagegen-frontend-web",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+        "computedHash": "27255c7c50181e58add156b2aa2bd5325285b85f04027e4c8b73742d98d7be0a"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "industrial-brutalist-ui",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/brutalist-skill/SKILL.md",
+        "computedHash": "e66e5a2a8b73cef79ab6546459c665e8b983645689c5f3772f7eed8b9f1e8e0e"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "minimalist-ui",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/minimalist-skill/SKILL.md",
+        "computedHash": "7e88897e0371184e97a82b8d9ef080323c13f21eb067b58ef71eb05173a08ac2"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "redesign-existing-projects",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/redesign-skill/SKILL.md",
+        "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "glm-5.2",
+        "skill": "stitch-design-taste",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/stitch-skill/SKILL.md",
+        "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "grok-4.5",
+        "skill": "design-taste-frontend",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "kimi-k3",
+        "skill": "design-taste-frontend",
+        "source": "leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "muse-spark-1.2",
+        "skill": "design-taste-frontend",
+        "source": "leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "opus-5",
+        "skill": "design-taste-frontend",
+        "source": "leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+      },
+      {
+        "group": "with-taste-skill",
+        "model": "sonnet-5",
+        "skill": "design-taste-frontend",
+        "source": "Leonxlnx/taste-skill",
+        "skillPath": "skills/taste-skill/SKILL.md",
+        "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+      }
+    ]
+  },
+  "rankings": {
+    "entries": 8,
+    "modelsInGallery": 25,
+    "allRankedModelsHiddenByDefault": true,
+    "list": [
+      {
+        "rank": 1,
+        "model": "opus-4.7",
+        "modelLabel": "Claude Opus 4.7",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "3"
+      },
+      {
+        "rank": 2,
+        "model": "opus-4.6",
+        "modelLabel": "Claude Opus 4.6",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "2"
+      },
+      {
+        "rank": 3,
+        "model": "gemini",
+        "modelLabel": "Gemini 3.1 Pro",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "4"
+      },
+      {
+        "rank": 4,
+        "model": "composer-2.0",
+        "modelLabel": "Composer 2.0",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "3"
+      },
+      {
+        "rank": 5,
+        "model": "gpt-5.4",
+        "modelLabel": "GPT-5.4",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "5"
+      },
+      {
+        "rank": 6,
+        "model": "kimi-k-2.5",
+        "modelLabel": "Kimi K 2.5",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "1"
+      },
+      {
+        "rank": 7,
+        "model": "composer-1.5",
+        "modelLabel": "Composer 1.5",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "4"
+      },
+      {
+        "rank": 8,
+        "model": "kimi-k-2.6",
+        "modelLabel": "Kimi K 2.6",
+        "previewGroup": "with-design-skill",
+        "bestIteration": "1"
+      }
+    ]
+  },
+  "liveSite": {
+    "measuredAt": "2026-08-11",
+    "host": "Vercel",
+    "framework": "Next.js 16.2.0",
+    "prerendered": true,
+    "bytes": {
+      "homeHtml": 234839,
+      "sharedCssChunk": 643192,
+      "secondCssChunk": 514,
+      "rankingsHtml": 52108,
+      "labGuessHtml": 17342,
+      "experimentsHtml": 44938
+    },
+    "routeProbes": {
+      "/": 200,
+      "/compare": 307,
+      "/rankings": 200,
+      "/lab-guess": 200,
+      "/experiments": 200,
+      "/with-design-skill/opus-5/1": 200,
+      "/preview/with-design-skill/opus-5/1": 200,
+      "/robots.txt": 404,
+      "/sitemap.xml": 404
+    },
+    "openGraphTags": false
+  },
+  "repository": {
+    "createdAt": "2026-03-21T19:51:17Z",
+    "pushedAt": "2026-08-09T21:27:51Z",
+    "defaultBranch": "master",
+    "commits": 101,
+    "stars": 77,
+    "forks": 8,
+    "license": null,
+    "topics": [
+      "benchmark",
+      "design",
+      "ui"
+    ],
+    "diskUsageKb": 179385,
+    "languagesBytes": {
+      "TypeScript": 4527932,
+      "CSS": 2776832,
+      "JavaScript": 177222,
+      "HTML": 1146
+    },
+    "commitsPerMonth": {
+      "2026-03": 25,
+      "2026-04": 27,
+      "2026-05": 14,
+      "2026-06": 11,
+      "2026-07": 14,
+      "2026-08": 10
+    },
+    "pullRequests": {
+      "total": 18,
+      "merged": 14,
+      "open": 4
+    },
+    "packageName": "composer-bench-gallery"
+  },
+  "methodologyFindings": [
+    {
+      "id": "A1",
+      "title": "Design-skill group contains four different skill versions",
+      "cost": "high",
+      "fixEffort": "medium"
+    },
+    {
+      "id": "A2",
+      "title": "One taste run had 13 skills installed",
+      "cost": "medium",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A3",
+      "title": "47 of 65 runs have no treatment evidence",
+      "cost": "medium",
+      "fixEffort": "medium"
+    },
+    {
+      "id": "A4",
+      "title": "UI SH treatment unidentified",
+      "cost": "low",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A5",
+      "title": "No date, agent, model build, retries or cost recorded",
+      "cost": "high",
+      "fixEffort": "medium"
+    },
+    {
+      "id": "A6",
+      "title": "Switcher deliverable deleted at ingestion",
+      "cost": "medium",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A7",
+      "title": "Rankings stale, partial, and hidden by default",
+      "cost": "high",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A8",
+      "title": "Two disagreeing model-recency tables",
+      "cost": "low",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A9",
+      "title": "Thumbnails contain site chrome and a dev badge",
+      "cost": "medium",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A10",
+      "title": "Chance baseline unmarked in the guessing game",
+      "cost": "low",
+      "fixEffort": "low"
+    },
+    {
+      "id": "A11",
+      "title": "One prompt, one product, one page type",
+      "cost": "medium",
+      "fixEffort": "high"
+    }
+  ],
+  "engineeringFindings": [
+    {
+      "id": "E1",
+      "title": "643 KB shared stylesheet on every page",
+      "severity": "high",
+      "priority": 1
+    },
+    {
+      "id": "E2",
+      "title": "color-scheme: light !important blocks native dark controls",
+      "severity": "medium",
+      "priority": 4
+    },
+    {
+      "id": "E3",
+      "title": "320 thumbnails captured from the wrong route in dev mode",
+      "severity": "medium",
+      "priority": 2
+    },
+    {
+      "id": "E4",
+      "title": "Three runs missing their per-run CSS route",
+      "severity": "medium",
+      "priority": 1
+    },
+    {
+      "id": "E5",
+      "title": "No license on a repo redistributing 325 apps and 8 brands' logos",
+      "severity": "high",
+      "priority": 3
+    },
+    {
+      "id": "E6",
+      "title": "DESIGN.md says light-only; dark mode shipped in May",
+      "severity": "low",
+      "priority": 7
+    },
+    {
+      "id": "E7",
+      "title": "179 MB repo, mostly ingested scaffolding",
+      "severity": "medium",
+      "priority": 6
+    },
+    {
+      "id": "E8",
+      "title": "No robots.txt or sitemap; 325 indexable duplicate preview pages",
+      "severity": "medium",
+      "priority": 5
+    },
+    {
+      "id": "E9",
+      "title": "Unfinished /experiments page live and theme-broken",
+      "severity": "low",
+      "priority": 7
+    },
+    {
+      "id": "E10",
+      "title": "framer-motion and motion both installed",
+      "severity": "low",
+      "priority": 7
+    },
+    {
+      "id": "E11",
+      "title": "Test route coverage is a hand-maintained list",
+      "severity": "low",
+      "priority": 7
+    }
+  ]
+}
