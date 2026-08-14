@@ -1,0 +1,633 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "name": "google-okf-spec/build.mjs",
+    "derivedFrom": [
+      "README.md",
+      "00-executive-brief.md",
+      "01-the-format.md",
+      "02-frontmatter-reference.md",
+      "03-the-trust-model.md",
+      "04-attested-computations.md",
+      "05-yaml-frontmatter-best-practices.md",
+      "06-conformance-audit.md",
+      "07-how-okf-compares.md",
+      "08-adoption-and-reception.md",
+      "09-adoption-playbook.md",
+      "10-glossary.md",
+      "11-methodology-and-sources.md"
+    ],
+    "note": "Every array below is parsed out of the Markdown tables, so data.json and the prose cannot disagree."
+  },
+  "generatedAt": "2026-08-13T16:32:53.443Z",
+  "title": "Google's Open Knowledge Format: A Working Reference",
+  "description": "What the OKF v0.2 specification actually says, what its own bundles reveal, and how to write YAML frontmatter that survives contact with a parser.",
+  "researchDate": "2026-08-13",
+  "subject": {
+    "format": "Open Knowledge Format (OKF)",
+    "publisher": "Google Cloud",
+    "specVersion": "0.2",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/GoogleCloudPlatform/knowledge-catalog",
+    "specPath": "okf/SPEC.md",
+    "auditedCommit": "374e0bc4c644310ff56cdf9c0fe81eccdec862b0"
+  },
+  "scope": {
+    "objective": "Establish what OKF v0.2 specifies, measure how far its own reference bundles follow it, and set out YAML frontmatter practice that survives real parsers.",
+    "covers": [
+      "the specification text, section by section",
+      "the complete frontmatter field surface",
+      "the provenance, trust, and lifecycle model",
+      "attested computations and their limits",
+      "YAML frontmatter mechanics and best practices",
+      "a measured conformance audit of the four shipped bundles",
+      "comparison with adjacent formats and standards",
+      "adoption and reception evidence"
+    ],
+    "excludes": [
+      "running the reference attester, which needs billed BigQuery credentials",
+      "any production OKF bundle, none of which were available",
+      "Google Cloud commercial terms for Knowledge Catalog"
+    ],
+    "evidenceBoundary": "The specification, reference implementation, and four sample bundles at commit 374e0bc, plus public secondary coverage read on 2026-08-13."
+  },
+  "evidenceStates": [
+    {
+      "state": "Observed",
+      "meaning": "Measured directly by running code",
+      "example": "The 8 files with a string tags value"
+    },
+    {
+      "state": "Source-reported",
+      "meaning": "Stated by the specification or repository",
+      "example": "Field definitions, normative rules"
+    },
+    {
+      "state": "Calculated",
+      "meaning": "Derived from observed data",
+      "example": "Concept counts, type frequencies"
+    },
+    {
+      "state": "Inferred",
+      "meaning": "Reasoned from evidence, labelled as such",
+      "example": "Why the viewer coerces tags"
+    },
+    {
+      "state": "Unavailable",
+      "meaning": "Could not be established",
+      "example": "Listed at the end of this section"
+    }
+  ],
+  "versions": [
+    {
+      "version": "v0.1",
+      "date": "2026-06-12",
+      "commitMessage": "\"Import Open Knowledge Format reference enrichment agent (#28)\""
+    },
+    {
+      "version": "v0.2",
+      "date": "2026-07-24",
+      "commitMessage": "\"okf: migrate format and tooling to Open Knowledge Format v0.2 (#227)\""
+    }
+  ],
+  "counts": {
+    "bundles": 4,
+    "bundleFiles": 78,
+    "concepts": 53,
+    "conceptTypes": 7,
+    "specifiedFields": 18,
+    "auditFindings": 10,
+    "yamlCasesTested": 12,
+    "yamlCasesDiverging": 6,
+    "parsersCompared": 7,
+    "glossaryTerms": 38,
+    "tables": 40,
+    "headings": 148,
+    "openQuestions": 4
+  },
+  "fields": [
+    {
+      "field": "type",
+      "specSection": "4.1",
+      "status": "Required",
+      "value": "Short string naming the kind of concept"
+    },
+    {
+      "field": "title",
+      "specSection": "4.1",
+      "status": "Recommended",
+      "value": "Display name for people"
+    },
+    {
+      "field": "description",
+      "specSection": "4.1",
+      "status": "Recommended",
+      "value": "One sentence"
+    },
+    {
+      "field": "resource",
+      "specSection": "4.1",
+      "status": "Recommended",
+      "value": "Address of the real thing being described"
+    },
+    {
+      "field": "tags",
+      "specSection": "4.1",
+      "status": "Recommended",
+      "value": "List of short strings"
+    },
+    {
+      "field": "sources",
+      "specSection": "5.1",
+      "status": "Optional",
+      "value": "List of materials this was derived from"
+    },
+    {
+      "field": "usage_window",
+      "specSection": "5.1",
+      "status": "Optional",
+      "value": "{ from, to } dates framing every usage_count"
+    },
+    {
+      "field": "generated",
+      "specSection": "5.2",
+      "status": "Optional",
+      "value": "{ by, at }. Who wrote the current content"
+    },
+    {
+      "field": "verified",
+      "specSection": "5.2",
+      "status": "Optional",
+      "value": "List of { by, at }. Who confirmed it"
+    },
+    {
+      "field": "status",
+      "specSection": "5.4",
+      "status": "Optional",
+      "value": "draft, stable, or deprecated"
+    },
+    {
+      "field": "stale_after",
+      "specSection": "5.5",
+      "status": "Optional",
+      "value": "Date after which the content is stale"
+    },
+    {
+      "field": "runtime",
+      "specSection": "10.2",
+      "status": "Required for Attested Computation",
+      "value": "How to run the computation"
+    },
+    {
+      "field": "parameters",
+      "specSection": "10.2",
+      "status": "Optional",
+      "value": "List of { name, type, required }"
+    },
+    {
+      "field": "computation",
+      "specSection": "10.2",
+      "status": "Optional",
+      "value": "Path to a file holding the computation"
+    },
+    {
+      "field": "executor",
+      "specSection": "10.2",
+      "status": "Optional",
+      "value": "{ resource, receipt }. How to run it"
+    },
+    {
+      "field": "attester",
+      "specSection": "10.2",
+      "status": "Optional",
+      "value": "{ resource }. Code that checks the run"
+    },
+    {
+      "field": "okf_version",
+      "specSection": "12",
+      "status": "Optional",
+      "value": "Only in a bundle-root index.md"
+    },
+    {
+      "field": "timestamp",
+      "specSection": "13.1",
+      "status": "Retired",
+      "value": "v0.1 field, replaced by generated.at"
+    }
+  ],
+  "conceptTypes": [
+    {
+      "type": "BigQuery Table",
+      "count": 22
+    },
+    {
+      "type": "Reference",
+      "count": 20
+    },
+    {
+      "type": "Metric",
+      "count": 3
+    },
+    {
+      "type": "BigQuery Dataset",
+      "count": 3
+    },
+    {
+      "type": "Attested Computation",
+      "count": 2
+    },
+    {
+      "type": "Policy",
+      "count": 2
+    },
+    {
+      "type": "Skill",
+      "count": 1
+    }
+  ],
+  "bundles": [
+    {
+      "bundle": "acme_retail",
+      "files": 17,
+      "concepts": 9,
+      "authoredBy": "By hand, to demonstrate v0.2"
+    },
+    {
+      "bundle": "crypto_bitcoin",
+      "files": 15,
+      "concepts": 9,
+      "authoredBy": "Reference agent"
+    },
+    {
+      "bundle": "ga4",
+      "files": 14,
+      "concepts": 9,
+      "authoredBy": "Reference agent"
+    },
+    {
+      "bundle": "stackoverflow",
+      "files": 32,
+      "concepts": 26,
+      "authoredBy": "Reference agent"
+    }
+  ],
+  "findings": [
+    {
+      "finding": "0. Half of v0.2 has no producer or consumer",
+      "scope": "44 concepts, all of section 10",
+      "severity": "High",
+      "owner": "Implementation"
+    },
+    {
+      "finding": "4. Timestamped stale_after crashes the viewer",
+      "scope": "Latent, any one file",
+      "severity": "High",
+      "owner": "Reference implementation"
+    },
+    {
+      "finding": "5. Lossy round-trip rewriting",
+      "scope": "Every file an agent touches",
+      "severity": "High",
+      "owner": "Reference implementation"
+    },
+    {
+      "finding": "6. --- inside frontmatter truncates silently",
+      "scope": "Latent",
+      "severity": "High",
+      "owner": "Reference implementation"
+    },
+    {
+      "finding": "2. Recommended links produce no graph edges",
+      "scope": "Every /-prefixed link",
+      "severity": "Medium",
+      "owner": "Spec and implementation disagree"
+    },
+    {
+      "finding": "1. tags parsed as a string",
+      "scope": "8 files",
+      "severity": "Medium",
+      "owner": "Producer"
+    },
+    {
+      "finding": "3. Date and time types vary",
+      "scope": "35 values",
+      "severity": "Medium",
+      "owner": "Spec and producer"
+    },
+    {
+      "finding": "2. Ambiguous relative paths",
+      "scope": "12 values",
+      "severity": "Medium",
+      "owner": "Spec"
+    },
+    {
+      "finding": "6. Byte order mark breaks parsing",
+      "scope": "Latent",
+      "severity": "Medium",
+      "owner": "Reference implementation"
+    },
+    {
+      "finding": "7. log.md frontmatter undefined",
+      "scope": "1 file",
+      "severity": "Low",
+      "owner": "Spec"
+    }
+  ],
+  "yamlDivergences": [
+    {
+      "input": "country: NO",
+      "yaml11": "False (bool)",
+      "yaml12": "'NO' (str)",
+      "differs": true
+    },
+    {
+      "input": "enabled: yes",
+      "yaml11": "True (bool)",
+      "yaml12": "'yes' (str)",
+      "differs": true
+    },
+    {
+      "input": "archived: off",
+      "yaml11": "False (bool)",
+      "yaml12": "'off' (str)",
+      "differs": true
+    },
+    {
+      "input": "build: 010",
+      "yaml11": "8 (int)",
+      "yaml12": "10 (int)",
+      "differs": true
+    },
+    {
+      "input": "zip: 02134",
+      "yaml11": "1116 (int)",
+      "yaml12": "2134 (int)",
+      "differs": true
+    },
+    {
+      "input": "duration: 22:53",
+      "yaml11": "1373 (int)",
+      "yaml12": "'22:53' (str)",
+      "differs": true
+    },
+    {
+      "input": "version: 1.10",
+      "yaml11": "1.1 (float)",
+      "yaml12": "1.1 (float)",
+      "differs": false
+    },
+    {
+      "input": "title: NULL",
+      "yaml11": "None",
+      "yaml12": "None",
+      "differs": false
+    },
+    {
+      "input": "pi: .5",
+      "yaml11": "0.5 (float)",
+      "yaml12": "0.5 (float)",
+      "differs": false
+    },
+    {
+      "input": "at: 2026-05-28T14:30:00Z",
+      "yaml11": "datetime",
+      "yaml12": "datetime",
+      "differs": false
+    },
+    {
+      "input": "at: '2026-05-28T14:30:00Z'",
+      "yaml11": "'2026-05-28T14:30:00Z' (str)",
+      "yaml12": "same",
+      "differs": false
+    },
+    {
+      "input": "tags: a, b, c",
+      "yaml11": "'a, b, c' (str)",
+      "yaml12": "same",
+      "differs": false
+    }
+  ],
+  "parsers": [
+    {
+      "library": "PyYAML",
+      "language": "Python",
+      "yamlVersion": "1.1",
+      "notes": "The default. Norway problem live. No round-trip mode"
+    },
+    {
+      "library": "ruamel.yaml",
+      "language": "Python",
+      "yamlVersion": "1.2",
+      "notes": "Round-trip mode preserves formatting. Can opt into 1.1"
+    },
+    {
+      "library": "js-yaml",
+      "language": "JavaScript",
+      "yamlVersion": "1.2",
+      "notes": "Powers most of the JS ecosystem"
+    },
+    {
+      "library": "gray-matter",
+      "language": "JavaScript",
+      "yamlVersion": "1.2 via js-yaml",
+      "notes": "The common frontmatter reader"
+    },
+    {
+      "library": "python-frontmatter",
+      "language": "Python",
+      "yamlVersion": "1.1 via PyYAML",
+      "notes": "Inherits every PyYAML behaviour"
+    },
+    {
+      "library": "go-yaml v3",
+      "language": "Go",
+      "yamlVersion": "1.2 mostly",
+      "notes": "Some 1.1 behaviour retained"
+    },
+    {
+      "library": "serde_yaml",
+      "language": "Rust",
+      "yamlVersion": "1.2",
+      "notes": ""
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Actor (OKF)",
+      "definition": "Who or what did something. Written as human:alice, process:nightly-job, or agent_name/version."
+    },
+    {
+      "term": "Attestation (OKF)",
+      "definition": "Checking that a single run produced its number the sanctioned way. Happens at runtime, on every call, and is never stored in the bundle."
+    },
+    {
+      "term": "Attested Computation (OKF)",
+      "definition": "A concept holding the one approved way to calculate a value, so a reader can confirm an agent ran it rather than improvising."
+    },
+    {
+      "term": "Attester (OKF)",
+      "definition": "Plain deterministic code, with no AI model involved, that inspects a receipt and returns pass or fail."
+    },
+    {
+      "term": "Block style",
+      "definition": "YAML written one key per line, indented. The opposite of flow style."
+    },
+    {
+      "term": "Body (OKF)",
+      "definition": "Everything in a concept file after the frontmatter. Ordinary Markdown."
+    },
+    {
+      "term": "Bundle (OKF)",
+      "definition": "A directory of OKF files. The unit you ship."
+    },
+    {
+      "term": "Byte order mark",
+      "definition": "An invisible marker some editors put at the start of a file. Breaks readers that expect --- as the first characters."
+    },
+    {
+      "term": "Chomping indicator",
+      "definition": "The - or + after a YAML block scalar marker, controlling trailing newlines. `\\"
+    },
+    {
+      "term": "Concept (OKF)",
+      "definition": "One unit of knowledge, stored as one Markdown file."
+    },
+    {
+      "term": "Concept ID (OKF)",
+      "definition": "The file's path inside the bundle with .md removed."
+    },
+    {
+      "term": "Conformance (OKF)",
+      "definition": "The three-rule test in section 11: frontmatter parses, type is non-empty, reserved files follow their format."
+    },
+    {
+      "term": "Credibility signal (OKF)",
+      "definition": "An objective fact about a source (author, usage_count, last_modified) from which a reader infers trust. OKF records signals, never a score."
+    },
+    {
+      "term": "Deprecated (OKF)",
+      "definition": "status: deprecated. Kept so old links and reports work; no longer current."
+    },
+    {
+      "term": "Diffable",
+      "definition": "You can see line by line what changed between two versions. The reason the format is text."
+    },
+    {
+      "term": "Executor (OKF)",
+      "definition": "Instructions or code that runs a computation and returns a receipt."
+    },
+    {
+      "term": "Flow style",
+      "definition": "Compact YAML using { } and [ ] on one line. Used throughout OKF's examples."
+    },
+    {
+      "term": "Frontmatter",
+      "definition": "A block of YAML at the top of a Markdown file, fenced by ---. No formal standard defines it."
+    },
+    {
+      "term": "Implicit typing",
+      "definition": "YAML guessing what a value means from how it looks. The root of most YAML surprises."
+    },
+    {
+      "term": "Index file (OKF)",
+      "definition": "index.md. Lists a directory's contents so a reader can see what exists before opening anything. Carries no frontmatter, except okf_version at the bundle root."
+    },
+    {
+      "term": "ISO 8601",
+      "definition": "The international date and time format, for example 2026-05-28T14:30:00Z."
+    },
+    {
+      "term": "Lifecycle (OKF)",
+      "definition": "Whether a concept is current: status and stale_after."
+    },
+    {
+      "term": "Link (OKF)",
+      "definition": "An ordinary Markdown link between concepts. Asserts a relationship without saying what kind."
+    },
+    {
+      "term": "Log file (OKF)",
+      "definition": "log.md. History of changes, newest first, grouped by ISO date."
+    },
+    {
+      "term": "Norway problem",
+      "definition": "YAML 1.1 reading NO as the boolean false. Named for the country code."
+    },
+    {
+      "term": "Octal",
+      "definition": "Base 8. YAML 1.1 reads a leading zero as octal, so 02134 becomes 1116."
+    },
+    {
+      "term": "Progressive disclosure (OKF)",
+      "definition": "Letting a reader see what is available before opening it. The reason index.md exists."
+    },
+    {
+      "term": "Provenance (OKF)",
+      "definition": "The set of sources a concept derives from. Recorded in sources."
+    },
+    {
+      "term": "Receipt (OKF)",
+      "definition": "Evidence a run returns, shaped by executor.receipt. A runtime object, never stored."
+    },
+    {
+      "term": "Reserved filename (OKF)",
+      "definition": "index.md and log.md. Cannot be used for concepts."
+    },
+    {
+      "term": "Round-trip",
+      "definition": "Reading a file and writing it back. Lossless if formatting survives; OKF's reference writer is not lossless."
+    },
+    {
+      "term": "Runtime (OKF)",
+      "definition": "How a computation is executed: bigquery, dbt, python. Decides what parameters mean."
+    },
+    {
+      "term": "Sexagesimal",
+      "definition": "Base 60. YAML 1.1 reads 22:53 as 1373."
+    },
+    {
+      "term": "Source (OKF)",
+      "definition": "Material a concept derives from, internal or external."
+    },
+    {
+      "term": "Stale (OKF)",
+      "definition": "Today's date is on or after stale_after."
+    },
+    {
+      "term": "Trust tier (OKF)",
+      "definition": "One of unverified, machine-confirmed, or human-reviewed. Calculated from verified on read, never written into a file."
+    },
+    {
+      "term": "Verified (OKF)",
+      "definition": "The field recording who confirmed a concept's content against its sources. Distinct from who wrote it."
+    },
+    {
+      "term": "YAML",
+      "definition": "The text format used for frontmatter. Version 1.1 (2005) and 1.2 (2009) differ in ways that matter; PyYAML still implements 1.1."
+    }
+  ],
+  "unestablished": [
+    {
+      "question": "Any organisation outside Google publishing a production OKF bundle",
+      "status": "Not found. Every bundle located was a sample, a demo, or a test fixture"
+    },
+    {
+      "question": "Whether OKF ingestion is generally available in a Google product",
+      "status": "Not confirmed. The launch blog says Knowledge Catalog \"now ingests OKF\"; no public documentation of a generally available capability was found"
+    },
+    {
+      "question": "A published roadmap for v0.3",
+      "status": "Not found. The only forward-looking statement is the deferred list in spec section 12"
+    },
+    {
+      "question": "Independent benchmarks of agent accuracy with and without an OKF bundle",
+      "status": "Not found. The premise that curated context improves agent answers is asserted, not measured, in every source located"
+    }
+  ],
+  "limitations": [
+    "The specification moved from v0.1 to v0.2 in six weeks; every statement here is a snapshot of commit 374e0bc.",
+    "Four sample bundles is a small sample, and all four are Google's own. The defect rates describe the examples, not production usage.",
+    "The audit checks structure, not whether the knowledge in a bundle is true.",
+    "Attestation behaviour was established by reading the reference attester, not by executing it.",
+    "Round-trip behaviour was measured for Python only; a JavaScript producer using js-yaml will differ."
+  ]
+}
