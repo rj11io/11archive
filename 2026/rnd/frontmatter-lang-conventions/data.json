@@ -1,0 +1,497 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "name": "frontmatter-lang-conventions/build.mjs",
+    "derivedFrom": [
+      "README.md",
+      "00-executive-brief.md",
+      "01-the-catalog.md",
+      "02-what-the-parser-does.md",
+      "03-delimiter-collisions.md",
+      "04-tool-support-and-choosing.md",
+      "05-methodology-and-sources.md"
+    ],
+    "note": "Every array below is parsed out of the Markdown tables, so data.json and the prose cannot disagree."
+  },
+  "generatedAt": "2026-08-14T16:47:16.116Z",
+  "title": "Frontmatter Beyond YAML: The Language Conventions",
+  "description": "Markdown frontmatter has no standard. What the conventions are, what each language does to your values, and which one to pick.",
+  "researchDate": "2026-08-14",
+  "subject": {
+    "topic": "Markdown frontmatter language conventions",
+    "standardStatus": "none; no RFC or W3C note defines Markdown frontmatter",
+    "languagesCatalogued": 11
+  },
+  "scope": {
+    "objective": "Catalogue the frontmatter conventions in common use, measure what each language does to identical metadata, and give a basis for choosing one.",
+    "covers": [
+      "every convention in common use and its exact delimiters",
+      "how YAML, TOML, and JSON type the same eleven values",
+      "parse-time rejection behaviour and duplicate-key handling",
+      "delimiter collisions, including Astro and Pandoc",
+      "which tools accept which formats"
+    ],
+    "excludes": [
+      "project-specific conventions invented in one codebase",
+      "usage share, for which no reliable figure exists",
+      "tool behaviour beyond what each tool documents"
+    ],
+    "evidenceBoundary": "Tool documentation and language specifications read on 2026-08-14, plus parser measurements run the same day on Python 3.13.5."
+  },
+  "environment": {
+    "python": "3.13.5",
+    "pyyaml": "6.0.3",
+    "yamlVersionImplementedByPyyaml": "1.1",
+    "tomllib": "standard library",
+    "json": "standard library"
+  },
+  "evidenceStates": [
+    {
+      "state": "Observed",
+      "meaning": "Measured by running code",
+      "example": "Every row of the typing table in 02"
+    },
+    {
+      "state": "Source-reported",
+      "meaning": "Stated by the tool's documentation",
+      "example": "Delimiters, format support"
+    },
+    {
+      "state": "Inferred",
+      "meaning": "Reasoned from evidence, labelled where used",
+      "example": "Why YAML won on availability"
+    },
+    {
+      "state": "Unavailable",
+      "meaning": "Could not be established",
+      "example": "Listed below"
+    }
+  ],
+  "counts": {
+    "formats": 11,
+    "casesMeasured": 11,
+    "yamlSurprises": 10,
+    "rejectionTests": 3,
+    "toolsCompared": 12,
+    "toolsReadingYaml": 10,
+    "toolsReadingToml": 2,
+    "sources": 14,
+    "tables": 14,
+    "headings": 60,
+    "openQuestions": 3
+  },
+  "formats": [
+    {
+      "format": "YAML",
+      "delimiters": "--- … ---",
+      "typedValues": "Inferred, aggressively",
+      "comments": "Yes"
+    },
+    {
+      "format": "TOML",
+      "delimiters": "+++ … +++",
+      "typedValues": "Declared by syntax",
+      "comments": "Yes"
+    },
+    {
+      "format": "JSON",
+      "delimiters": "{ … }",
+      "typedValues": "Declared by syntax",
+      "comments": "No"
+    },
+    {
+      "format": "Labelled fence",
+      "delimiters": "---toml, ---json, ---js … ---",
+      "typedValues": "Per language",
+      "comments": "Per language"
+    },
+    {
+      "format": "JavaScript",
+      "delimiters": "---js … ---",
+      "typedValues": "Executable",
+      "comments": "Yes"
+    },
+    {
+      "format": "MultiMarkdown",
+      "delimiters": "none, ends at first blank line",
+      "typedValues": "No, text only",
+      "comments": "No"
+    },
+    {
+      "format": "Python-Markdown Meta",
+      "delimiters": "none or ---, ends at blank line, ---, or ...",
+      "typedValues": "No, lists of strings",
+      "comments": "No"
+    },
+    {
+      "format": "Org keywords",
+      "delimiters": "#+KEY: lines",
+      "typedValues": "No, text only",
+      "comments": "Yes"
+    },
+    {
+      "format": "rST field list",
+      "delimiters": ":field: lines",
+      "typedValues": "No, text only",
+      "comments": "Yes"
+    },
+    {
+      "format": "Pandoc YAML block",
+      "delimiters": "--- … --- or ..., anywhere in file",
+      "typedValues": "Inferred",
+      "comments": "Yes"
+    },
+    {
+      "format": "Astro component script",
+      "delimiters": "--- … ---",
+      "typedValues": "It is TypeScript",
+      "comments": "Yes"
+    }
+  ],
+  "typing": [
+    {
+      "source": "country: NO",
+      "yaml11": "False (bool)",
+      "toml": "'NO' (str)",
+      "json": "'NO' (str)"
+    },
+    {
+      "source": "draft: no",
+      "yaml11": "False (bool)",
+      "toml": "False (bool)",
+      "json": "False (bool)"
+    },
+    {
+      "source": "archived: off",
+      "yaml11": "False (bool)",
+      "toml": "False (bool)",
+      "json": "False (bool)"
+    },
+    {
+      "source": "zip: 02134",
+      "yaml11": "1116 (int)",
+      "toml": "'02134' (str)",
+      "json": "'02134' (str)"
+    },
+    {
+      "source": "build: 010",
+      "yaml11": "8 (int)",
+      "toml": "'010' (str)",
+      "json": "'010' (str)"
+    },
+    {
+      "source": "duration: 22:53",
+      "yaml11": "1373 (int)",
+      "toml": "'22:53' (str)",
+      "json": "'22:53' (str)"
+    },
+    {
+      "source": "version: 1.10",
+      "yaml11": "1.1 (float)",
+      "toml": "'1.10' (str)",
+      "json": "'1.10' (str)"
+    },
+    {
+      "source": "stale_after: 2026-09-23",
+      "yaml11": "date(2026, 9, 23)",
+      "toml": "date(2026, 9, 23)",
+      "json": "'2026-09-23' (str)"
+    },
+    {
+      "source": "at: 2026-05-28T14:30:00Z",
+      "yaml11": "datetime",
+      "toml": "datetime",
+      "json": "'2026-05-28T14:30:00Z' (str)"
+    },
+    {
+      "source": "tags: [a, b, c]",
+      "yaml11": "['a','b','c'] (list)",
+      "toml": "['a','b','c'] (list)",
+      "json": "['a','b','c'] (list)"
+    },
+    {
+      "source": "tags: a, b, c",
+      "yaml11": "'a, b, c' (str)",
+      "toml": "rejected",
+      "json": "'a, b, c' (str)"
+    }
+  ],
+  "yamlSurprises": [
+    {
+      "case": "Country code",
+      "wrote": "NO",
+      "got": "False"
+    },
+    {
+      "case": "Draft flag",
+      "wrote": "no",
+      "got": "False"
+    },
+    {
+      "case": "Archived flag",
+      "wrote": "off",
+      "got": "False"
+    },
+    {
+      "case": "Zip code",
+      "wrote": "02134",
+      "got": "1116"
+    },
+    {
+      "case": "Build number",
+      "wrote": "010",
+      "got": "8"
+    },
+    {
+      "case": "Time of day",
+      "wrote": "22:53",
+      "got": "1373"
+    },
+    {
+      "case": "Version",
+      "wrote": "1.10",
+      "got": "1.1"
+    },
+    {
+      "case": "Date",
+      "wrote": "2026-09-23",
+      "got": "a date object"
+    },
+    {
+      "case": "Timestamp",
+      "wrote": "2026-05-28T14:30:00Z",
+      "got": "a datetime object"
+    },
+    {
+      "case": "Tag list",
+      "wrote": "[a, b, c]",
+      "got": "a list"
+    }
+  ],
+  "rejections": [
+    {
+      "input": "tags = a, b, c",
+      "yaml11": "accepted as one string",
+      "toml": "rejected at parse time"
+    },
+    {
+      "input": "country = NO",
+      "yaml11": "accepted as False",
+      "toml": "rejected at parse time"
+    },
+    {
+      "input": "draft = yes",
+      "yaml11": "accepted as True",
+      "toml": "rejected at parse time"
+    }
+  ],
+  "toolSupport": [
+    {
+      "tool": "Jekyll",
+      "yaml": "Yes, only",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "Must be the first thing in the file"
+    },
+    {
+      "tool": "Hugo",
+      "yaml": "Yes, ---",
+      "toml": "Yes, +++",
+      "json": "Yes, { }",
+      "javascript": "No",
+      "notes": "Picks the format from the delimiter"
+    },
+    {
+      "tool": "Zola",
+      "yaml": "Yes, legacy only",
+      "toml": "Yes, +++, preferred",
+      "json": "No",
+      "javascript": "No",
+      "notes": "YAML accepted \"to ease porting\""
+    },
+    {
+      "tool": "Eleventy",
+      "yaml": "Yes, default",
+      "toml": "Via a custom engine",
+      "json": "Yes, ---json",
+      "javascript": "Yes, ---js",
+      "notes": "Built on gray-matter"
+    },
+    {
+      "tool": "gray-matter",
+      "yaml": "Yes, default",
+      "toml": "Via a custom engine",
+      "json": "Yes",
+      "javascript": "Yes",
+      "notes": "Detects the label after the fence"
+    },
+    {
+      "tool": "Docusaurus",
+      "yaml": "Yes, only",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "\"The content is parsed as YAML\""
+    },
+    {
+      "tool": "Obsidian",
+      "yaml": "Yes",
+      "toml": "No",
+      "json": "Input only",
+      "javascript": "No",
+      "notes": "JSON is \"read, interpreted, and saved as YAML\""
+    },
+    {
+      "tool": "Quarto, R Markdown",
+      "yaml": "Yes",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "Pandoc lineage"
+    },
+    {
+      "tool": "Pandoc",
+      "yaml": "Yes",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "Block may sit anywhere and close with ..."
+    },
+    {
+      "tool": "MultiMarkdown",
+      "yaml": "Own",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "No delimiters, ends at first blank line"
+    },
+    {
+      "tool": "Python-Markdown",
+      "yaml": "Own, --- optional",
+      "toml": "No",
+      "json": "No",
+      "javascript": "No",
+      "notes": "Every value is a list of strings"
+    },
+    {
+      "tool": "Astro",
+      "yaml": "Yes, in content files",
+      "toml": "No",
+      "json": "No",
+      "javascript": "Component script",
+      "notes": "--- in .astro is TypeScript"
+    }
+  ],
+  "choosing": [
+    {
+      "situation": "Publishing through Jekyll, Docusaurus, Obsidian, Quarto",
+      "use": "YAML",
+      "why": "It is the only format they accept"
+    },
+    {
+      "situation": "Hugo or Zola, and metadata is machine-consumed",
+      "use": "TOML",
+      "why": "Failures become parse errors, not wrong values"
+    },
+    {
+      "situation": "Metadata is generated and consumed by programs, never hand-edited",
+      "use": "JSON",
+      "why": "No ambiguity at all, at the cost of comments"
+    },
+    {
+      "situation": "You need computed values at build time",
+      "use": "JavaScript",
+      "why": "Only if you accept that reading it means running it"
+    },
+    {
+      "situation": "Titles, authors, and tags for a document pipeline",
+      "use": "MultiMarkdown style",
+      "why": "No typing means no type surprises"
+    },
+    {
+      "situation": "Defining a format others will implement",
+      "use": "YAML, and specify it precisely",
+      "why": "Anything else limits adoption. Name the version and the schema"
+    }
+  ],
+  "sources": [
+    {
+      "source": "Jekyll front matter",
+      "usedFor": "YAML only, must be first in file"
+    },
+    {
+      "source": "Hugo front matter",
+      "usedFor": "YAML, TOML, JSON delimiters"
+    },
+    {
+      "source": "Zola pages",
+      "usedFor": "TOML preferred, YAML for legacy"
+    },
+    {
+      "source": "Eleventy front matter",
+      "usedFor": "---json and ---js syntax"
+    },
+    {
+      "source": "gray-matter",
+      "usedFor": "Language detection after the fence, custom engines"
+    },
+    {
+      "source": "Docusaurus markdown features",
+      "usedFor": "YAML only"
+    },
+    {
+      "source": "Obsidian properties",
+      "usedFor": "YAML, JSON input saved as YAML"
+    },
+    {
+      "source": "Quarto front matter",
+      "usedFor": "YAML"
+    },
+    {
+      "source": "Pandoc manual",
+      "usedFor": "... terminator, block position"
+    },
+    {
+      "source": "MultiMarkdown metadata",
+      "usedFor": "Unfenced key-value block rules"
+    },
+    {
+      "source": "Python-Markdown Meta-Data",
+      "usedFor": "Values as lists of strings"
+    },
+    {
+      "source": "Astro components",
+      "usedFor": "The component script quote"
+    },
+    {
+      "source": "YAML 1.2.2, YAML 1.1",
+      "usedFor": "Version differences"
+    },
+    {
+      "source": "TOML",
+      "usedFor": "Type rules"
+    }
+  ],
+  "unestablished": [
+    {
+      "question": "Any formal standard for Markdown frontmatter",
+      "status": "None exists. No RFC, no W3C note. Every tool implements its own reader"
+    },
+    {
+      "question": "A registered media type for a frontmatter document",
+      "status": "Not found"
+    },
+    {
+      "question": "Reliable usage share per format",
+      "status": "Not found. Every figure located was a vendor claim"
+    }
+  ],
+  "limitations": [
+    "Python parsers only; a JavaScript reader using js-yaml implements YAML 1.2 and returns different values for the boolean and octal rows.",
+    "One version of each library. A different loader gives different answers, which is the report's point rather than an oversight.",
+    "The tool support matrix reflects documented behaviour; none of the tools was installed and exercised.",
+    "Not an exhaustive survey of every convention ever invented.",
+    "No adoption or usage-share numbers, because no reliable figure was located."
+  ]
+}
