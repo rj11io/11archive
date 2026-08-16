@@ -1,0 +1,1247 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "name": "testing-practices/build.mjs",
+    "derivedFrom": [
+      "README.md",
+      "00-executive-brief.md",
+      "01-anatomy-of-a-test.md",
+      "02-software-scope-levels.md",
+      "03-software-design-techniques.md",
+      "04-software-generative-techniques.md",
+      "05-software-non-functional.md",
+      "06-software-practice-and-workflow.md",
+      "07-safety-critical-and-standards.md",
+      "08-science-and-statistics.md",
+      "09-health-and-diagnostics.md",
+      "10-materials-and-manufacturing.md",
+      "11-people-and-organisations.md",
+      "12-markets-and-money.md",
+      "13-cross-domain-map.md",
+      "14-how-testing-fails.md",
+      "15-glossary.md",
+      "16-methodology-and-sources.md"
+    ],
+    "note": "Every array below is parsed out of the Markdown tables, so data.json and the prose cannot disagree."
+  },
+  "generatedAt": "2026-08-16T23:29:29.378Z",
+  "title": "Testing: Every Kind, and What They Have in Common",
+  "description": "Software testing in depth, then testing everywhere else, then the map between them. One six-part frame covers all of it.",
+  "researchDate": "2026-08-17",
+  "subject": {
+    "topic": "Testing as a general practice, in software and outside it",
+    "thesis": "Every test in every field has the same six parts. A field's characteristic failure is whichever part it habitually leaves unstated.",
+    "domainsCovered": [
+      "software engineering",
+      "safety-critical and regulated systems",
+      "machine learning evaluation",
+      "statistics and experimental science",
+      "medicine and diagnostics",
+      "laboratories and metrology",
+      "materials and manufacturing",
+      "industrial commissioning",
+      "vehicle and consumer safety",
+      "food safety and sensory analysis",
+      "psychometrics and education",
+      "forensics and law",
+      "organisational and security exercises",
+      "product and market research",
+      "banking, risk, and audit"
+    ]
+  },
+  "scope": {
+    "objective": "Survey software testing in depth, survey testing outside code, and map the two onto each other so practices can move between them.",
+    "covers": [
+      "software testing by scope, technique, generation method, and quality attribute",
+      "testing practice and workflow, including shift-left and shift-right",
+      "regulated and safety-critical testing, including testing of AI systems",
+      "testing in statistics, medicine, manufacturing, education, security, and finance",
+      "the failure modes shared across every domain"
+    ],
+    "excludes": [
+      "tool comparisons and recommendations",
+      "quantitative claims about which practices produce better outcomes",
+      "test management tooling, staffing models, and outsourcing"
+    ],
+    "evidenceBoundary": "Public documentation, standards bodies' own descriptions, published papers, and regulator publications, read on 2026-08-16 and 2026-08-17. No tools were installed or exercised. Paywalled standards were not purchased."
+  },
+  "originalContributions": [
+    "The six-part frame, and the claim that a field's characteristic failure is the part it leaves unstated.",
+    "A cross-domain translation table mapping software testing vocabulary to its equivalents in other fields.",
+    "Five concrete practices software should take from older testing disciplines, with a worked sampling plan.",
+    "The diagnostic matrix in section 09, recomputed rather than quoted, and gated by this generator."
+  ],
+  "recomputed": {
+    "diagnosticExample": {
+      "description": "Mammogram at 85% sensitivity and 90% specificity, 1% prevalence, 10,000 women. Recomputed from the stated inputs rather than quoted.",
+      "sensitivity": 0.85,
+      "specificity": 0.9,
+      "prevalence": 0.01,
+      "population": 10000,
+      "truePositives": 85,
+      "falsePositives": 990,
+      "falseNegatives": 15,
+      "trueNegatives": 8910,
+      "positivePredictiveValue": 0.0791,
+      "negativePredictiveValue": 0.9983,
+      "positivePredictiveValueText": "7.9%"
+    }
+  },
+  "counts": {
+    "sections": 18,
+    "headings": 173,
+    "tables": 44,
+    "externalSources": 70,
+    "sixParts": 6,
+    "oracleStrategies": 8,
+    "errorDomains": 8,
+    "scopeLevels": 9,
+    "performanceTypes": 7,
+    "securityMethods": 7,
+    "testDoubles": 5,
+    "testShapes": 4,
+    "safetyStandards": 5,
+    "trialPhases": 5,
+    "ndtMethods": 6,
+    "translationRows": 35,
+    "failureModes": 12
+  },
+  "sixParts": [
+    {
+      "part": "Subject",
+      "question": "What exactly is under test?",
+      "softwareExample": "one function, parsePrice()",
+      "nonSoftwareExample": "one weld on one pipe joint"
+    },
+    {
+      "part": "Stimulus",
+      "question": "What do you do to it?",
+      "softwareExample": "call it with \"$1,299.00\"",
+      "nonSoftwareExample": "send high-frequency sound through the weld"
+    },
+    {
+      "part": "Oracle",
+      "question": "How do you know the right answer?",
+      "softwareExample": "the assertion expect(result).toBe(129900)",
+      "nonSoftwareExample": "a reference block with a known, measured flaw in it"
+    },
+    {
+      "part": "Threshold",
+      "question": "Where is the pass/fail line?",
+      "softwareExample": "exact equality; any difference fails",
+      "nonSoftwareExample": "reject if the returned echo exceeds a set share of the reference echo"
+    },
+    {
+      "part": "Coverage claim",
+      "question": "What did this result cover, and what did it not?",
+      "softwareExample": "US dollar format only; no euros, no negatives",
+      "nonSoftwareExample": "flaws inside the metal only; says nothing about surface cracks"
+    },
+    {
+      "part": "Decision",
+      "question": "What changes because of the result?",
+      "softwareExample": "block the merge",
+      "nonSoftwareExample": "cut the weld out and redo it"
+    }
+  ],
+  "oracleStrategies": [
+    {
+      "strategy": "Stated expected value",
+      "howItWorks": "Someone writes down the answer in advance",
+      "usedIn": "unit tests, exam answer keys"
+    },
+    {
+      "strategy": "Reference standard",
+      "howItWorks": "Compare against a physical or certified artefact",
+      "usedIn": "calibration weights, NDT reference blocks, lab controls"
+    },
+    {
+      "strategy": "Second implementation",
+      "howItWorks": "Run two independent versions, compare",
+      "usedIn": "differential testing, dual-entry bookkeeping, double data entry in trials"
+    },
+    {
+      "strategy": "Previous version",
+      "howItWorks": "Compare against what the system did last time",
+      "usedIn": "snapshot and approval tests, regression baselines, control charts"
+    },
+    {
+      "strategy": "Relation, not value",
+      "howItWorks": "You do not know the answer, but you know how two answers must relate",
+      "usedIn": "metamorphic testing, physical conservation laws"
+    },
+    {
+      "strategy": "Property",
+      "howItWorks": "You do not know the answer, but you know a rule it must obey",
+      "usedIn": "property-based testing, mass balance in chemistry"
+    },
+    {
+      "strategy": "Human judgement",
+      "howItWorks": "An expert decides",
+      "usedIn": "exploratory testing, sensory panels, radiologists, peer review"
+    },
+    {
+      "strategy": "Control group",
+      "howItWorks": "The oracle is a second population that got nothing",
+      "usedIn": "clinical trials, A/B tests, field experiments in economics"
+    }
+  ],
+  "errorDirections": [
+    {
+      "domain": "Software test suite",
+      "falsePositive": "flaky test, red build on good code",
+      "falseNegative": "escaped defect reaching users",
+      "costlier": "false positives, because they train people to ignore the suite"
+    },
+    {
+      "domain": "Static analysis and linters",
+      "falsePositive": "noisy warning on correct code",
+      "falseNegative": "missed vulnerability",
+      "costlier": "false positives, for the same reason"
+    },
+    {
+      "domain": "Medical screening",
+      "falsePositive": "healthy person told they may be ill",
+      "falseNegative": "illness missed",
+      "costlier": "depends on the disease and the follow-up cost"
+    },
+    {
+      "domain": "Manufacturing inspection",
+      "falsePositive": "good part scrapped, \"producer's risk\"",
+      "falseNegative": "bad part shipped, \"consumer's risk\"",
+      "costlier": "stated explicitly in the sampling plan, in advance"
+    },
+    {
+      "domain": "Airport and security screening",
+      "falsePositive": "innocent bag flagged",
+      "falseNegative": "weapon missed",
+      "costlier": "false negatives, so thresholds run permissive"
+    },
+    {
+      "domain": "Spam filtering",
+      "falsePositive": "real mail in the junk folder",
+      "falseNegative": "spam in the inbox",
+      "costlier": "false positives, badly"
+    },
+    {
+      "domain": "Court and forensics",
+      "falsePositive": "innocent person convicted",
+      "falseNegative": "guilty person freed",
+      "costlier": "the whole system is tuned around the first"
+    },
+    {
+      "domain": "Fire alarm",
+      "falsePositive": "evacuation for burnt toast",
+      "falseNegative": "no alarm during a fire",
+      "costlier": "false positives erode the response to real ones"
+    }
+  ],
+  "implicitParts": [
+    {
+      "field": "Software",
+      "implicitPart": "coverage claim",
+      "consequence": "\"the tests pass\" is read as \"the software works\""
+    },
+    {
+      "field": "Statistics and social science",
+      "implicitPart": "threshold and decision",
+      "consequence": "p < 0.05 gets treated as a discovery rather than a chosen line"
+    },
+    {
+      "field": "Medical screening",
+      "implicitPart": "coverage claim, specifically the base rate",
+      "consequence": "a positive result is read as a diagnosis"
+    },
+    {
+      "field": "Education",
+      "implicitPart": "oracle, specifically what the exam is a proxy for",
+      "consequence": "the score replaces the skill it stood for"
+    },
+    {
+      "field": "Manufacturing",
+      "implicitPart": "nothing, usually",
+      "consequence": "the paperwork is the product, so cost and rigidity rise"
+    },
+    {
+      "field": "Security testing",
+      "implicitPart": "coverage claim",
+      "consequence": "\"we passed the pentest\" is read as \"we are secure\""
+    },
+    {
+      "field": "Machine learning evaluation",
+      "implicitPart": "oracle and coverage claim",
+      "consequence": "benchmark contamination, and scores that do not transfer"
+    }
+  ],
+  "scopeLadder": [
+    {
+      "level": "Static analysis",
+      "startsUp": "nothing; reads the code",
+      "typicalTime": "milliseconds",
+      "catches": "type errors, unsafe patterns, style, some security bugs",
+      "misses": "anything about runtime behaviour"
+    },
+    {
+      "level": "Unit",
+      "startsUp": "one function or class, everything else replaced by stand-ins",
+      "typicalTime": "under 10ms",
+      "catches": "logic errors in that one piece",
+      "misses": "wrong assumptions about the pieces around it"
+    },
+    {
+      "level": "Component",
+      "startsUp": "one module with its real internals, external systems replaced",
+      "typicalTime": "10ms to 1s",
+      "catches": "wiring inside a module",
+      "misses": "wiring between modules"
+    },
+    {
+      "level": "Integration",
+      "startsUp": "two or more real parts together, often with a real database",
+      "typicalTime": "100ms to 10s",
+      "catches": "mismatched interfaces, schema errors, transaction bugs",
+      "misses": "whole-journey problems"
+    },
+    {
+      "level": "Contract",
+      "startsUp": "one service, plus a recorded agreement with another",
+      "typicalTime": "under 1s",
+      "catches": "one side changing an interface the other relies on",
+      "misses": "behaviour neither side wrote down"
+    },
+    {
+      "level": "System",
+      "startsUp": "the whole application, dependencies stubbed at the edge",
+      "typicalTime": "seconds",
+      "catches": "configuration, startup, cross-cutting behaviour",
+      "misses": "real third-party behaviour"
+    },
+    {
+      "level": "End-to-end",
+      "startsUp": "everything real, driven through the real interface",
+      "typicalTime": "seconds to minutes",
+      "catches": "anything, in principle",
+      "misses": "anything, reliably, in practice"
+    },
+    {
+      "level": "Acceptance",
+      "startsUp": "the system, judged against what a user or buyer asked for",
+      "typicalTime": "varies",
+      "catches": "\"we built the wrong thing\"",
+      "misses": "\"we built it badly\""
+    },
+    {
+      "level": "Production",
+      "startsUp": "the live system, with real traffic",
+      "typicalTime": "continuous",
+      "catches": "everything the other levels assumed away",
+      "misses": "problems you did not think to watch for"
+    }
+  ],
+  "flakinessBySize": [
+    {
+      "size": "Small",
+      "correspondsTo": "unit, single process, no network or disk",
+      "flakyRate": "0.5%"
+    },
+    {
+      "size": "Medium",
+      "correspondsTo": "single machine, may use localhost network",
+      "flakyRate": "1.6%"
+    },
+    {
+      "size": "Large",
+      "correspondsTo": "multi-machine, full system",
+      "flakyRate": "14%"
+    }
+  ],
+  "generativeSelection": [
+    {
+      "situation": "A function with an algebraic rule (parse/serialise, sort, encode)",
+      "technique": "property-based"
+    },
+    {
+      "situation": "Code that handles untrusted input, parsers, decoders, anything in C or C++",
+      "technique": "fuzzing"
+    },
+    {
+      "situation": "A suite you do not trust, or a coverage number you suspect",
+      "technique": "mutation testing"
+    },
+    {
+      "situation": "Machine learning output, search ranking, simulation, anything without a known answer",
+      "technique": "metamorphic"
+    },
+    {
+      "situation": "Replacing an existing system",
+      "technique": "differential, run in shadow"
+    },
+    {
+      "situation": "Legacy code you must change and do not understand",
+      "technique": "characterization via recorded output"
+    },
+    {
+      "situation": "Complex stateful protocol",
+      "technique": "model-based or stateful property testing"
+    },
+    {
+      "situation": "A component where failure is catastrophic",
+      "technique": "formal verification, on the core only"
+    }
+  ],
+  "performanceTypes": [
+    {
+      "name": "Load test",
+      "loadShape": "expected peak traffic",
+      "question": "does it meet its targets under normal worst-case use"
+    },
+    {
+      "name": "Stress test",
+      "loadShape": "increase until it breaks",
+      "question": "where is the limit, and how does it fail"
+    },
+    {
+      "name": "Spike test",
+      "loadShape": "sudden jump, then back down",
+      "question": "does it survive a traffic surge, and does it recover"
+    },
+    {
+      "name": "Soak test, endurance test",
+      "loadShape": "normal load, for many hours",
+      "question": "does anything leak, drift, or fill up"
+    },
+    {
+      "name": "Volume test",
+      "loadShape": "normal traffic, very large data",
+      "question": "does it survive a 500GB table rather than a 500MB one"
+    },
+    {
+      "name": "Scalability test",
+      "loadShape": "load rises while capacity rises",
+      "question": "does adding machines actually add throughput"
+    },
+    {
+      "name": "Capacity test",
+      "loadShape": "rising load, measured against a target",
+      "question": "how many users can we serve at our latency target"
+    }
+  ],
+  "securityMethods": [
+    {
+      "method": "SAST, static application security testing",
+      "whatItIs": "reads source code for unsafe patterns",
+      "sees": "all code paths, including unreached ones",
+      "misses": "anything that depends on runtime configuration"
+    },
+    {
+      "method": "DAST, dynamic application security testing",
+      "whatItIs": "attacks the running application from outside",
+      "sees": "real, exploitable behaviour",
+      "misses": "code it never reaches"
+    },
+    {
+      "method": "IAST, interactive",
+      "whatItIs": "instruments the running app while it is exercised",
+      "sees": "runtime behaviour with code-level detail",
+      "misses": "needs the app to be driven well"
+    },
+    {
+      "method": "SCA, software composition analysis",
+      "whatItIs": "checks third-party dependencies against known vulnerability lists",
+      "sees": "published vulnerabilities in libraries",
+      "misses": "vulnerabilities nobody has published"
+    },
+    {
+      "method": "Secret scanning",
+      "whatItIs": "looks for keys and passwords in code and history",
+      "sees": "committed credentials",
+      "misses": "credentials elsewhere"
+    },
+    {
+      "method": "Penetration testing",
+      "whatItIs": "a person tries to break in, with permission",
+      "sees": "logic flaws, chained weaknesses",
+      "misses": "anything outside the agreed scope and time"
+    },
+    {
+      "method": "Red teaming",
+      "whatItIs": "a person simulates a real adversary against the whole organisation, usually without warning defenders",
+      "sees": "whether you would detect and respond",
+      "misses": "narrow technical coverage"
+    }
+  ],
+  "testDoubles": [
+    {
+      "double": "Dummy",
+      "whatItDoes": "passed in, never used",
+      "useWhen": "a parameter must be supplied and does not matter"
+    },
+    {
+      "double": "Stub",
+      "whatItDoes": "returns canned answers",
+      "useWhen": "you need the code under test to receive a particular value"
+    },
+    {
+      "double": "Spy",
+      "whatItDoes": "a stub that also records how it was called",
+      "useWhen": "you want to check a call happened, after the fact"
+    },
+    {
+      "double": "Mock",
+      "whatItDoes": "pre-programmed with expectations, fails the test if they are not met",
+      "useWhen": "the call itself is the behaviour you are testing"
+    },
+    {
+      "double": "Fake",
+      "whatItDoes": "a real, working, simplified implementation",
+      "useWhen": "you need realistic behaviour cheaply, for example an in-memory database"
+    }
+  ],
+  "testShapes": [
+    {
+      "shape": "Test pyramid",
+      "proposedBy": "Mike Cohn, Succeeding with Agile, 2009",
+      "distribution": "many unit, fewer integration, very few end-to-end",
+      "bestFit": "monoliths with rich domain logic"
+    },
+    {
+      "shape": "Testing trophy",
+      "proposedBy": "Kent C. Dodds",
+      "distribution": "static analysis at the base, weight on integration",
+      "bestFit": "front-end and application code with thin logic and many integrations"
+    },
+    {
+      "shape": "Testing honeycomb",
+      "proposedBy": "Spotify, Schaffer and Dybeck, January 2018",
+      "distribution": "small ends, fat middle of integration tests",
+      "bestFit": "microservices, where the risk is between services"
+    },
+    {
+      "shape": "Ice cream cone",
+      "proposedBy": "nobody, on purpose",
+      "distribution": "mostly manual and end-to-end, few unit",
+      "bestFit": "the shape teams end up with by accident"
+    }
+  ],
+  "metrics": [
+    {
+      "metric": "Line or branch coverage",
+      "tellsYou": "which code no test reaches",
+      "gamedBy": "write tests with no assertions"
+    },
+    {
+      "metric": "Mutation score",
+      "tellsYou": "whether tests would notice a behaviour change",
+      "gamedBy": "ignore mutants as \"equivalent\""
+    },
+    {
+      "metric": "Escaped defect rate",
+      "tellsYou": "how many bugs reach users",
+      "gamedBy": "classify bugs as features"
+    },
+    {
+      "metric": "Change failure rate",
+      "tellsYou": "share of deployments causing a failure",
+      "gamedBy": "deploy less often"
+    },
+    {
+      "metric": "Mean time to restore",
+      "tellsYou": "how fast you recover",
+      "gamedBy": "reclassify incidents"
+    },
+    {
+      "metric": "Flake rate",
+      "tellsYou": "how much your suite lies",
+      "gamedBy": "auto-retry until green"
+    },
+    {
+      "metric": "Suite runtime",
+      "tellsYou": "whether people will keep running it",
+      "gamedBy": "split the suite and only run part"
+    }
+  ],
+  "safetyStandards": [
+    {
+      "standard": "DO-178C / ED-12C",
+      "domain": "Airborne software",
+      "levels": "Level E, D, C, B, A"
+    },
+    {
+      "standard": "ISO 26262",
+      "domain": "Road vehicles",
+      "levels": "ASIL A, B, C, D (plus QM, meaning no safety requirement)"
+    },
+    {
+      "standard": "IEC 62304",
+      "domain": "Medical device software",
+      "levels": "Class A, B, C"
+    },
+    {
+      "standard": "IEC 61508",
+      "domain": "Industrial functional safety, the parent standard",
+      "levels": "SIL 1 to SIL 4"
+    },
+    {
+      "standard": "EN 50128",
+      "domain": "Railway control software",
+      "levels": "SIL 0 to SIL 4"
+    }
+  ],
+  "mlTestMethods": [
+    {
+      "method": "Held-out benchmark evaluation",
+      "whatItDoes": "score the model on data it did not train on",
+      "limit": "benchmark contamination, where the test data leaked into training; scores that do not transfer to real use"
+    },
+    {
+      "method": "Metamorphic testing",
+      "whatItDoes": "check relations rather than values, as in 04",
+      "limit": "you must invent the relations"
+    },
+    {
+      "method": "Data validation",
+      "whatItDoes": "test the inputs: schema, ranges, distribution drift",
+      "limit": "catches data problems, not model problems"
+    },
+    {
+      "method": "Behavioural testing",
+      "whatItDoes": "curated cases for known failure classes, for example negation, names, dialects",
+      "limit": "only covers what you thought of"
+    },
+    {
+      "method": "Red teaming",
+      "whatItDoes": "people deliberately probe for harmful or disallowed outputs",
+      "limit": "coverage is unmeasured"
+    },
+    {
+      "method": "Slice-based evaluation",
+      "whatItDoes": "report accuracy per subgroup, not just overall",
+      "limit": "requires you to know which slices matter"
+    },
+    {
+      "method": "Shadow deployment",
+      "whatItDoes": "run the model on real traffic without acting on it",
+      "limit": "needs an outcome to compare against"
+    }
+  ],
+  "replicationMeasures": [
+    {
+      "measure": "Replications with a statistically significant result in the same direction",
+      "result": "36%"
+    },
+    {
+      "measure": "Original effect size inside the replication's 95% confidence interval",
+      "result": "47%"
+    },
+    {
+      "measure": "Subjectively judged by the replication team to have replicated",
+      "result": "39%"
+    },
+    {
+      "measure": "Combining original and replication data, still statistically significant",
+      "result": "68%"
+    }
+  ],
+  "quasiExperimental": [
+    {
+      "design": "Natural experiment",
+      "idea": "something outside the researcher's control assigned people as-if randomly",
+      "example": "a lottery for school places"
+    },
+    {
+      "design": "Difference-in-differences",
+      "idea": "compare the change over time in a treated group against the change in an untreated group",
+      "example": "one state raises its minimum wage, the neighbouring state does not"
+    },
+    {
+      "design": "Regression discontinuity",
+      "idea": "compare people just above and just below an arbitrary cutoff",
+      "example": "students who scored 59 and 61 on a scholarship threshold"
+    },
+    {
+      "design": "Instrumental variables",
+      "idea": "use something that affects the treatment but not the outcome directly",
+      "example": "distance to a college as a lever on years of education"
+    },
+    {
+      "design": "Matching",
+      "idea": "compare treated units to untreated ones with similar known characteristics",
+      "example": "weaker, because it can only match on what you measured"
+    }
+  ],
+  "trialPhases": [
+    {
+      "phase": "Phase 0",
+      "who": "very few volunteers, microdoses",
+      "participants": "10 to 15",
+      "question": "does the drug behave in humans the way we expect at all"
+    },
+    {
+      "phase": "Phase 1",
+      "who": "usually healthy volunteers",
+      "participants": "20 to 100",
+      "question": "is it safe, what dose, what side effects"
+    },
+    {
+      "phase": "Phase 2",
+      "who": "people with the condition",
+      "participants": "100 to 300",
+      "question": "does it appear to work"
+    },
+    {
+      "phase": "Phase 3",
+      "who": "people with the condition, many sites",
+      "participants": "300 to 3,000",
+      "question": "does it work, compared to the current standard, with rare harms visible"
+    },
+    {
+      "phase": "Phase 4",
+      "who": "everyone taking it after approval",
+      "participants": "thousands, over years",
+      "question": "what shows up in the real population over time"
+    }
+  ],
+  "diagnosticMatrix": [
+    {
+      "result": "Test positive",
+      "hasCancer": "85 (true positive)",
+      "noCancer": "990 (false positive)",
+      "total": "1,075"
+    },
+    {
+      "result": "Test negative",
+      "hasCancer": "15 (false negative)",
+      "noCancer": "8,910 (true negative)",
+      "total": "8,925"
+    }
+  ],
+  "destructiveTests": [
+    {
+      "test": "Tensile test",
+      "whatItDoes": "pulls a specimen until it breaks",
+      "tellsYou": "strength, stiffness, how much it stretches first"
+    },
+    {
+      "test": "Hardness test",
+      "whatItDoes": "presses a defined indenter with a defined force",
+      "tellsYou": "resistance to denting and wear"
+    },
+    {
+      "test": "Impact test, for example Charpy",
+      "whatItDoes": "strikes a notched specimen with a pendulum",
+      "tellsYou": "how much energy it absorbs before fracturing, and whether it fails brittle or ductile"
+    },
+    {
+      "test": "Fatigue test",
+      "whatItDoes": "cycles a load millions of times",
+      "tellsYou": "how many cycles it survives at a given stress"
+    },
+    {
+      "test": "Creep test",
+      "whatItDoes": "holds a load at temperature for a long time",
+      "tellsYou": "slow deformation under sustained load"
+    },
+    {
+      "test": "Burst test",
+      "whatItDoes": "pressurises until the vessel fails",
+      "tellsYou": "the actual failure pressure and mode"
+    }
+  ],
+  "ndtMethods": [
+    {
+      "method": "Visual (VT)",
+      "howItWorks": "trained inspection, often with optics or a borescope",
+      "finds": "surface defects"
+    },
+    {
+      "method": "Liquid penetrant (PT)",
+      "howItWorks": "a dye is drawn into surface cracks by capillary action, then developed",
+      "finds": "surface-breaking cracks in non-porous materials"
+    },
+    {
+      "method": "Magnetic particle (MT)",
+      "howItWorks": "magnetise the part, iron particles gather at flux leakage",
+      "finds": "surface and near-surface cracks in ferrous metals"
+    },
+    {
+      "method": "Eddy current (ET)",
+      "howItWorks": "an alternating field induces currents; flaws distort them",
+      "finds": "surface cracks, corrosion, conductivity changes"
+    },
+    {
+      "method": "Ultrasonic (UT)",
+      "howItWorks": "high-frequency sound reflects off internal discontinuities",
+      "finds": "internal flaws, and wall thickness"
+    },
+    {
+      "method": "Radiographic (RT)",
+      "howItWorks": "X-rays or gamma rays image the interior",
+      "finds": "internal voids, inclusions, weld defects"
+    }
+  ],
+  "reliabilityMethods": [
+    {
+      "method": "Accelerated life testing (ALT)",
+      "whatItDoes": "run at higher stress, use a physical model to extrapolate",
+      "purpose": "quantitative: estimate life at normal stress"
+    },
+    {
+      "method": "Highly accelerated life testing (HALT)",
+      "whatItDoes": "escalate temperature and vibration until it breaks, then further",
+      "purpose": "qualitative: find the weak links in the design. There are no survivors, on purpose"
+    },
+    {
+      "method": "Highly accelerated stress screening (HASS)",
+      "whatItDoes": "apply stresses derived from HALT to production units",
+      "purpose": "catch manufacturing defects, not design defects"
+    },
+    {
+      "method": "Environmental stress screening (ESS)",
+      "whatItDoes": "milder stresses, applied to 100% of units",
+      "purpose": "remove early-life failures before shipping"
+    },
+    {
+      "method": "Burn-in",
+      "whatItDoes": "run units under power and temperature for a period",
+      "purpose": "the same goal, thermal and voltage only"
+    }
+  ],
+  "commissioningStages": [
+    {
+      "stage": "Factory acceptance test (FAT)",
+      "where": "at the manufacturer, before shipping",
+      "proves": "the equipment meets specification under controlled conditions"
+    },
+    {
+      "stage": "Site acceptance test (SAT)",
+      "where": "at the final installation",
+      "proves": "it still works with real utilities, real interfaces, and site conditions"
+    },
+    {
+      "stage": "Commissioning and qualification",
+      "where": "on site, in final configuration",
+      "proves": "the integrated system runs as intended"
+    }
+  ],
+  "psychometricReliability": [
+    {
+      "type": "Test-retest",
+      "question": "same person, later, same score?",
+      "checkedBy": "administer twice, correlate"
+    },
+    {
+      "type": "Internal consistency",
+      "question": "do the items measure the same thing?",
+      "checkedBy": "Cronbach's alpha across items"
+    },
+    {
+      "type": "Inter-rater",
+      "question": "do two markers agree?",
+      "checkedBy": "Cohen's kappa, which corrects raw agreement for chance"
+    },
+    {
+      "type": "Parallel forms",
+      "question": "do two versions of the test agree?",
+      "checkedBy": "correlate scores across forms"
+    }
+  ],
+  "organisationalExercises": [
+    {
+      "exercise": "Tabletop exercise",
+      "tests": "decision-making, roles, and communication under a scenario",
+      "realism": "discussion only, no systems touched"
+    },
+    {
+      "exercise": "Walkthrough or drill",
+      "tests": "one specific procedure, performed for real",
+      "realism": "limited scope"
+    },
+    {
+      "exercise": "Simulation or functional exercise",
+      "tests": "responders act, but on a simulated incident",
+      "realism": "systems may be exercised"
+    },
+    {
+      "exercise": "Full-scale exercise",
+      "tests": "the real thing, with real systems and real disruption",
+      "realism": "fully real"
+    },
+    {
+      "exercise": "Disaster recovery test",
+      "tests": "restore systems into a clean environment and confirm they work",
+      "realism": "real, if done properly"
+    },
+    {
+      "exercise": "Fire drill and evacuation",
+      "tests": "can everyone get out, in the time budget",
+      "realism": "real"
+    },
+    {
+      "exercise": "Phishing simulation",
+      "tests": "will staff click, and will they report it",
+      "realism": "real, on real people"
+    },
+    {
+      "exercise": "Red team exercise",
+      "tests": "would you detect and respond to an actual intruder",
+      "realism": "real, usually undisclosed to defenders"
+    },
+    {
+      "exercise": "War gaming",
+      "tests": "strategic decisions against an adversary who adapts",
+      "realism": "simulated"
+    }
+  ],
+  "demandTests": [
+    {
+      "method": "Customer discovery interview",
+      "whatYouDo": "ask people about their current behaviour and problems",
+      "actuallyTests": "what they do now",
+      "mainRisk": "asking about the future, which people answer badly"
+    },
+    {
+      "method": "Concept test",
+      "whatYouDo": "show a description or mockup, measure reaction",
+      "actuallyTests": "whether the idea is understood and appealing",
+      "mainRisk": "stated preference is not behaviour"
+    },
+    {
+      "method": "Fake door test, also called smoke test",
+      "whatYouDo": "ship a button or landing page for a feature that does not exist, count clicks",
+      "actuallyTests": "revealed intent, with real money and attention at stake",
+      "mainRisk": "annoys the people who click"
+    },
+    {
+      "method": "Wizard of Oz test",
+      "whatYouDo": "the interface is real, humans perform the work behind it",
+      "actuallyTests": "whether the experience is valuable, before automating it",
+      "mainRisk": "does not scale, and hides the cost"
+    },
+    {
+      "method": "Concierge test",
+      "whatYouDo": "you deliver the service manually, openly",
+      "actuallyTests": "whether the outcome is valuable",
+      "mainRisk": "small sample, and you learn a lot"
+    },
+    {
+      "method": "Pilot or limited launch",
+      "whatYouDo": "full product, small market or small group",
+      "actuallyTests": "everything, at small scale",
+      "mainRisk": "slow, and the small group may not represent the rest"
+    },
+    {
+      "method": "Minimum viable product",
+      "whatYouDo": "smallest thing that produces real learning",
+      "actuallyTests": "usually demand plus feasibility",
+      "mainRisk": "\"minimum\" tends to win over \"viable\""
+    }
+  ],
+  "translation": [
+    {
+      "softwareTerm": "Unit test",
+      "equivalent": "coupon test on a material sample",
+      "field": "materials"
+    },
+    {
+      "softwareTerm": "Integration test",
+      "equivalent": "subsystem test rig",
+      "field": "aerospace"
+    },
+    {
+      "softwareTerm": "End-to-end test",
+      "equivalent": "full-scale exercise; road test",
+      "field": "emergency planning; automotive"
+    },
+    {
+      "softwareTerm": "Smoke test",
+      "equivalent": "power-on self-test; pre-flight check",
+      "field": "electronics; aviation"
+    },
+    {
+      "softwareTerm": "Regression test",
+      "equivalent": "control chart; recurring proficiency test",
+      "field": "manufacturing; laboratories"
+    },
+    {
+      "softwareTerm": "Staging environment",
+      "equivalent": "factory acceptance test (FAT)",
+      "field": "industrial commissioning"
+    },
+    {
+      "softwareTerm": "Production validation",
+      "equivalent": "site acceptance test (SAT)",
+      "field": "industrial commissioning"
+    },
+    {
+      "softwareTerm": "Canary release",
+      "equivalent": "dose escalation cohort; pilot programme",
+      "field": "clinical trials; policy"
+    },
+    {
+      "softwareTerm": "A/B test",
+      "equivalent": "randomised controlled trial",
+      "field": "medicine, economics"
+    },
+    {
+      "softwareTerm": "Feature flag",
+      "equivalent": "reversible pilot",
+      "field": "policy"
+    },
+    {
+      "softwareTerm": "Chaos engineering",
+      "equivalent": "fire drill; HALT; disaster recovery exercise",
+      "field": "safety; reliability"
+    },
+    {
+      "softwareTerm": "Load test",
+      "equivalent": "proof load test",
+      "field": "structural engineering"
+    },
+    {
+      "softwareTerm": "Stress test to failure",
+      "equivalent": "HALT, highly accelerated life testing",
+      "field": "reliability"
+    },
+    {
+      "softwareTerm": "Soak test",
+      "equivalent": "shelf-life or endurance test",
+      "field": "food; mechanical"
+    },
+    {
+      "softwareTerm": "Snapshot test",
+      "equivalent": "control sample compared to a retained reference",
+      "field": "laboratories"
+    },
+    {
+      "softwareTerm": "Differential testing",
+      "equivalent": "dual-entry bookkeeping; double data entry",
+      "field": "accounting; clinical research"
+    },
+    {
+      "softwareTerm": "Mutation testing",
+      "equivalent": "proficiency testing with blind spiked samples",
+      "field": "laboratories"
+    },
+    {
+      "softwareTerm": "Fuzzing",
+      "equivalent": "environmental stress screening",
+      "field": "electronics"
+    },
+    {
+      "softwareTerm": "Static analysis",
+      "equivalent": "non-destructive testing",
+      "field": "materials"
+    },
+    {
+      "softwareTerm": "Code review",
+      "equivalent": "peer review",
+      "field": "science"
+    },
+    {
+      "softwareTerm": "Pair programming",
+      "equivalent": "four-eyes principle",
+      "field": "finance, aviation"
+    },
+    {
+      "softwareTerm": "Test coverage",
+      "equivalent": "inspection coverage, sampling fraction",
+      "field": "manufacturing"
+    },
+    {
+      "softwareTerm": "Flaky test",
+      "equivalent": "measurement repeatability failure",
+      "field": "metrology"
+    },
+    {
+      "softwareTerm": "Test oracle",
+      "equivalent": "reference standard; control group",
+      "field": "metrology; experimental science"
+    },
+    {
+      "softwareTerm": "Assertion",
+      "equivalent": "specification limit",
+      "field": "manufacturing"
+    },
+    {
+      "softwareTerm": "Test double, mock",
+      "equivalent": "simulator; phantom (in imaging)",
+      "field": "training; medical physics"
+    },
+    {
+      "softwareTerm": "Escaped defect",
+      "equivalent": "field failure; consumer's risk",
+      "field": "reliability; sampling"
+    },
+    {
+      "softwareTerm": "False alarm in CI",
+      "equivalent": "producer's risk",
+      "field": "sampling"
+    },
+    {
+      "softwareTerm": "Acceptance criteria",
+      "equivalent": "acceptance quality limit (AQL)",
+      "field": "sampling"
+    },
+    {
+      "softwareTerm": "Definition of done",
+      "equivalent": "conformity assessment",
+      "field": "standards"
+    },
+    {
+      "softwareTerm": "Verification",
+      "equivalent": "verification",
+      "field": "identical meaning, universally"
+    },
+    {
+      "softwareTerm": "Validation",
+      "equivalent": "validation",
+      "field": "identical meaning, universally"
+    },
+    {
+      "softwareTerm": "Independent QA",
+      "equivalent": "independent verification and validation; external audit",
+      "field": "aviation; finance"
+    },
+    {
+      "softwareTerm": "Bug bounty",
+      "equivalent": "proficiency scheme; adversarial review",
+      "field": "laboratories; security"
+    },
+    {
+      "softwareTerm": "Post-incident review",
+      "equivalent": "root cause analysis; corrective and preventive action (CAPA)",
+      "field": "quality management"
+    }
+  ],
+  "failureModes": [
+    {
+      "failure": "Measure becomes target",
+      "check": "is anyone's outcome attached to this number?"
+    },
+    {
+      "failure": "Coverage as verification",
+      "check": "if the code were wrong, would anything fail?"
+    },
+    {
+      "failure": "Base rate blindness",
+      "check": "how rare is the thing? what share of positives are real?"
+    },
+    {
+      "failure": "Alarm fatigue",
+      "check": "what is the first thing a person does when this goes red?"
+    },
+    {
+      "failure": "Oracle drift",
+      "check": "where did the expected value come from, and when?"
+    },
+    {
+      "failure": "Unrepresentative sample",
+      "check": "who or what is not in the test?"
+    },
+    {
+      "failure": "Ritual compliance",
+      "check": "when did this control last find something?"
+    },
+    {
+      "failure": "Testing after the decision",
+      "check": "could a bad result still change the plan?"
+    },
+    {
+      "failure": "Verification without validation",
+      "check": "who confirmed this was the right thing to build?"
+    },
+    {
+      "failure": "False precision",
+      "check": "what is the uncertainty on that number?"
+    },
+    {
+      "failure": "Observed test",
+      "check": "does the subject know, and does that change it?"
+    },
+    {
+      "failure": "Absence of evidence",
+      "check": "what exactly did the passing result cover?"
+    }
+  ],
+  "sources": [
+    "http://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf",
+    "http://xunitpatterns.com/Mocks,%20Fakes,%20Stubs%20and%20Dummies.html",
+    "https://01kzseh0r0jaeg8n3cr0qx4kt2.reports.rj11.io",
+    "https://accendoreliability.com/ess-hass/",
+    "https://alastairreid.github.io/RelatedWork/papers/claessen:icfp:2000/",
+    "https://astqb.org/4-1-test-techniques-overview/",
+    "https://blog.pqegroup.com/commissioning-qualification/fat-and-sat",
+    "https://books.google.com/books/about/The_Leprechauns_of_Software_Engineering.html?id=6LcpBgAAQBAJ",
+    "https://bpi.com/deep-dive-dfast-2025-stress-test-scenarios/",
+    "https://bridgelegal.org/understanding-five-daubert-factors-expert-testimony/",
+    "https://cepr.org/voxeu/columns/what-randomisation-can-and-cannot-do-2019-nobel-prize",
+    "https://conjointly.com/kb/types-of-reliability/",
+    "https://discovery.dundee.ac.uk/ws/files/7385883/RPP_SCIENCE_2015.pdf",
+    "https://dl.acm.org/doi/10.1109/TSE.2014.2372785",
+    "https://dl.acm.org/doi/10.1145/3143561",
+    "https://docs.pact.io/",
+    "https://download.tek.com/document/HALT_HASS_WP.pdf",
+    "https://ecqa.com/iso-2859-1-vs-ansi-z1-4/",
+    "https://en.wikipedia.org/wiki/Automotive_Safety_Integrity_Level",
+    "https://en.wikipedia.org/wiki/Campbell%27s_law",
+    "https://en.wikipedia.org/wiki/Modified_condition/decision_coverage",
+    "https://en.wikiquote.org/wiki/Edsger_W._Dijkstra",
+    "https://exp-platform.com/Documents/2015-08OnlineControlledExperimentsKDDKeynoteNR.pdf",
+    "https://github.com/google/oss-fuzz",
+    "https://hbr.org/2017/09/the-surprising-power-of-online-experiments",
+    "https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+    "https://ldra.com/capabilities/mc-dc/",
+    "https://ldra.com/iso-26262/",
+    "https://martinfowler.com/articles/mocksArentStubs.html",
+    "https://mostlyeconomics.wordpress.com/2016/03/17/six-principles-for-the-use-and-interpretation-of-p-values/",
+    "https://opentext.wsu.edu/carriecuttler/chapter/reliability-and-validity-of-measurement/1000/",
+    "https://pecb.com/en/whitepaper/iso-iec-170252017-general-requirements-for-the-competence-of-testing-and-calibration-laboratories",
+    "https://poorvucenter.yale.edu/teaching/teaching-resource-library/formative-summative-assessments",
+    "https://principlesofchaos.org/",
+    "https://psychsafety.com/goodharts-law-campbells-law-and-the-cobra-effect/",
+    "https://qualityinspection.org/inspection-level/",
+    "https://research.google.com/pubs/archive/45861.pdf",
+    "https://sarum-hydraulics.co.uk/white-paper/hydrostatic-pressure-testing/hydrostatic-proof-burst-fatigue-test-explainer/",
+    "https://softwaretestingstandard.org/",
+    "https://squareslab.github.io/materials/DingOSSFuzz21.pdf",
+    "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+    "https://testing.googleblog.com/2017/04/where-do-our-flaky-tests-come-from.html",
+    "https://testparty.ai/blog/automated-accessibility-testing-guide",
+    "https://web.dev/articles/ta-strategies",
+    "https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf",
+    "https://www.asnt.org/what-is-nondestructive-testing",
+    "https://www.brightfocus.org/about/clinical-trials/phases-of-clinical-trials/",
+    "https://www.cancertherapyadvisor.com/factsheets/clinical-trial-phases/",
+    "https://www.cisa.gov/news-events/news/ai-red-teaming-applying-software-tevv-ai-evaluations",
+    "https://www.compassitc.com/blog/penetration-testing-understanding-red-blue-purple-teams",
+    "https://www.euroncap.com/how-to-read-the-stars/",
+    "https://www.euroncap.com/press-media/euro-ncap-announces-2026-protocol-changes-to-tackle-modern-driving-risks/",
+    "https://www.fda.gov/food/hazard-analysis-critical-control-point-haccp/haccp-principles-application-guidelines",
+    "https://www.fda.gov/patients/drug-development-process/step-3-clinical-research",
+    "https://www.federalreserve.gov/publications/2025-june-dodd-frank-act-stress-test-results.htm",
+    "https://www.greenlight.guru/glossary/iec-62304",
+    "https://www.health.ny.gov/diseases/chronic/discreen.htm",
+    "https://www.iso.org/standard/33495.html",
+    "https://www.iso.org/standard/66912.html",
+    "https://www.iso.org/standard/78176.html",
+    "https://www.iso.org/standard/81291.html",
+    "https://www.nationalacademies.org/read/10420/chapter/10",
+    "https://www.nobelprize.org/prizes/economic-sciences/2019/press-release/",
+    "https://www.opstrails.dev/insights/change-failure-rate-dora-metric",
+    "https://www.qawolf.com/blog/automated-accessibility-testing-explained",
+    "https://www.qualitymag.com/articles/98097-brief-history-of-ansi-asq-z14",
+    "https://www.science.org/doi/10.1126/science.aac4716",
+    "https://www.softwaresecured.com/post/nist-sp-800-115-and-penetration-testing",
+    "https://www.sonarsource.com/resources/library/iso-iec-25010-explained/",
+    "https://www.vareximaging.com/blogs/what-are-the-six-most-common-ndt-methods/"
+  ],
+  "limitations": [
+    "No tools were installed or exercised. Every claim about tool behaviour comes from documentation or published measurement.",
+    "Paywalled standards texts were not purchased. Standards contents are described from the publisher's public material or from technical summaries that cite them.",
+    "Only one figure in the report is computed here rather than sourced: the diagnostic matrix in section 09.",
+    "The translation table, the six-part frame, and the five proposals are arguments, not measurements.",
+    "Accessibility automation coverage is reported by sources as 57%, 20-40%, 29%, and 22.6%; these use different denominators and are presented as such.",
+    "Secondary sources describe the 2025 Federal Reserve stress test as covering 22 and 31 banks; the Federal Reserve's own publication says 22, and that is the figure used.",
+    "Clinical trial participant counts are typical ranges, not rules."
+  ]
+}
