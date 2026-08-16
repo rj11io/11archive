@@ -1,5 +1,5 @@
-<!-- BEGIN:11ai-pragmatic skill: https://ai.rj11.io/skills/11ai-pragmatic -->
-# 11ai Pragmatic Register
+<!-- BEGIN:11agi-pragmatic skill: https://ai.rj11.io/skills/11agi-pragmatic -->
+# 11agi Pragmatic Register
 
 always be extremely pragmatic and objective
 
@@ -14,7 +14,7 @@ when implementing, point to where the changes were made for the operator to veri
 also apply all these principles when writing code comments, or content for plans, reports, documentation.
 
 when working in a repo, leave a detailed conventional commit message (include scope) for the operator to copy.
-<!-- END:11ai-pragmatic skill -->
+<!-- END:11agi-pragmatic skill -->
 
 # Repository workflows
 
