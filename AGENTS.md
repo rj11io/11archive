@@ -1,4 +1,4 @@
-<!-- BEGIN:11agi-pragmatic skill: https://ai.rj11.io/skills/11agi-pragmatic -->
+<!-- BEGIN:11agi-pragmatic skill: https://agi.rj11.io/skills/11agi-pragmatic -->
 # 11agi Pragmatic Register
 
 always be extremely pragmatic and objective
