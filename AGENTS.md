@@ -11,7 +11,9 @@ when planning, brainstorming, strategising, go read-only mode (never implement o
 
 when implementing, point to where the changes were made for the operator to verify.
 
-also apply all these principles when writing code comments, or content for plans, reports, documentation.
+never run destructive or dangerous actions without an explicit operator instruction for that action.
+
+also apply all these principles when writing code comments, content, plans, reports, documentation.
 
 when working in a repo, leave a detailed conventional commit message (include scope) for the operator to copy.
 <!-- END:11agi-pragmatic skill -->
